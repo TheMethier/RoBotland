@@ -4,11 +4,11 @@
     {
         public Order()
         {
-            UserDetails = new User();
-            OrderDetails = new List<OrderDetail>();
+            UserDetails = new UserDetails();
+            OrderDetails = new List<OrderDetails>();
         }
 
-        public Order(Guid id, User userDetails, List<OrderDetail> orderDetails)
+        public Order(Guid id, UserDetails userDetails, List<OrderDetails> orderDetails)
         {
             Id = id;
             UserDetails = userDetails;
@@ -16,8 +16,9 @@
         }
        
         public Guid Id { get; set; }
-        public User UserDetails { get; set; }
-        public ICollection<OrderDetail> OrderDetails { get; set; }
+        public Guid UserDetailsId { get; set; }
+        public UserDetails UserDetails { get; set; }
+        public ICollection<OrderDetails> OrderDetails { get; set; }
         public DateTime CreatedDate { get; set; }
         public float Total { get; set; }
         public OrderStatus OrderStatus;
@@ -26,8 +27,8 @@
         {
             return obj is Order order &&
                    Id.Equals(order.Id) &&
-                   EqualityComparer<User>.Default.Equals(UserDetails, order.UserDetails) &&
-                   EqualityComparer<ICollection<OrderDetail>>.Default.Equals(OrderDetails, order.OrderDetails) &&
+                   EqualityComparer<UserDetails>.Default.Equals(UserDetails, order.UserDetails) &&
+                   EqualityComparer<ICollection<OrderDetails>>.Default.Equals(OrderDetails, order.OrderDetails) &&
                    CreatedDate == order.CreatedDate &&
                    Total == order.Total &&
                    OrderStatus == order.OrderStatus;

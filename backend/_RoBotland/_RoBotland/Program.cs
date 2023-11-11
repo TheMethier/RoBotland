@@ -1,5 +1,7 @@
+using _RoBotland.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using _RoBotland.Models;
+using _RoBotland.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var conntectionString = builder
@@ -8,6 +10,8 @@ var conntectionString = builder
 // Add services to the container.
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddTransient<IProductService, ProductService>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>(opt =>
@@ -27,6 +31,8 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-app.MapControllers();
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

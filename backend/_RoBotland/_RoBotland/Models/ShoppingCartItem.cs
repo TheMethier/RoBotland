@@ -1,4 +1,6 @@
-﻿namespace RoBotland.Models
+﻿using _RoBotland.Models;
+
+namespace RoBotland.Models
 {
     public class ShoppingCartItem
     {

@@ -2,38 +2,46 @@
 {
     public class ProductBuilder
     {
-        private readonly Product _product;
+        private Product _product;
         public ProductBuilder()
         {
             _product = new Product();
         }
-        public void SetName(string name)
+        public ProductBuilder SetName(string name)
         {
             _product.Name = name;
+            return this;
         }
-        public void SetImageUrl(string imageUrl)
+        public ProductBuilder SetImageUrl(string imageUrl)
         {
             _product.ImageUrl = imageUrl;
+            return this;
         }
-        public void SetDescription(string description)
+        public ProductBuilder SetDescription(string description)
         {
             _product.Description = description;
+            return this;
+
         }
-        public void SetPrice(float price)
+        public ProductBuilder SetPrice(float price)
         {
             _product.Price = price;
+            return this;
         }
-        public void SetQuantity(int quantity)
+        public ProductBuilder SetQuantity(int quantity)
         {
             _product.Quantity = quantity;
+            return this;
         }
-        public void SetAvailability(Availability availability)
+        public ProductBuilder SetAvailability(Availability availability)
         {
             _product.IsAvailable = availability;
+            return this;
         }
-        public void SetCategories(List<Category> categories)
+        public ProductBuilder SetCategories(List<Category> categories)
         {
             _product.Categories=categories;
+            return this;
         }
         public Product Build()
         {

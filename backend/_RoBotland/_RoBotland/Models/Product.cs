@@ -6,12 +6,14 @@
         {
             this.IsAvailable = Availability.A;
             Categories = new List<Category>();
+            OrderDetails= new List<OrderDetails>();
             Description = "";
             ImageUrl = "";
             Name = "";
+            Id = -1;
         }
 
-        public Product(int id, string name, float price, int quantity, string description, string imageUrl, ICollection<Category> categories, Availability isAvailable)
+        public Product(int id, string name, float price, int quantity, string description, string imageUrl, ICollection<Category> categories, Availability isAvailable, ICollection<OrderDetails>orderDetails)
         {
             Id = id;
             Name = name;
@@ -20,6 +22,7 @@
             Description = description;
             ImageUrl = imageUrl;
             Categories = categories;
+            OrderDetails=orderDetails;
             this.IsAvailable = isAvailable;
         }
 
@@ -30,24 +33,9 @@
         public string Description { get; set; }
         public string ImageUrl { get; set; }
         public ICollection<Category> Categories { get; set; }
+        public ICollection<OrderDetails> OrderDetails { get; set; }
         public Availability IsAvailable { get; set; }
 
-        public override bool Equals(object? obj)
-        {
-            return obj is Product product &&
-                   Id == product.Id &&
-                   Name == product.Name &&
-                   Math.Abs(Price - product.Price) < 0.0001 &&
-                   Quantity == product.Quantity &&
-                   Description == product.Description &&
-                   ImageUrl == product.ImageUrl &&
-                   EqualityComparer<ICollection<Category>>.Default.Equals(Categories, product.Categories) &&
-                   IsAvailable == product.IsAvailable;
-        }
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Id, Name, Price, Quantity, Description, ImageUrl, Categories, IsAvailable);
-        }
     }
 }
