@@ -1,8 +1,10 @@
-﻿namespace _RoBotland.Models
+﻿using _RoBotland.Enums;
+
+namespace _RoBotland.Models
 {
-    public class ProductDto
+    public class Product
     {
-        public ProductDto()
+        public Product()
         {
             this.IsAvailable = Availability.A;
             Categories = new List<Category>();
@@ -13,7 +15,7 @@
             Id = -1;
         }
 
-        public ProductDto(int id, string name, float price, int quantity, string description, string imageUrl, ICollection<Category> categories, Availability isAvailable, ICollection<OrderDetails>orderDetails)
+        public Product(int id, string name, float price, int quantity, string description, string imageUrl, ICollection<Category> categories, Availability isAvailable, ICollection<OrderDetails>orderDetails)
         {
             Id = id;
             Name = name;
@@ -35,7 +37,6 @@
         public ICollection<Category> Categories { get; set; }
         public ICollection<OrderDetails> OrderDetails { get; set; }
         public Availability IsAvailable { get; set; }
-
 
     }
 }

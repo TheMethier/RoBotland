@@ -1,7 +1,7 @@
-﻿namespace _RoBotland.Models
+﻿namespace _RoBotland.Enums
 {
     public enum Availability
     {
-        A, B , C //placeholder
+        A, B, C //placeholder
     }
-} 
+}

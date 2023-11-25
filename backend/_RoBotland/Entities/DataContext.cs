@@ -13,9 +13,9 @@ namespace _RoBotland.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-            modelBuilder.Entity<ProductDto>()
+            modelBuilder.Entity<Product>()
                 .HasKey(x => x.Id);
-            modelBuilder.Entity<ProductDto>()
+            modelBuilder.Entity<Product>()
                 .Property(x => x.IsAvailable)
                 .HasConversion<string>();
             modelBuilder.Entity<Category>()
@@ -33,10 +33,10 @@ namespace _RoBotland.Models
             modelBuilder.Entity<Order>()
                 .Property(x => x.OrderStatus)
                 .HasConversion<string>();
-            modelBuilder.Entity<ProductDto>()
+            modelBuilder.Entity<Product>()
                 .HasMany(x => x.Categories)
                 .WithMany(x => x.Products).UsingEntity("ProductCategory");
-            modelBuilder.Entity<ProductDto>().HasMany(x => x.OrderDetails)
+            modelBuilder.Entity<Product>().HasMany(x => x.OrderDetails)
                 .WithOne(x => x.Product).HasForeignKey(x=>x.ProductId);
             modelBuilder.Entity<Order>()
                 .HasMany(x => x.OrderDetails)

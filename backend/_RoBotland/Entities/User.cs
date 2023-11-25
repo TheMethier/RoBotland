@@ -1,4 +1,6 @@
-﻿namespace _RoBotland.Models
+﻿using _RoBotland.Enums;
+
+namespace _RoBotland.Models
 {
     public class User
     {
@@ -15,7 +17,11 @@
 
         public Guid Id { get; set; }
         public UserDetails UserDetails { get; set; }
-        //PL: w przyszłości będzie tutaj jescze lista uprawnień i tokenów 
+        public string Username { get; set; }
+        public string PasswordHash { get; set; }
+        public Role Role { get; set; }
+
+        //PL: w przyszłości będzie tutaj jeszcze lista uprawnień i tokenów 
 
         public override bool Equals(object? obj)
         {

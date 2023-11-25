@@ -4,13 +4,13 @@ public class OrderDetails
 {
     public OrderDetails()
     {
-        Product = new ProductDto();
+        Product = new Product();
         Order = new Order();
         Total = 0;
         Quantity = 0;
     }
 
-    public OrderDetails(Guid id, int quantity, float total, ProductDto product,Order order)
+    public OrderDetails(Guid id, int quantity, float total, Product product,Order order)
     {
         Id = id;
         Quantity = quantity;
@@ -24,7 +24,7 @@ public class OrderDetails
     public float Total { get; }
     public int ProductId;
     public Guid OrderId;
-    public ProductDto Product { get; }
+    public Product Product { get; }
     public Order Order { get; }
 
 

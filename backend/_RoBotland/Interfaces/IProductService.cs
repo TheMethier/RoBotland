@@ -7,7 +7,7 @@ namespace _RoBotland.Interfaces
         List<ProductDto> GetProducts();
         ProductDto GetProductById(int id);
         int AddNewProduct(ProductDto product);
-        bool DeleteProduct(int id);
+        void DeleteProduct(int id);
         int UpdateProduct(int id,ProductDto product);
     }
 }

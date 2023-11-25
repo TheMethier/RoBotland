@@ -1,7 +1,7 @@
-﻿namespace RoBotland.Models
+﻿namespace _RoBotland.Enums
 {
     public enum Role
     {
-    USER, ADMIN 
+        USER, ADMIN
     }
 }

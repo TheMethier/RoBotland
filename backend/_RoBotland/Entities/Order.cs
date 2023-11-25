@@ -1,4 +1,6 @@
-﻿namespace _RoBotland.Models
+﻿using _RoBotland.Enums;
+
+namespace _RoBotland.Models
 {
     public class Order
     {

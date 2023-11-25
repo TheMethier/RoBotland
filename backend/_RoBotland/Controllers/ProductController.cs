@@ -1,6 +1,8 @@
 ﻿using _RoBotland.Interfaces;
 using _RoBotland.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace _RoBotland.Controllers
 {
@@ -16,6 +18,7 @@ namespace _RoBotland.Controllers
         }
 
         [HttpGet("/all")]
+        [Authorize]
         public IActionResult GetProducts()
         {
             List<ProductDto> products = _productService.GetProducts();
@@ -25,33 +28,52 @@ namespace _RoBotland.Controllers
         [HttpGet("/{id:int}")]
         public IActionResult GetProductById(int id)
         {
-            ProductDto product = _productService.GetProductById(id);
-            return Ok(product);
+            try
+            {
+                ProductDto product = _productService.GetProductById(id);
+                return Ok(product);
+            }
+            catch 
+            {
+                return NotFound();
+            }
         }
 
         [HttpPost]
-        public IActionResult AddNewProduct([FromBody] ProductDto product)
+        public IActionResult AddNewProduct([FromBody] ProductDto dto)
         {
-            int id = _productService.AddNewProduct(product);
+            int id = _productService.AddNewProduct(dto);
             return Created("$/api/v1/products/{id}",id);
         }
 
         [HttpDelete("/{id:int}")]
         public IActionResult RemoveProductById(int id)
         {
-            bool isDeleted = _productService.DeleteProduct(id);
-            if(isDeleted)
-                return NoContent();
-            return NotFound();
+            try
+            {
+               _productService.DeleteProduct(id);
+            }
+            catch 
+            {
+                      
+                return NotFound();
+            }
+            return NoContent();
+
         }
 
         [HttpPut("/{id:int}")]
-        public IActionResult UpgradeProduct(int id,[FromBody] ProductDto product)
+        public IActionResult UpgradeProduct(int id,[FromBody] ProductDto dto)
         {
-            int productId= _productService.UpdateProduct(id,product);
-            if(productId!=-1)
-                return Created("$/api/v1/products/{id}",productId);
-            return NotFound();
+            try
+            {
+                int productId = _productService.UpdateProduct(id, dto);
+                return Created("$/api/v1/products/{id}", productId);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex);
+            }
         }
     }
 }
