@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using _RoBotland.Models;
 
@@ -11,9 +12,11 @@ using _RoBotland.Models;
 namespace _RoBotland.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231126171827_accountBalance")]
+    partial class accountBalance
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -196,16 +199,6 @@ namespace _RoBotland.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("9cbe7e88-6475-4011-8e7e-b7e6eba8660e"),
-                            AccountBalance = 100000f,
-                            PasswordHash = "$2a$11$sG0/Wsg4E9WWDC8NRJCGRu5Vgb78tf1UiLi1WTziC2xYNBukpqTOy",
-                            Role = 1,
-                            Username = "ADMIN"
-                        });
                 });
 
             modelBuilder.Entity("_RoBotland.Models.UserDetails", b =>

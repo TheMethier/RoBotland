@@ -25,16 +25,22 @@ namespace _RoBotland.Controllers
         [HttpPost("/login")]
         public IActionResult Login([FromBody] UserLoginDto request)
         {
-            HttpContext context = HttpContext; // Access the HttpContext property
-            var jwt = _userService.Login(request);
-            context.Session.SetString("jwt", jwt);
-            return Ok(jwt);
+            try
+            {
+                var jwt = _userService.Login(request);
+                return Ok(jwt);
+            }
+            catch (Exception ex) {
+            
+            return BadRequest(ex.Message);
+            }
+            
+
         }
         [HttpPost("/logout")]
         public IActionResult Logout()
         {
-            HttpContext context = HttpContext; // Access the HttpContext property
-            context.Session.SetString("jwt", "");
+
             return Ok();
         }
     }

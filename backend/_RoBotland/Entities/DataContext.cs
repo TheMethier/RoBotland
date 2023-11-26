@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using _RoBotland.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace _RoBotland.Models
 {
@@ -51,7 +52,7 @@ namespace _RoBotland.Models
                 .WithOne(x => x.UserDetails)
                 .HasForeignKey<UserDetails>(x=>x.Id)
                 .IsRequired(false);
-
+            modelBuilder.Entity<User>().HasData(new User("ADMIN", "$2a$11$sG0/Wsg4E9WWDC8NRJCGRu5Vgb78tf1UiLi1WTziC2xYNBukpqTOy", Role.ADMIN,100000) );
         }
 
         public DbSet<ProductDto> Products { get; set; }

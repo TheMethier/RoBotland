@@ -18,7 +18,6 @@ namespace _RoBotland.Controllers
         }
 
         [HttpGet("/all")]
-        [Authorize]
         public IActionResult GetProducts()
         {
             List<ProductDto> products = _productService.GetProducts();

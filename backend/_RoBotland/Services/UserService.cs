@@ -3,6 +3,7 @@ using _RoBotland.Interfaces;
 using _RoBotland.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -28,18 +29,19 @@ namespace _RoBotland.Services
         public string Login(UserLoginDto request)
         {
             var user = _dataContext.Users.FirstOrDefault(x=>x.Username == request.Username);
-            
-            if (user == null)
+           
+            if (user is null)
             {
-                throw new Exception();
+                throw new Exception("Not Found");
             }
-            bool isValid = (request.Password == BCrypt.Net.BCrypt.EnhancedHashPassword(user.PasswordHash) && request.Username == user.Username);
+            
+            bool isValid = (BCrypt.Net.BCrypt.Verify(request.Password,user.PasswordHash) && user.Username==request.Username);
             if (!isValid) 
             {
-                throw new Exception();
+                throw new Exception("Bad Password");
             }
-            var response = _mapper.Map<UserDto>(request);
-            if (request.Password == "1234" && request.Username == "ADMIN")
+            var response = _mapper.Map<UserDto>(user);
+            if (request.Password == "12345678" && request.Username == "ADMIN")
                 response.Role = Role.ADMIN;
             var token = GenerateToken(response);
             return token;
@@ -66,6 +68,7 @@ namespace _RoBotland.Services
                 new Claim(ClaimTypes.NameIdentifier, user.Username),
                 new Claim(ClaimTypes.Role,user.Role.ToString())
                 };
+            
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value!));
             var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
             var token = new JwtSecurityToken(
