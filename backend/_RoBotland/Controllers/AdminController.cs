@@ -1,30 +1,32 @@
-﻿using _RoBotland.Interfaces;
+﻿using Microsoft.AspNetCore.Mvc;
+using _RoBotland.Interfaces;
 using _RoBotland.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Query;
+
 
 namespace _RoBotland.Controllers
 {
-    [Route("/api/v1/products/[controller]")]
+    //[Authorize(Roles = "Admin")]
+    [Route("/api/v1/admin/products/[controller]")]
     [ApiController]
-    public class ProductController : ControllerBase
+    public class AdminController : ControllerBase
     {
         private IProductService _productService;
 
-        public ProductController(IProductService productService)
+        public AdminController(IProductService productService)
         {
             _productService = productService;
         }
 
-        [HttpGet("all")]
+        [HttpGet("/all")]
         public IActionResult GetProducts()
         {
             List<ProductDto> products = _productService.GetProducts();
             return Ok(products);
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("/{id:int}")]
         public IActionResult GetProductById(int id)
         {
             try
@@ -42,10 +44,10 @@ namespace _RoBotland.Controllers
         public IActionResult AddNewProduct([FromBody] ProductDto dto)
         {
             int id = _productService.AddNewProduct(dto);
-            return Created("$/api/v1/products/{id}", id);
+            return Created("/api/v1/admin/products/{id}", id);
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete("/{id:int}")]
         public IActionResult RemoveProductById(int id)
         {
             try
@@ -54,35 +56,23 @@ namespace _RoBotland.Controllers
             }
             catch
             {
-
                 return NotFound();
             }
             return NoContent();
-
         }
 
-        [HttpPut("{id:int}")]
-
+        [HttpPut("/{id:int}")]
         public IActionResult UpgradeProduct(int id, [FromBody] ProductDto dto)
         {
             try
             {
                 int productId = _productService.UpdateProduct(id, dto);
-                return Created($"/api/v1/products/{id}", productId);
+                return Created("/api/v1/admin/products/{id}", productId);
             }
             catch (Exception ex)
             {
                 return NotFound(ex);
             }
         }
-        
-        [HttpGet]
-        public IActionResult GetProducts([FromQuery] ProductFilterDto filterParameters)
-        {
-            var products = _productService.GetFilteredProducts(filterParameters);
-            return Ok(products);
-        }
-        
-
     }
 }

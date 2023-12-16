@@ -1,5 +1,6 @@
 ﻿using _RoBotland.Interfaces;
 using _RoBotland.Models;
+using _RoBotland.Enums;
 using AutoMapper;
 using Microsoft.AspNetCore.Http.HttpResults;
 
@@ -51,6 +52,28 @@ public class ProductService : IProductService
         return products;
     }
 
+
+    public List<ProductDto> GetFilteredProducts(ProductFilterDto filterParameters)
+    {
+        var query = _dataContext.Products.AsQueryable();
+
+        if (filterParameters.MinPrice.HasValue)
+            query = query.Where(p => p.Price >= filterParameters.MinPrice);
+
+        if (filterParameters.MaxPrice.HasValue)
+            query = query.Where(p => p.Price <= filterParameters.MaxPrice);
+
+        if (filterParameters.IsAvailable.HasValue)
+            query = query.Where(p => p.IsAvailable == filterParameters.IsAvailable);
+
+        if (!string.IsNullOrEmpty(filterParameters.CategoryName))
+            query = query.Where(p => p.Categories.Any(c => c.Name == filterParameters.CategoryName));
+
+
+        var products = query.ToList();
+        return _mapper.Map<List<ProductDto>>(products);
+    }
+
+  
 }
 
-    
