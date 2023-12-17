@@ -37,8 +37,8 @@ namespace _RoBotland.Controllers
                 return NotFound();
             }
         }
-
-        [HttpPost]
+        
+        [HttpPost("/addProduct")]
         public IActionResult AddNewProduct([FromBody] ProductDto dto)
         {
             int id = _productService.AddNewProduct(dto);
