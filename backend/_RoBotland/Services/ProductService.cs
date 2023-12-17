@@ -17,7 +17,7 @@ public class ProductService : IProductService
     
     public int AddNewProduct(ProductDto dto)
     {
-        var product = _mapper.Map<ProductDto>(dto);
+        var product = _mapper.Map<Product>(dto);
         _dataContext.Products.Add(product);
         _dataContext.SaveChanges();
         var productDto= _mapper.Map<ProductDto>(dto);
@@ -26,7 +26,7 @@ public class ProductService : IProductService
 
     public void DeleteProduct(int id)
     {
-        ProductDto product = _dataContext.Products.Find(id) ?? throw new Exception();
+        Product product = _dataContext.Products.Find(id) ?? throw new Exception();
         _dataContext.Remove(product);
         _dataContext.SaveChanges();
     }
@@ -34,21 +34,34 @@ public class ProductService : IProductService
     public int UpdateProduct(int id, ProductDto product)
     {
 
-        var oldProduct = _dataContext.Products.Find(id) ?? throw new Exception();
-        _dataContext.Products.Update(product);
-        return oldProduct.Id;
+        var oldProduct = _dataContext.Products.Find(id) ?? throw new Exception("Not Exist");
+        var nproduct = _mapper.Map<Product>(product);
+        nproduct.Id = id;
+        _dataContext.Entry(oldProduct).CurrentValues.SetValues(nproduct);
+        _dataContext.SaveChanges();
+        return nproduct.Id;
     }
 
     public ProductDto GetProductById(int id)
     {
-        ProductDto product = _dataContext.Products.Find(id) ?? throw new Exception("Not Found at "+id);
-        return product;
+        Product product = _dataContext.Products.Find(id) ?? throw new Exception("Not Found at " + id);
+        var getProduct = _mapper.Map<ProductDto>(product);
+        return getProduct;
     }
 
     public List<ProductDto> GetProducts()
     {
         var products = _dataContext.Products.ToList();
-        return products;
+        List<ProductDto> productList = new List<ProductDto>();
+        products.ForEach(x =>
+        {
+            if (x != null)
+            {
+                var productDto = _mapper.Map<ProductDto>(x);
+                productList.Add(productDto);
+            }
+        });
+        return productList;
     }
 
 
