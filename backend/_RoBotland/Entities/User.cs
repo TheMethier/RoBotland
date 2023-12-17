@@ -45,8 +45,5 @@ namespace _RoBotland.Models
             return HashCode.Combine(Id, UserDetails);
         }
 
-
-
-        //without authentication and authorization
     }
 }

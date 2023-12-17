@@ -46,16 +46,17 @@ namespace _RoBotland.Models
             modelBuilder.Entity<UserDetails>()
                 .HasMany(x => x.Orders)
                 .WithOne(x => x.UserDetails)
-                .HasForeignKey(x=>x.UserDetailsId);
+                .HasForeignKey(x=>x.UserDetailsId).IsRequired(false);
             modelBuilder.Entity<UserDetails>()
                 .HasOne(x => x.User)
                 .WithOne(x => x.UserDetails)
-                .HasForeignKey<UserDetails>(x=>x.Id)
-                .IsRequired(false);
+                .HasForeignKey<UserDetails>(x => x.Id)
+                .IsRequired(true);
+                
             modelBuilder.Entity<User>().HasData(new User("ADMIN", "$2a$11$sG0/Wsg4E9WWDC8NRJCGRu5Vgb78tf1UiLi1WTziC2xYNBukpqTOy", Role.ADMIN,100000) );
         }
 
-        public DbSet<ProductDto> Products { get; set; }
+        public DbSet<Product> Products { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<OrderDetails> OrderDetails { get; set; }
