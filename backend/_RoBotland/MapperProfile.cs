@@ -17,8 +17,6 @@ namespace _RoBotland
                 .ForMember(dest => dest.ProductId, opt => opt.MapFrom(x => x.Product.Id))
                 .ForMember(dest => dest.Product, opt => opt.MapFrom(x => x.Product))
                 .ForMember(dest => dest.Quantity, opt => opt.MapFrom(x => x.Quantity));
-            CreateMap<UserDetailsDto, UserDetails>()
-                .ForMember(dest => dest.HomeAddress, opt => opt.MapFrom(x => x.City + " " + x.ZipCode + "/n" + x.Street + " " + x.HouseNumber));
         }
     }
 }
