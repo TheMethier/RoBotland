@@ -10,7 +10,7 @@ namespace _RoBotland.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private IProductService _productService;
+        private  IProductService _productService;
 
         public ProductController(IProductService productService)
         {
@@ -32,7 +32,7 @@ namespace _RoBotland.Controllers
                 ProductDto product = _productService.GetProductById(id);
                 return Ok(product);
             }
-            catch
+            catch 
             {
                 return NotFound();
             }
@@ -42,7 +42,7 @@ namespace _RoBotland.Controllers
         public IActionResult AddNewProduct([FromBody] ProductDto dto)
         {
             int id = _productService.AddNewProduct(dto);
-            return Created("$/api/v1/products/{id}", id);
+            return Created("$/api/v1/products/{id}",id);
         }
 
         [HttpDelete("{id:int}")]
@@ -50,11 +50,11 @@ namespace _RoBotland.Controllers
         {
             try
             {
-                _productService.DeleteProduct(id);
+               _productService.DeleteProduct(id);
             }
-            catch
+            catch 
             {
-
+                      
                 return NotFound();
             }
             return NoContent();
@@ -62,27 +62,25 @@ namespace _RoBotland.Controllers
         }
 
         [HttpPut("{id:int}")]
-
-        public IActionResult UpgradeProduct(int id, [FromBody] ProductDto dto)
+        public IActionResult UpgradeProduct(int id,[FromBody] ProductDto dto)
         {
             try
             {
                 int productId = _productService.UpdateProduct(id, dto);
-                return Created($"/api/v1/products/{id}", productId);
+                return Created("$/api/v1/products/{id}", productId);
             }
             catch (Exception ex)
             {
                 return NotFound(ex);
             }
+
         }
-        
-        [HttpGet]
+
+        [HttpGet("filtred")]
         public IActionResult GetProducts([FromQuery] ProductFilterDto filterParameters)
         {
             var products = _productService.GetFilteredProducts(filterParameters);
             return Ok(products);
         }
-        
-
     }
 }
