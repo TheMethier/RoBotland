@@ -1,4 +1,6 @@
-﻿namespace _RoBotland.Models
+﻿using _RoBotland.Enums;
+
+namespace _RoBotland.Models
 {
     public class ProductBuilder
     {
@@ -33,16 +35,16 @@
             _product.Quantity = quantity;
             return this;
         }
-        public ProductBuilder SetAvailability(Availability availability)
+       /* public ProductBuilder SetAvailability(Availability availability)
         {
             _product.IsAvailable = availability;
             return this;
-        }
+        }*//*
         public ProductBuilder SetCategories(List<Category> categories)
         {
             _product.Categories=categories;
             return this;
-        }
+        }*/
         public ProductDto Build()
         {
             return _product;

@@ -51,6 +51,26 @@ public class ProductService : IProductService
         return products;
     }
 
+
+    public List<ProductDto> GetFilteredProducts(ProductFilterDto filterParameters)
+    {
+        var query = _dataContext.Products.AsQueryable();
+
+        if (filterParameters.MinPrice.HasValue)
+         query = query.Where(p => p.Price >= filterParameters.MinPrice);
+
+        if (filterParameters.MaxPrice.HasValue)
+           query = query.Where(p => p.Price <= filterParameters.MaxPrice);
+
+       
+
+        //if (filterParameters.CategoryId.HasValue)
+        //query = query.Where(p => p.Categories.Any(c => c.Id == filterParameters.CategoryId.Value));
+
+        var products = query.ToList();
+        return _mapper.Map<List<ProductDto>>(products);
+    }
+
 }
 
     
