@@ -4,11 +4,11 @@
     {
         public ShoppingCartItem()
         {
-            Product = new Product();
+            Product = new ProductDto();
         }
 
 
-        public ShoppingCartItem(int id, Product product, int quantity, float total)
+        public ShoppingCartItem(int id, ProductDto product, int quantity, float total)
         {
             Id = id;
             Product = product;
@@ -17,7 +17,7 @@
         }
 
         public int Id { get; set; }
-        public Product Product { get; set; }
+        public ProductDto Product { get; set; }
         public int Quantity { get; set; }
         public float Total { get; set; }
     }
