@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using _RoBotland.Models;
 
@@ -11,9 +12,11 @@ using _RoBotland.Models;
 namespace _RoBotland.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231129223833_product")]
+    partial class product
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -164,6 +167,9 @@ namespace _RoBotland.Migrations
                     b.Property<int>("Role")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("UserDetailsId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -175,10 +181,11 @@ namespace _RoBotland.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("32887b79-031c-4534-9497-ab827a261491"),
+                            Id = new Guid("d24e721a-f062-4c2b-b9ef-81885f4164e2"),
                             AccountBalance = 100000f,
                             PasswordHash = "$2a$11$sG0/Wsg4E9WWDC8NRJCGRu5Vgb78tf1UiLi1WTziC2xYNBukpqTOy",
                             Role = 1,
+                            UserDetailsId = new Guid("00000000-0000-0000-0000-000000000000"),
                             Username = "ADMIN"
                         });
                 });
@@ -232,7 +239,9 @@ namespace _RoBotland.Migrations
                 {
                     b.HasOne("_RoBotland.Models.UserDetails", "UserDetails")
                         .WithMany("Orders")
-                        .HasForeignKey("UserDetailsId");
+                        .HasForeignKey("UserDetailsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("UserDetails");
                 });
@@ -260,9 +269,7 @@ namespace _RoBotland.Migrations
                 {
                     b.HasOne("_RoBotland.Models.User", "User")
                         .WithOne("UserDetails")
-                        .HasForeignKey("_RoBotland.Models.UserDetails", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("_RoBotland.Models.UserDetails", "Id");
 
                     b.Navigation("User");
                 });

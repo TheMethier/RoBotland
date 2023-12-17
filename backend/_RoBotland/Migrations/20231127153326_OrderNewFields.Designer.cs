@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using _RoBotland.Models;
 
@@ -11,9 +12,11 @@ using _RoBotland.Models;
 namespace _RoBotland.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231127153326_OrderNewFields")]
+    partial class OrderNewFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -145,6 +148,37 @@ namespace _RoBotland.Migrations
 
                     b.HasKey("Id");
 
+                    b.ToTable("Product");
+                });
+
+            modelBuilder.Entity("_RoBotland.Models.ProductDto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("Price")
+                        .HasColumnType("real");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
                     b.ToTable("Products");
                 });
 
@@ -164,6 +198,9 @@ namespace _RoBotland.Migrations
                     b.Property<int>("Role")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("UserDetailsId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -175,10 +212,11 @@ namespace _RoBotland.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("32887b79-031c-4534-9497-ab827a261491"),
+                            Id = new Guid("d6546f2b-56d2-456e-95fb-49c47045d1aa"),
                             AccountBalance = 100000f,
                             PasswordHash = "$2a$11$sG0/Wsg4E9WWDC8NRJCGRu5Vgb78tf1UiLi1WTziC2xYNBukpqTOy",
                             Role = 1,
+                            UserDetailsId = new Guid("00000000-0000-0000-0000-000000000000"),
                             Username = "ADMIN"
                         });
                 });
@@ -232,7 +270,9 @@ namespace _RoBotland.Migrations
                 {
                     b.HasOne("_RoBotland.Models.UserDetails", "UserDetails")
                         .WithMany("Orders")
-                        .HasForeignKey("UserDetailsId");
+                        .HasForeignKey("UserDetailsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("UserDetails");
                 });
@@ -260,9 +300,7 @@ namespace _RoBotland.Migrations
                 {
                     b.HasOne("_RoBotland.Models.User", "User")
                         .WithOne("UserDetails")
-                        .HasForeignKey("_RoBotland.Models.UserDetails", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("_RoBotland.Models.UserDetails", "Id");
 
                     b.Navigation("User");
                 });

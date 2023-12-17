@@ -8,7 +8,7 @@
         public string LastName { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
-        public string HomeAdress {  get; set; }
+        public string HomeAddress {  get; set; }
         public ICollection<Order> Orders { get; set; } //PL: informacje o historii zamówień po email
         public User User { get; set; }
       

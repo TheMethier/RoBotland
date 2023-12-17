@@ -4,8 +4,7 @@ public class OrderDetails
 {
     public OrderDetails()
     {
-        Product = new Product();
-        Order = new Order();
+   
         Total = 0;
         Quantity = 0;
     }
@@ -24,8 +23,8 @@ public class OrderDetails
     public float Total { get; }
     public int ProductId;
     public Guid OrderId;
-    public Product Product { get; }
-    public Order Order { get; }
+    public Product Product { get; set; }
+    public Order Order { get; set; }
 
 
   

@@ -10,11 +10,17 @@ namespace _RoBotland.Models
             OrderDetails = new List<OrderDetails>();
         }
 
-        public Order(Guid id, UserDetails userDetails, List<OrderDetails> orderDetails)
+        public Order(Guid id, Guid userDetailsId, UserDetails userDetails, float total, OrderStatus orderStatus, DeliveryType deliveryType, PaymentType paymentType)
         {
             Id = id;
+            UserDetailsId = userDetailsId;
             UserDetails = userDetails;
-            OrderDetails = orderDetails;
+            CreatedDate= DateTime.Now;
+            OrderStatus = orderStatus;
+            DeliveryType = deliveryType;
+            PaymentType = paymentType;  
+            Total = total;
+            
         }
        
         public Guid Id { get; set; }
@@ -22,6 +28,8 @@ namespace _RoBotland.Models
         public UserDetails UserDetails { get; set; }
         public ICollection<OrderDetails> OrderDetails { get; set; }
         public DateTime CreatedDate { get; set; }
+        public DeliveryType DeliveryType { get; set; }
+        public PaymentType PaymentType { get; set; }
         public float Total { get; set; }
         public OrderStatus OrderStatus;
 
