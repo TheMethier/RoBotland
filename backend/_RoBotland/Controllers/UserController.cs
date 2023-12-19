@@ -1,5 +1,6 @@
 ﻿using _RoBotland.Interfaces;
 using _RoBotland.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace _RoBotland.Controllers
@@ -50,6 +51,25 @@ namespace _RoBotland.Controllers
         {
 
             return Ok();
+        }
+        [Authorize]
+        [HttpGet("/getHistory")]
+        public IActionResult GetHistory()
+        {
+            var session = HttpContext.Session;
+            if (HttpContext.User.Identity == null)
+                return NoContent();
+            var username = HttpContext.User.Identity.Name
+                != null ? HttpContext.User.Identity.Name : string.Empty;
+            try
+            {
+                var history = _userService.GetHistory(username);
+                return Ok(history);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

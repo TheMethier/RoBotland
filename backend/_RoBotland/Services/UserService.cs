@@ -54,6 +54,18 @@ namespace _RoBotland.Services
             var response=_mapper.Map<UserDto>(user);
             return response;
          }
+        public List<OrderDto> GetHistory(string username)
+        {
+            var user = _dataContext.Users.FirstOrDefault(x => x.Username == username) ?? throw new Exception();
+            var history = _dataContext.Orders.Where(x => x.UserDetails.Id == user.Id).ToList();
+            List<OrderDto> orders = new List<OrderDto>();
+            foreach (var order in history)
+            {
+                var item = _mapper.Map<OrderDto>(order);
+                orders.Add(item);
+            }
+            return orders;
+        }
         private string GenerateToken(UserDto user)
         {
             List<Claim> claims = new List<Claim>()
