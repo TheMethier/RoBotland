@@ -1,5 +1,7 @@
 ﻿using _RoBotland.Interfaces;
+using _RoBotland.Migrations;
 using _RoBotland.Models;
+using _RoBotland.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace _RoBotland.Controllers
@@ -41,6 +43,21 @@ namespace _RoBotland.Controllers
         public IActionResult Logout()
         {
 
+            return Ok();
+        }
+        [HttpGet("/getAccountBalance")]
+        public IActionResult GetAccountBalance(User user) {
+            var accountBalance = _userService.GetAccountBalance(user.Id);
+            return Ok(accountBalance);
+        }
+        [HttpPut("/depositToAccount")]
+        public IActionResult DepositToAccount(Guid userId, float amount) {
+            _userService.DepositToAccount(userId, amount);
+            return Ok();
+        }
+        [HttpPut("/withdrawFromAccount")]
+        public IActionResult WithdrawFromAccount(Guid userId, float amount) {
+            _userService.WithdrawFromAccount(userId, amount);
             return Ok();
         }
     }

@@ -1,4 +1,5 @@
 ﻿using _RoBotland.Interfaces;
+using _RoBotland.Migrations;
 using _RoBotland.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -63,6 +64,18 @@ public class ProductService : IProductService
         });
         return productList;
     }
+   public List<ProductDto> SearchProductsByName(string productName)
+{
+    var query = _dataContext.Products.AsQueryable();
+
+        if (!string.IsNullOrEmpty(productName))
+        {
+            var upperProductName = productName.ToUpper();
+            query = query.Where(p => p.Name.ToUpper().Contains(upperProductName));
+        }
+        var products = query.ToList();
+    return _mapper.Map<List<ProductDto>>(products);
+}
 
 
     public List<ProductDto> GetFilteredProducts(ProductFilterDto filterParameters)
@@ -70,20 +83,38 @@ public class ProductService : IProductService
         var query = _dataContext.Products.AsQueryable();
 
         if (filterParameters.MinPrice.HasValue)
-         query = query.Where(p => p.Price >= filterParameters.MinPrice);
+            query = query.Where(p => p.Price >= filterParameters.MinPrice);
 
         if (filterParameters.MaxPrice.HasValue)
-           query = query.Where(p => p.Price <= filterParameters.MaxPrice);
+            query = query.Where(p => p.Price <= filterParameters.MaxPrice);
 
-       
-
-        //if (filterParameters.CategoryId.HasValue)
-        //query = query.Where(p => p.Categories.Any(c => c.Id == filterParameters.CategoryId.Value));
+        if (filterParameters.CategoryId.HasValue)
+            query = query.Where(p => p.Categories.Any(c => c.Id == filterParameters.CategoryId.Value));
 
         var products = query.ToList();
         return _mapper.Map<List<ProductDto>>(products);
     }
 
+    public int AddCategoryToProduct(int categoryId, int productId)
+    {
+      
+            Category categoryToAddTo = _dataContext.Categories.Find(categoryId);
+
+            Product productToAdd = _dataContext.Products.Find(productId);
+
+            if (categoryToAddTo != null && productToAdd != null)
+            {
+                categoryToAddTo.Products.Add(productToAdd);
+
+                _dataContext.SaveChanges();
+                return categoryId;
+            }
+            else
+            {
+                return -1;
+            }
+
+    }
 }
 
     

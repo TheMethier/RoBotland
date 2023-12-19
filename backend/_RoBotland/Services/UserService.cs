@@ -3,6 +3,7 @@ using _RoBotland.Interfaces;
 using _RoBotland.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
@@ -68,6 +69,49 @@ namespace _RoBotland.Services
                 );
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
             return jwt;
+        }
+        public bool WithdrawFromAccount(Guid userId, float amount)
+        {
+            var user = GetUserById(userId);
+
+            if (user != null && user.AccountBalance >= amount)
+            {
+                user.AccountBalance -= amount;
+                UpdateAccountBalanceUser(user);
+                return true;
+            }
+            return false;
+        }
+        public void DepositToAccount(Guid userId, float amount)
+        {
+            var user = GetUserById(userId);
+
+            if (user != null)
+            {
+                user.AccountBalance += amount;
+                UpdateAccountBalanceUser(user);
+            }
+        }
+        public float GetAccountBalance(Guid userId)
+        {
+            var user = GetUserById(userId);
+            return user != null ? user.AccountBalance : 0.0f;
+        }
+        private void UpdateAccountBalanceUser(User user)
+        {
+            var existingUser = _dataContext.Users.Find(user.Id);
+
+            if (existingUser != null)
+            {
+                existingUser.AccountBalance = user.AccountBalance;   
+
+                _dataContext.SaveChanges();
+            }
+        }
+        private User GetUserById(Guid id)
+        {
+            var user = _dataContext.Users.Find(id);          
+            return user;           
         }
     }
 }

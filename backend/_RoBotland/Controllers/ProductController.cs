@@ -38,11 +38,18 @@ namespace _RoBotland.Controllers
             }
         }
         
-        [HttpPost("/addProduct")]
+        [HttpPost("addProduct")]
         public IActionResult AddNewProduct([FromBody] ProductDto dto)
         {
             int id = _productService.AddNewProduct(dto);
             return Created("$/api/v1/products/{id}",id);
+        }
+
+        [HttpPost("addCategoryToProduct")]
+        public IActionResult AddCategoryToProduct([FromBody] AddCategoryToProductDto dto)
+        {
+            int id = _productService.AddCategoryToProduct(dto.CategoryId, dto.ProductId);
+            return Ok(id);
         }
 
         [HttpDelete("{id:int}")]
@@ -80,6 +87,12 @@ namespace _RoBotland.Controllers
         public IActionResult GetProducts([FromQuery] ProductFilterDto filterParameters)
         {
             var products = _productService.GetFilteredProducts(filterParameters);
+            return Ok(products);
+        }
+        [HttpGet("searched")]
+        public IActionResult SearchProductsByName(string productName)
+        {
+            var products = _productService.SearchProductsByName(productName);
             return Ok(products);
         }
     }
