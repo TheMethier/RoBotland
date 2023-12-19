@@ -43,6 +43,8 @@ namespace _RoBotland.Services
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
             var userDetails = _mapper.Map<UserDetails>(request);
             var user= _mapper.Map<User>(request);
+            if (_dataContext.Users.FirstOrDefault(x => x.Username == request.Username) != null || _dataContext.UserDetails.FirstOrDefault(x=>x.Email==request.Email)!=null)
+                throw new Exception("User with current username or current email already exists");
             user.PasswordHash = passwordHash;
             user.UserDetails = userDetails;
             user.Role= Role.USER;

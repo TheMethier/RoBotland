@@ -19,8 +19,16 @@ namespace _RoBotland.Controllers
         [HttpPost("/register")]
         public IActionResult Register([FromBody] UserRegisterDto request)
         {
-            var newUser=_userService.Register(request);
-            return Ok(newUser);
+            try
+            {
+                var newUser = _userService.Register(request);
+                return Ok(newUser);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+
+            }
         }
         [HttpPost("/login")]
         public IActionResult Login([FromBody] UserLoginDto request)
