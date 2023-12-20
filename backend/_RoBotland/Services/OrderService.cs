@@ -22,10 +22,10 @@ namespace _RoBotland.Services
 
         public OrderDto PlaceOrderByLoggedInUser(ISession session,string username,OrderOptionsDto orderOptions)
         { 
-            var items = SessionHelper.GetObjectFromJson<List<ShoppingCartItem>>(session, "shoppingcart") ?? throw new Exception("Empty card");
-            float total = 0;
-            var orderId = Guid.NewGuid();
             if (username == null) throw new Exception("unlogged user");
+            var orderId = Guid.NewGuid();
+            float total = 0;
+            var items = SessionHelper.GetObjectFromJson<List<ShoppingCartItem>>(session, "shoppingcart") ?? throw new Exception("Empty card");
             var user = _dataContext.Users.FirstOrDefault(x => x.Username == username) ?? throw new Exception("User not found");
             var userD = _dataContext.UserDetails.FirstOrDefault(x => x.Id == user.Id) ?? throw new Exception("User not found");
             var order = new Order(orderId, userD.Id, userD, total, Enums.OrderStatus.A, orderOptions.DeliveryType, orderOptions.PaymentType);
@@ -50,7 +50,7 @@ namespace _RoBotland.Services
                 throw new Exception("lack of account funds\r\n");
             }
             _dataContext.SaveChanges();
-            OrderDto orderDto = new OrderDto(orderId,DateTime.Now,items,userD,DeliveryType.A,PaymentType.A);
+            OrderDto orderDto = new OrderDto(orderId,DateTime.Now,items,userD,orderOptions.DeliveryType,orderOptions.PaymentType);
             return orderDto;
         }
 
@@ -80,7 +80,7 @@ namespace _RoBotland.Services
                 _dataContext.OrderDetails.Add(orderDetail);
             });
             order.Total = total;
-            OrderDto orderDto = new OrderDto(orderId, DateTime.Now, items, userD, DeliveryType.A, PaymentType.A);
+            OrderDto orderDto = new OrderDto(orderId, DateTime.Now, items, userD, userDetails.DeliveryType, userDetails.PaymentType);
             return orderDto;
         }
     }

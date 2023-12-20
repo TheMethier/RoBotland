@@ -36,9 +36,7 @@ namespace _RoBotland.Services
         {
             if(shoppingCart.IsNullOrEmpty())
                 throw new Exception("Empty card"); 
-            var identicalItem = shoppingCart.FirstOrDefault(x => x.Product.Name == product.Name);
-            if (identicalItem == null)
-                throw new Exception("Not found");
+            var identicalItem = shoppingCart.FirstOrDefault(x => x.Product.Name == product.Name)??throw new Exception("Not found");
             if (identicalItem.Quantity == 1)
                 shoppingCart.Remove(identicalItem);
             else
