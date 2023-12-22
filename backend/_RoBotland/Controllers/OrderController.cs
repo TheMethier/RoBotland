@@ -26,8 +26,7 @@ namespace _RoBotland.Controllers
             if (HttpContext.User.Identity == null)
                  return NoContent();
             var username = HttpContext.User.Identity.Name
-                != null ? HttpContext.User.Identity.Name : string.Empty;
-
+                != null ? HttpContext.User.Identity.Name : string.Empty; //pobieranie użytkownika z sesji
             try
             {
                 var order = _orderService.PlaceOrderByLoggedInUser(session, username,orderOptions);

@@ -21,36 +21,34 @@ namespace _RoBotland.Services
         }
 
         public OrderDto PlaceOrderByLoggedInUser(ISession session,string username,OrderOptionsDto orderOptions)
-        { 
-            if (username == null) throw new Exception("unlogged user");
-            var orderId = Guid.NewGuid();
+        {
+            if (username is null) throw new Exception("unlogged user");
             float total = 0;
             var items = SessionHelper.GetObjectFromJson<List<ShoppingCartItem>>(session, "shoppingcart") ?? throw new Exception("Empty card");
             var user = _dataContext.Users.FirstOrDefault(x => x.Username == username) ?? throw new Exception("User not found");
             var userD = _dataContext.UserDetails.FirstOrDefault(x => x.Id == user.Id) ?? throw new Exception("User not found");
-            var order = new Order(orderId, userD.Id, userD, total, Enums.OrderStatus.A, orderOptions.DeliveryType, orderOptions.PaymentType);
+            var order = new Order(Guid.NewGuid(), userD.Id, userD, total, Enums.OrderStatus.A, orderOptions.DeliveryType, orderOptions.PaymentType);
             _dataContext.Orders.Add(order);
-            items.ForEach(x => { 
+            items.ForEach(x => {
                 total += x.Total;
-                var orderDetail=_mapper.Map<OrderDetails>(x);
-                orderDetail.OrderId = orderId;
-                orderDetail.Product = _mapper.Map<Product>(x.Product);
+                var orderDetail = _mapper.Map<OrderDetails>(x);
+                var product = _dataContext.Products.Find(x.Product.Id) ?? throw new Exception("Product not found");
+                orderDetail.OrderId = order.Id;
+                orderDetail.Product = product;
                 orderDetail.Order = order;
-                orderDetail.ProductId = x.Product.Id;
-                _dataContext.OrderDetails.Add(orderDetail); 
+                _dataContext.OrderDetails.Add(orderDetail);
             });
             order.Total = total;
             if (user.AccountBalance >= total)
             {
                 _dataContext.Entry(user).Entity.AccountBalance -= total;
-                //if do sprawdzenia stanu konta
             }
             else
             {
                 throw new Exception("lack of account funds\r\n");
             }
             _dataContext.SaveChanges();
-            OrderDto orderDto = new OrderDto(orderId,DateTime.Now,items,userD,orderOptions.DeliveryType,orderOptions.PaymentType);
+            OrderDto orderDto = new OrderDto(order.Id,DateTime.Now,items,userD,orderOptions.DeliveryType,orderOptions.PaymentType);
             return orderDto;
         }
 

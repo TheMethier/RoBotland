@@ -16,7 +16,8 @@ namespace _RoBotland
             CreateMap<ShoppingCartItem, OrderDetails>()
                 .ForMember(dest => dest.ProductId, opt => opt.MapFrom(x => x.Product.Id))
                 .ForMember(dest => dest.Product, opt => opt.MapFrom(x => x.Product))
-                .ForMember(dest => dest.Quantity, opt => opt.MapFrom(x => x.Quantity));
+                .ForMember(dest => dest.Quantity, opt => opt.MapFrom(x => x.Quantity))
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(x => Guid.NewGuid()));
             CreateMap<UserDetailsDto, UserDetails>()
                .ForMember(dest => dest.HomeAddress, opt => opt.MapFrom(x => x.City + " " + x.ZipCode + "/n" + x.Street + " " + x.HouseNumber));
             CreateMap<Order, OrderDto>();

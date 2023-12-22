@@ -49,7 +49,6 @@ namespace _RoBotland.Controllers
         [HttpPost("/logout")]
         public IActionResult Logout()
         {
-
             return Ok();
         }
         [Authorize]

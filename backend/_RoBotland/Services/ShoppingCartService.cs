@@ -20,7 +20,7 @@ namespace _RoBotland.Services
                 shoppingCart.Add(new ShoppingCartItem(0, product, 1, product.Price));
                 return shoppingCart;
             }
-            var identicalItem = shoppingCart.FirstOrDefault(x => x.Product.Name == product.Name);
+            var identicalItem = shoppingCart.FirstOrDefault(x=>x.Product.Id==product.Id);
             if (identicalItem == null)
                 shoppingCart.Add(new ShoppingCartItem(shoppingCart.Count(),product,1,product.Price));
             else
@@ -36,7 +36,7 @@ namespace _RoBotland.Services
         {
             if(shoppingCart.IsNullOrEmpty())
                 throw new Exception("Empty card"); 
-            var identicalItem = shoppingCart.FirstOrDefault(x => x.Product.Name == product.Name)??throw new Exception("Not found");
+            var identicalItem = shoppingCart.FirstOrDefault(x => x.Product.Id == product.Id) ?? throw new Exception("Not found");
             if (identicalItem.Quantity == 1)
                 shoppingCart.Remove(identicalItem);
             else
