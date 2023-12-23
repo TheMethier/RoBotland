@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using _RoBotland.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace _RoBotland.Models
 {
@@ -11,5 +12,6 @@ namespace _RoBotland.Models
         public int Quantity { get; set; }
         public string Description { get; set; }
         public string ImageUrl { get; set; }
+        public Availability IsAvailable { get; set; }
     }
 }

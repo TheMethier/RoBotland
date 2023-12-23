@@ -70,31 +70,12 @@ namespace _RoBotland.Services
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
             return jwt;
         }
-        public bool WithdrawFromAccount(Guid userId, float amount)
+        
+       
+        public float GetAccountBalance(string username)
         {
-            var user = GetUserById(userId);
+            var user = _dataContext.Users.FirstOrDefault(x => x.Username == username) ?? throw new Exception();
 
-            if (user != null && user.AccountBalance >= amount)
-            {
-                user.AccountBalance -= amount;
-                UpdateAccountBalanceUser(user);
-                return true;
-            }
-            return false;
-        }
-        public void DepositToAccount(Guid userId, float amount)
-        {
-            var user = GetUserById(userId);
-
-            if (user != null)
-            {
-                user.AccountBalance += amount;
-                UpdateAccountBalanceUser(user);
-            }
-        }
-        public float GetAccountBalance(Guid userId)
-        {
-            var user = GetUserById(userId);
             return user != null ? user.AccountBalance : 0.0f;
         }
         private void UpdateAccountBalanceUser(User user)
@@ -112,6 +93,30 @@ namespace _RoBotland.Services
         {
             var user = _dataContext.Users.Find(id);          
             return user;           
+        }
+
+        public bool DepositToAccount(string username, float amount)
+        {
+            var user = _dataContext.Users.FirstOrDefault(x => x.Username == username) ?? throw new Exception();
+            if (user != null)
+            {
+                user.AccountBalance += amount;
+                UpdateAccountBalanceUser(user);
+                return true;
+            }
+            return false;
+        }
+
+        public bool WithdrawFromAccount(string username, float amount)
+        {
+            var user = _dataContext.Users.FirstOrDefault(x => x.Username == username) ?? throw new Exception();
+            if (user != null && user.AccountBalance >= amount)
+            {
+                user.AccountBalance -= amount;
+                UpdateAccountBalanceUser(user);
+                return true;
+            }
+            return false;
         }
     }
 }

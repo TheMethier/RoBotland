@@ -3,30 +3,27 @@ using _RoBotland.Interfaces;
 using _RoBotland.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore.Query;
-
+using _RoBotland.Enums;
 
 namespace _RoBotland.Controllers
 {
-    //[Authorize(Roles = "Admin")]
     [Route("/api/v1/admin/products/[controller]")]
     [ApiController]
     public class AdminController : ControllerBase
     {
         private IProductService _productService;
-
         public AdminController(IProductService productService)
         {
             _productService = productService;
         }
-
-        [HttpGet("/all")]
+        [HttpGet("/products")]
         public IActionResult GetProducts()
         {
+            Console.WriteLine("Hello, World!");
             List<ProductDto> products = _productService.GetProducts();
             return Ok(products);
         }
-
-        [HttpGet("/{id:int}")]
+        [HttpGet("/products/{id:int}")]
         public IActionResult GetProductById(int id)
         {
             try
@@ -39,15 +36,15 @@ namespace _RoBotland.Controllers
                 return NotFound();
             }
         }
-
-        [HttpPost]
+        [Authorize(Roles = "ADMIN")]
+        [HttpPost("/products")]
         public IActionResult AddNewProduct([FromBody] ProductDto dto)
         {
             int id = _productService.AddNewProduct(dto);
             return Created("/api/v1/admin/products/{id}", id);
         }
-
-        [HttpDelete("/{id:int}")]
+        [Authorize(Roles = "ADMIN")]
+        [HttpDelete("/products/{id:int}")]
         public IActionResult RemoveProductById(int id)
         {
             try
@@ -60,8 +57,8 @@ namespace _RoBotland.Controllers
             }
             return NoContent();
         }
-
-        [HttpPut("/{id:int}")]
+        [Authorize(Roles = "ADMIN")]
+        [HttpPut("/products/{id:int}")]
         public IActionResult UpgradeProduct(int id, [FromBody] ProductDto dto)
         {
             try
@@ -74,23 +71,38 @@ namespace _RoBotland.Controllers
                 return NotFound(ex);
             }
         }
-        [HttpPost("/addCategoryToProduct")]
+        [Authorize(Roles = "ADMIN")]
+        [HttpPost("/categories/{categoryId}/products/{productId}")]
         public IActionResult AddCategoryToProduct([FromBody] AddCategoryToProductDto dto)
         {
             int id = _productService.AddCategoryToProduct(dto.CategoryId, dto.ProductId);
             return Ok(id);
         }
-        [HttpGet("/filtred")]
+        [HttpGet("/products/filtred")]
         public IActionResult GetProducts([FromQuery] ProductFilterDto filterParameters)
         {
             var products = _productService.GetFilteredProducts(filterParameters);
             return Ok(products);
         }
-        [HttpGet("/searched")]
+        [HttpGet("/products/searched")]
         public IActionResult SearchProductsByName(string productName)
         {
             var products = _productService.SearchProductsByName(productName);
             return Ok(products);
+        }
+        [Authorize(Roles = "ADMIN")]
+        [HttpPut("/products/{id:int}/ChangeProductAvailability")]
+        public IActionResult ChangeProductAvailability(Availability availability, [FromBody] ProductDto dto)
+        {
+            try
+            {
+                var productId = _productService.ChangeProductAvailability(availability, dto);
+                return Created("/api/v1/admin/products/{id}", productId);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex);
+            }
         }
     }
 }

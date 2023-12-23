@@ -1,5 +1,5 @@
-﻿using _RoBotland.Interfaces;
-using _RoBotland.Migrations;
+﻿using _RoBotland.Enums;
+using _RoBotland.Interfaces;
 using _RoBotland.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -91,6 +91,9 @@ public class ProductService : IProductService
         if (filterParameters.CategoryId.HasValue)
             query = query.Where(p => p.Categories.Any(c => c.Id == filterParameters.CategoryId.Value));
 
+        if (filterParameters.IsAvailable.HasValue)
+            query = query.Where(p => p.IsAvailable == filterParameters.IsAvailable.Value);
+
         var products = query.ToList();
         return _mapper.Map<List<ProductDto>>(products);
     }
@@ -98,22 +101,28 @@ public class ProductService : IProductService
     public int AddCategoryToProduct(int categoryId, int productId)
     {
       
-            Category categoryToAddTo = _dataContext.Categories.Find(categoryId);
+        Category categoryToAddTo = _dataContext.Categories.Find(categoryId) ?? throw new Exception("Category Not Exist");
+        Product productToAdd = _dataContext.Products.Find(productId) ?? throw new Exception("Product Not Exist");
 
-            Product productToAdd = _dataContext.Products.Find(productId);
+        if (categoryToAddTo != null && productToAdd != null) 
+        {
+            categoryToAddTo.Products.Add(productToAdd);
+            _dataContext.SaveChanges();
+            return categoryId;
+        }
+        else
+        {
+            throw new Exception("Product Not Exist");
+        }
+    }
 
-            if (categoryToAddTo != null && productToAdd != null)
-            {
-                categoryToAddTo.Products.Add(productToAdd);
-
-                _dataContext.SaveChanges();
-                return categoryId;
-            }
-            else
-            {
-                return -1;
-            }
-
+    public ProductDto ChangeProductAvailability(Availability availability, ProductDto dto)
+    {
+        var product = _dataContext.Products.Find(dto.Id) ?? throw new Exception("Product Not Exist");
+        product.IsAvailable = availability;
+        _dataContext.SaveChanges();
+        var productToReturn = _mapper.Map<ProductDto>(product);
+        return productToReturn;
     }
 }
 

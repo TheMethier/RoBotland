@@ -175,7 +175,7 @@ namespace _RoBotland.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("32887b79-031c-4534-9497-ab827a261491"),
+                            Id = new Guid("b4f86cfc-bbad-44fb-bfdb-b7b3f6a1fc77"),
                             AccountBalance = 100000f,
                             PasswordHash = "$2a$11$sG0/Wsg4E9WWDC8NRJCGRu5Vgb78tf1UiLi1WTziC2xYNBukpqTOy",
                             Role = 1,

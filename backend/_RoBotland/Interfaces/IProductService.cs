@@ -1,4 +1,5 @@
-﻿using _RoBotland.Models;
+﻿using _RoBotland.Enums;
+using _RoBotland.Models;
 
 namespace _RoBotland.Interfaces
 {
@@ -12,5 +13,6 @@ namespace _RoBotland.Interfaces
         public List<ProductDto> GetFilteredProducts(ProductFilterDto filterParameters);
         int AddCategoryToProduct(int categoryId, int productId);
         public List<ProductDto> SearchProductsByName(string productName);
+        ProductDto ChangeProductAvailability(Availability availability, ProductDto dto);
     }
 }

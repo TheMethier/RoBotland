@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace _RoBotland.Migrations
 {
     /// <inheritdoc />
-    public partial class e : Migration
+    public partial class initia1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -46,7 +46,11 @@ namespace _RoBotland.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Role = table.Column<int>(type: "int", nullable: false),
+                    AccountBalance = table.Column<float>(type: "real", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -82,10 +86,11 @@ namespace _RoBotland.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    HomeAddress = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -94,7 +99,8 @@ namespace _RoBotland.Migrations
                         name: "FK_UserDetails_Users_Id",
                         column: x => x.Id,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -104,6 +110,8 @@ namespace _RoBotland.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserDetailsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DeliveryType = table.Column<int>(type: "int", nullable: false),
+                    PaymentType = table.Column<int>(type: "int", nullable: false),
                     Total = table.Column<float>(type: "real", nullable: false),
                     OrderStatus = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
@@ -114,8 +122,7 @@ namespace _RoBotland.Migrations
                         name: "FK_Orders_UserDetails_UserDetailsId",
                         column: x => x.UserDetailsId,
                         principalTable: "UserDetails",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -144,6 +151,11 @@ namespace _RoBotland.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "AccountBalance", "PasswordHash", "Role", "Username" },
+                values: new object[] { new Guid("b4f86cfc-bbad-44fb-bfdb-b7b3f6a1fc77"), 100000f, "$2a$11$sG0/Wsg4E9WWDC8NRJCGRu5Vgb78tf1UiLi1WTziC2xYNBukpqTOy", 1, "ADMIN" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderDetails_OrderId",
