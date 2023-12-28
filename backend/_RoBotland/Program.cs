@@ -56,8 +56,20 @@ builder.Services.AddDistributedMemoryCache();
 builder.Services.AddDbContext<DataContext>(opt =>
 {
     opt.UseSqlServer(conntectionString);
-}); 
+});
+
+builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("Default", builder =>
+        {
+            builder.WithOrigins("http://localhost:3000")
+                   .AllowAnyHeader()
+                   .AllowAnyMethod();
+        });
+    });
 var app = builder.Build();
+
+app.UseCors("Default");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
