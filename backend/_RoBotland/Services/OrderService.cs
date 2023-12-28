@@ -7,6 +7,7 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore.Query;
 using _RoBotland.Enums;
 using _RoBotland.Migrations;
+using Microsoft.IdentityModel.Tokens;
 
 namespace _RoBotland.Services
 {
@@ -18,6 +19,20 @@ namespace _RoBotland.Services
         {
             _dataContext = dataContext;
             _mapper = mapper;
+        }
+
+        public OrderDto ChangeOrderStatus(Guid id, OrderStatus orderStatus)
+        {
+            var order=_dataContext.Orders.Find(id)?? throw new Exception();
+            _dataContext.Entry(order).Entity.OrderStatus = orderStatus;
+            _dataContext.SaveChanges();
+            order.OrderStatus = orderStatus;
+            return _mapper.Map<OrderDto>(order);
+        }
+
+        public List<OrderDto> GetOrders()
+        {
+           throw new NotImplementedException();
         }
 
         public OrderDto PlaceOrderByLoggedInUser(ISession session,string username,OrderOptionsDto orderOptions)

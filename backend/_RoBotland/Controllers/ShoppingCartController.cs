@@ -18,7 +18,7 @@ namespace _RoBotland.Controllers
         }
 
         [HttpPost("/add")]
-        public IActionResult AddProductToShoppingCart([FromBody] ProductDto product)//Na froncie egzekwuj mapowanie Product na ProductDto
+        public IActionResult AddProductToShoppingCart([FromBody] ProductDto product)
         {
             var session = HttpContext.Session;
             var context = SessionHelper.GetObjectFromJson<List<ShoppingCartItem>>(session, "shoppingcart");
