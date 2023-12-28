@@ -17,8 +17,8 @@ namespace _RoBotland.Controllers
             _shoppingCartService = shoppingCartService;
         }
 
-        [HttpPost("/add")]
-        public IActionResult AddProductToShoppingCart([FromBody] ProductDto product)
+        [HttpPost("/add/{productId:int}")]
+        public IActionResult AddProductToShoppingCart(int productId)
         {
             var session = HttpContext.Session;
             var context = SessionHelper.GetObjectFromJson<List<ShoppingCartItem>>(session, "shoppingcart");
@@ -27,7 +27,7 @@ namespace _RoBotland.Controllers
                 context = new List<ShoppingCartItem>();
                 SessionHelper.SetObjectAsJson(HttpContext.Session, "shoppingcart", context);
             }
-            var shoppingCartContent =_shoppingCartService.AddItemToShoppingCart(product,context);
+            var shoppingCartContent =_shoppingCartService.AddItemToShoppingCart(productId,context);
             SessionHelper.SetObjectAsJson(HttpContext.Session, "shoppingcart", shoppingCartContent);
             return Ok(shoppingCartContent);
         }
@@ -39,8 +39,8 @@ namespace _RoBotland.Controllers
             if (context == null) return NoContent();
             return Ok(context);
         }
-        [HttpDelete("/remove")]
-        public IActionResult RemoveProductFromShoppingCard([FromBody] ProductDto product) 
+        [HttpDelete("/remove/{productId:int}")]
+        public IActionResult RemoveProductFromShoppingCard(int productId) 
         {
             var session = HttpContext.Session;
             var context = SessionHelper.GetObjectFromJson<List<ShoppingCartItem>>(session, "shoppingcart");
@@ -50,7 +50,7 @@ namespace _RoBotland.Controllers
             }
             try
             {
-                var shoppingCartContent = _shoppingCartService.RemoveItemFromShoppingCart(product, context);
+                var shoppingCartContent = _shoppingCartService.RemoveItemFromShoppingCart(productId, context);
                 SessionHelper.SetObjectAsJson(HttpContext.Session, "shoppingcart", shoppingCartContent);
                 return Ok(shoppingCartContent);
             }
