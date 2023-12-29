@@ -4,11 +4,11 @@
     box-shadow: - 1px 2px 4px rgba(0, 0, 0, 0.1);
     width: 100%;
    
-    padding: 0.5rem; 
+    padding: 5px; 
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    column-gap: 0.5;
+   
 }
 
 .navbar a {
@@ -20,6 +20,4 @@
 .wrapper {
     padding: 5px;
     width: 100%;
-    display: flex;
-    justify-content: center;
 }

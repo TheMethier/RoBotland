@@ -1,45 +1,69 @@
 import { DataGrid } from '@mui/x-data-grid';
 import './ProductList.css';
+import {Box } from '@mui/material';
+import Forms from './components/Forms.js';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const columns = [
     { field: 'id', headerName: 'ID' },
-    { field: 'name', headerName: 'Name' },
-    { field: 'price', headerName: 'Price' },
+    { field: 'name', headerName: 'Nazwa' },
+    { field: 'price', headerName: 'Cena' },
+    {
+        field: 'imageUrl', headerName: 'Zdjęcie', renderCell: (params) => (
+          <img src={`${process.env.REACT_APP_API_URL}/images/${params.value}`} alt={params.row.name} style={{ height: 'auto' }} />
+        ),
+        width: 200, 
+      },
 ];
 
 const ProductList = () => {
 
     const [products, setProducts] = useState([]);
+    const [filter, setFilter] = useState({}); 
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_API_URL}/api/v1/products/Product/all`)
-            .then(response => response.json())
-            .then(data => setProducts(data))
-            .catch(error => console.log(error));
-    }, []);
+        const queryParams = new URLSearchParams(filter).toString();
+    
+        fetch(`${process.env.REACT_APP_API_URL}/api/v1/products/Product/filtred?${queryParams}`)
+          .then((response) => response.json())
+          .then((data) => setProducts(data))
+          .catch((error) => console.log(error));
+      }, [filter]);
 
     const handleRowClick = (row) => {
         navigate(`/products/${row.id}`);
     }
 
+    const handleFilterChange = (newFilter) => {
+        setFilter(newFilter);
+      };
+
 
     return ( 
-        <div className='table'>
-            {products.length > 0 ? (
-                <DataGrid
-                    onRowClick={handleRowClick}
-                    rows={products}
-                    columns={columns}
-                    pageSizeOptions={[5, 10]}
+        <div><Box display="flex" >
+            <div className='filtred_forms'>
+                <Forms 
+                    onFilterChange={handleFilterChange}
+                    filter={filter}
                 />
-                ) : (
-                    <h1>Loading</h1>
-                )}
-        </div>
+            </div>
+            <div className='table'>
+                {products.length > 0 ? (
+                    <DataGrid
+                        onRowClick={handleRowClick}
+                        rows={products}
+                        columns={columns}
+                        pageSizeOptions={[5, 10]}
+                        rowHeight={150} 
+                    />
+                    ) : (
+                        <h1>Brak produktów</h1>
+                    )}
+            </div>
+        </Box></div>
      );
 }
  
