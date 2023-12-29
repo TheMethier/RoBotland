@@ -24,9 +24,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="7.0.12" />
   </ItemGroup>
   <ItemGroup>
-    <Content Update="wwwroot\images\image1.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

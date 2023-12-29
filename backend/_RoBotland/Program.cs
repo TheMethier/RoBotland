@@ -19,6 +19,7 @@ builder.Services.AddControllers();
 builder.Services.AddTransient<IProductService, ProductService>();
 builder.Services.AddTransient<IShoppingCartService, ShoppingCartService>();
 builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<IOrderService, OrderService>();
 
 builder.Services.AddSession(options =>
 {
@@ -56,20 +57,8 @@ builder.Services.AddDistributedMemoryCache();
 builder.Services.AddDbContext<DataContext>(opt =>
 {
     opt.UseSqlServer(conntectionString);
-});
-
-builder.Services.AddCors(options =>
-    {
-        options.AddPolicy("Default", builder =>
-        {
-            builder.WithOrigins("http://localhost:3000")
-                   .AllowAnyHeader()
-                   .AllowAnyMethod();
-        });
-    });
+}); 
 var app = builder.Build();
-
-app.UseCors("Default");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -79,7 +68,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
+
 app.UseAuthorization();
 app.UseSession();
 
