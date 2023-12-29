@@ -10,21 +10,17 @@ namespace _RoBotland.Services
     public class ShoppingCartService : IShoppingCartService
     {
         private readonly IMapper _mapper;
-        private readonly DataContext _dataContext;
-        public ShoppingCartService(IMapper mapper, DataContext dataContext)
-        {
+        public ShoppingCartService(IMapper mapper) {
             _mapper = mapper;
-            _dataContext = dataContext;
         }
-        public List<ShoppingCartItem> AddItemToShoppingCart(int productId, List<ShoppingCartItem> shoppingCart)
+        public List<ShoppingCartItem> AddItemToShoppingCart(ProductDto product, List<ShoppingCartItem> shoppingCart)
         {
-            var product = _mapper.Map<ProductDto>(_dataContext.Products.Find(productId)) ?? throw new Exception("Product not found");
             if (shoppingCart.IsNullOrEmpty())
             {
                 shoppingCart.Add(new ShoppingCartItem(0, product, 1, product.Price));
                 return shoppingCart;
             }
-            var identicalItem = shoppingCart.FirstOrDefault(x=>x.Product.Id==product.Id);
+            var identicalItem = shoppingCart.FirstOrDefault(x => x.Product.Name == product.Name);
             if (identicalItem == null)
                 shoppingCart.Add(new ShoppingCartItem(shoppingCart.Count(),product,1,product.Price));
             else
@@ -36,12 +32,13 @@ namespace _RoBotland.Services
         }
 
    
-        public List<ShoppingCartItem> RemoveItemFromShoppingCart(int productId, List<ShoppingCartItem> shoppingCart)
+        public List<ShoppingCartItem> RemoveItemFromShoppingCart(ProductDto product, List<ShoppingCartItem> shoppingCart)
         {
             if(shoppingCart.IsNullOrEmpty())
-                throw new Exception("Empty card");
-            var product = _mapper.Map<ProductDto>(_dataContext.Products.Find(productId)) ?? throw new Exception("Product not found");
-            var identicalItem = shoppingCart.FirstOrDefault(x => x.Product.Id == productId) ?? throw new Exception("Not found");
+                throw new Exception("Empty card"); 
+            var identicalItem = shoppingCart.FirstOrDefault(x => x.Product.Name == product.Name);
+            if (identicalItem == null)
+                throw new Exception("Not found");
             if (identicalItem.Quantity == 1)
                 shoppingCart.Remove(identicalItem);
             else

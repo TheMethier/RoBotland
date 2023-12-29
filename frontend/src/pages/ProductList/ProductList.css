@@ -1,0 +1,15 @@
+.filtred_forms {
+    width: 20%;
+}
+
+.table {
+    width: 70%;
+    text-align: center;
+    border-left: 1px solid #e5e5e5;
+    padding-left: 50px;
+    padding-right: 50px;
+}
+.table .MuiDataGrid-cell img {
+    width: 180px; 
+    height: auto;
+}

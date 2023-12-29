@@ -1,0 +1,22 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.container > h1 {
+   text-align: center;
+}
+
+.up {
+    display: flex;
+}
+
+.img img {
+    height: 25vw;
+}
+
+.info {
+    margin-left: 25px;
+    text-align: center;
+}
