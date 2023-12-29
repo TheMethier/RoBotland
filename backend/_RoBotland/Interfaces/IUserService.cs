@@ -6,6 +6,8 @@ namespace _RoBotland.Interfaces
     {
         UserDto Register(UserRegisterDto request);
         string Login(UserLoginDto request);
+        List<OrderDto> GetHistory(string username);
+
 
     }
 }
