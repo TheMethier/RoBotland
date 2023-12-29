@@ -19,7 +19,6 @@ builder.Services.AddControllers();
 builder.Services.AddTransient<IProductService, ProductService>();
 builder.Services.AddTransient<IShoppingCartService, ShoppingCartService>();
 builder.Services.AddTransient<IUserService, UserService>();
-builder.Services.AddTransient<IOrderService, OrderService>();
 
 builder.Services.AddSession(options =>
 {

@@ -4,7 +4,7 @@ namespace _RoBotland.Interfaces
 {
     public interface IShoppingCartService
     {
-        List<ShoppingCartItem> AddItemToShoppingCart(int productId, List<ShoppingCartItem> shoppingCart);
-        List<ShoppingCartItem> RemoveItemFromShoppingCart(int productId, List<ShoppingCartItem> shoppingCart);
+        List<ShoppingCartItem> AddItemToShoppingCart(ProductDto item, List<ShoppingCartItem> shoppingCart);
+        List<ShoppingCartItem> RemoveItemFromShoppingCart(ProductDto item, List<ShoppingCartItem> shoppingCart);
     }
 }
