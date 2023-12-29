@@ -8,7 +8,7 @@ using _RoBotland.Enums;
 
 namespace _RoBotland.Controllers
 {
-    //[Authorize(Roles = "Admin")]
+    
     [Route("/api/v1/admin/products/[controller]")]
     [ApiController]
     public class AdminController : ControllerBase
@@ -20,14 +20,14 @@ namespace _RoBotland.Controllers
             _productService = productService;
             _orderService = orderService;
         }
-
+        [Authorize(Roles = "ADMIN")]
         [HttpGet("/all")]
         public IActionResult GetProducts()
         {
             List<ProductDto> products = _productService.GetProducts();
             return Ok(products);
         }
-
+        [Authorize(Roles = "ADMIN")]
         [HttpGet("/{id:int}")]
         public IActionResult GetProductById(int id)
         {
@@ -41,14 +41,14 @@ namespace _RoBotland.Controllers
                 return NotFound();
             }
         }
-
+        [Authorize(Roles = "ADMIN")]
         [HttpPost]
         public IActionResult AddNewProduct([FromBody] ProductDto dto)
         {
             int id = _productService.AddNewProduct(dto);
             return Created("/api/v1/admin/products/{id}", id);
         }
-
+        [Authorize(Roles = "ADMIN")]
         [HttpDelete("/{id:int}")]
         public IActionResult RemoveProductById(int id)
         {
@@ -62,7 +62,7 @@ namespace _RoBotland.Controllers
             }
             return NoContent();
         }
-
+        [Authorize(Roles = "ADMIN")]
         [HttpPut("/{id:int}")]
         public IActionResult UpgradeProduct(int id, [FromBody] ProductDto dto)
         {
@@ -76,6 +76,7 @@ namespace _RoBotland.Controllers
                 return NotFound(ex);
             }
         }
+        [Authorize(Roles = "ADMIN")]
         [HttpGet("/getOrders")]
         public IActionResult GetOrders()
         {
@@ -89,6 +90,7 @@ namespace _RoBotland.Controllers
                 return BadRequest(ex);
             }
         }
+        [Authorize(Roles = "ADMIN")]
         [HttpPut("/finalize/{id:Guid}")]
         public IActionResult ChangeOrderStatus(Guid id,[FromBody] OrderStatus orderStatus)
         {

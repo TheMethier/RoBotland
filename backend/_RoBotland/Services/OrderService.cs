@@ -32,7 +32,30 @@ namespace _RoBotland.Services
 
         public List<OrderDto> GetOrders()
         {
-           throw new NotImplementedException();
+            var orders = _dataContext.Orders.ToList();
+            List<OrderDto> orderList = new List<OrderDto>();
+            orders.ForEach(x =>
+            {
+                if (x != null)
+                {
+                    var orderDto = _mapper.Map<OrderDto>(x);
+                    var userD = _dataContext.UserDetails.FirstOrDefault(p => p.Id == x.UserDetailsId) ?? throw new Exception("User not found");
+                    var orderDetails = _dataContext.OrderDetails.Where(d => d.OrderId == x.Id).ToList();
+                    int i = 0;
+                    orderDto.Items = new List<ShoppingCartItem>();
+                    orderDetails.ForEach(d => {
+                        if (d != null)
+                        {
+                            var product = _mapper.Map<ProductDto>(_dataContext.Products.Find(d.ProductId)) ?? throw new Exception("");
+                            ShoppingCartItem item = new ShoppingCartItem(i, product, d.Quantity, d.Total);
+                            orderDto.Items.Add(item);
+                        }
+                    });
+                    orderDto.UserDetails = _mapper.Map<UserDetailsDto>(userD);
+                    orderList.Add(orderDto);
+                }
+            });
+            return orderList;
         }
 
         public OrderDto PlaceOrderByLoggedInUser(ISession session,string username,OrderOptionsDto orderOptions)
