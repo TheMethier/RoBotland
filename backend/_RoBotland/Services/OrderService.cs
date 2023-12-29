@@ -63,7 +63,7 @@ namespace _RoBotland.Services
                 throw new Exception("lack of account funds\r\n");
             }
             _dataContext.SaveChanges();
-            OrderDto orderDto = new OrderDto(order.Id,DateTime.Now,items,userD,orderOptions.DeliveryType,orderOptions.PaymentType);
+            OrderDto orderDto = new OrderDto(order.Id,DateTime.Now,items,_mapper.Map<UserDetailsDto>(userD),orderOptions.DeliveryType,orderOptions.PaymentType);
             return orderDto;
         }
 
@@ -93,7 +93,7 @@ namespace _RoBotland.Services
                 _dataContext.OrderDetails.Add(orderDetail);
             });
             order.Total = total;
-            OrderDto orderDto = new OrderDto(orderId, DateTime.Now, items, userD, userDetails.DeliveryType, userDetails.PaymentType);
+            OrderDto orderDto = new OrderDto(orderId, DateTime.Now, items, _mapper.Map<UserDetailsDto>(userD), userDetails.DeliveryType, userDetails.PaymentType);
             return orderDto;
         }
     }

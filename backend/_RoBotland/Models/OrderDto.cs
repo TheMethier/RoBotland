@@ -8,7 +8,7 @@ namespace _RoBotland.Models
         {
         }
 
-        public OrderDto(Guid id, DateTime createdDate, List<ShoppingCartItem> items, UserDetails userDetails, DeliveryType deliveryType, PaymentType paymentType)
+        public OrderDto(Guid id, DateTime createdDate, List<ShoppingCartItem> items, UserDetailsDto userDetails, DeliveryType deliveryType, PaymentType paymentType)
         {
             Id = id;
             CreatedDate = createdDate;
@@ -21,7 +21,7 @@ namespace _RoBotland.Models
         public Guid Id { get; set; }
         public DateTime CreatedDate { get; set; }
         public List<ShoppingCartItem> Items { get; set; }
-        public UserDetails UserDetails { get; set;}
+        public UserDetailsDto UserDetails { get; set;}
         public DeliveryType DeliveryType {  get; set; }
         public PaymentType PaymentType { get; set; }
     }

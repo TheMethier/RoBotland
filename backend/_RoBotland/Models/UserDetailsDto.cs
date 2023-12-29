@@ -5,6 +5,22 @@ namespace _RoBotland.Models
 {
     public class UserDetailsDto: OrderOptionsDto
     {
+        public UserDetailsDto()
+        {
+        }
+
+        public UserDetailsDto(string firstName, string lastName, string email, string phoneNumber, string street, string city, string houseNumber, string zipCode)
+        {
+            FirstName = firstName;
+            LastName = lastName;
+            Email = email;
+            PhoneNumber = phoneNumber;
+            Street = street;
+            City = city;
+            HouseNumber = houseNumber;
+            ZipCode = zipCode;
+        }
+
         [Required, MinLength(5)]
         public string FirstName { get; set; }
         [Required, MinLength(5)]
@@ -21,9 +37,6 @@ namespace _RoBotland.Models
         public string HouseNumber { get; set; }
         [Required]
         public string ZipCode { get; set; }
-        [Required]
-        public DeliveryType DeliveryType { get; set; }
-        [Required]
-        public PaymentType PaymentType { get; set; }
+
     }
 }

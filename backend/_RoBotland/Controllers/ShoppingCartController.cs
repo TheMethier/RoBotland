@@ -20,6 +20,7 @@ namespace _RoBotland.Controllers
         [HttpPost("/add/{productId:int}")]
         public IActionResult AddProductToShoppingCart(int productId)
         {
+
             var session = HttpContext.Session;
             var context = SessionHelper.GetObjectFromJson<List<ShoppingCartItem>>(session, "shoppingcart");
             if(context == null)
@@ -27,9 +28,16 @@ namespace _RoBotland.Controllers
                 context = new List<ShoppingCartItem>();
                 SessionHelper.SetObjectAsJson(HttpContext.Session, "shoppingcart", context);
             }
-            var shoppingCartContent =_shoppingCartService.AddItemToShoppingCart(productId,context);
-            SessionHelper.SetObjectAsJson(HttpContext.Session, "shoppingcart", shoppingCartContent);
-            return Ok(shoppingCartContent);
+            try
+            {
+                var shoppingCartContent = _shoppingCartService.AddItemToShoppingCart(productId, context);
+                SessionHelper.SetObjectAsJson(HttpContext.Session, "shoppingcart", shoppingCartContent);
+                return Ok(shoppingCartContent);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         [HttpGet("/actual")]
         public IActionResult GetShoppingCartItems()
