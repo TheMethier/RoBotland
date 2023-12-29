@@ -5,25 +5,30 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore.Query;
 using _RoBotland.Enums;
 
+
 namespace _RoBotland.Controllers
 {
+    
     [Route("/api/v1/admin/products/[controller]")]
     [ApiController]
     public class AdminController : ControllerBase
     {
         private IProductService _productService;
-        public AdminController(IProductService productService)
+        private IOrderService _orderService;
+        public AdminController(IProductService productService, IOrderService orderService)
         {
             _productService = productService;
+            _orderService = orderService;
         }
-        [HttpGet("/products")]
+        [Authorize(Roles = "ADMIN")]
+        [HttpGet("/all")]
         public IActionResult GetProducts()
         {
-            Console.WriteLine("Hello, World!");
             List<ProductDto> products = _productService.GetProducts();
             return Ok(products);
         }
-        [HttpGet("/products/{id:int}")]
+        [Authorize(Roles = "ADMIN")]
+        [HttpGet("/{id:int}")]
         public IActionResult GetProductById(int id)
         {
             try
@@ -37,14 +42,14 @@ namespace _RoBotland.Controllers
             }
         }
         [Authorize(Roles = "ADMIN")]
-        [HttpPost("/products")]
+        [HttpPost]
         public IActionResult AddNewProduct([FromBody] ProductDto dto)
         {
             int id = _productService.AddNewProduct(dto);
             return Created("/api/v1/admin/products/{id}", id);
         }
         [Authorize(Roles = "ADMIN")]
-        [HttpDelete("/products/{id:int}")]
+        [HttpDelete("/{id:int}")]
         public IActionResult RemoveProductById(int id)
         {
             try
@@ -58,7 +63,7 @@ namespace _RoBotland.Controllers
             return NoContent();
         }
         [Authorize(Roles = "ADMIN")]
-        [HttpPut("/products/{id:int}")]
+        [HttpPut("/{id:int}")]
         public IActionResult UpgradeProduct(int id, [FromBody] ProductDto dto)
         {
             try
@@ -72,36 +77,31 @@ namespace _RoBotland.Controllers
             }
         }
         [Authorize(Roles = "ADMIN")]
-        [HttpPost("/categories/{categoryId}/products/{productId}")]
-        public IActionResult AddCategoryToProduct([FromBody] AddCategoryToProductDto dto)
-        {
-            int id = _productService.AddCategoryToProduct(dto.CategoryId, dto.ProductId);
-            return Ok(id);
-        }
-        [HttpGet("/products/filtred")]
-        public IActionResult GetProducts([FromQuery] ProductFilterDto filterParameters)
-        {
-            var products = _productService.GetFilteredProducts(filterParameters);
-            return Ok(products);
-        }
-        [HttpGet("/products/searched")]
-        public IActionResult SearchProductsByName(string productName)
-        {
-            var products = _productService.SearchProductsByName(productName);
-            return Ok(products);
-        }
-        [Authorize(Roles = "ADMIN")]
-        [HttpPut("/products/{id:int}/ChangeProductAvailability")]
-        public IActionResult ChangeProductAvailability(Availability availability, [FromBody] ProductDto dto)
+        [HttpGet("/getOrders")]
+        public IActionResult GetOrders()
         {
             try
             {
-                var productId = _productService.ChangeProductAvailability(availability, dto);
-                return Created("/api/v1/admin/products/{id}", productId);
+                var orders = _orderService.GetOrders();
+                return Ok(orders);
             }
             catch (Exception ex)
             {
-                return NotFound(ex);
+                return BadRequest(ex);
+            }
+        }
+        [Authorize(Roles = "ADMIN")]
+        [HttpPut("/finalize/{id:Guid}")]
+        public IActionResult ChangeOrderStatus(Guid id,[FromBody] OrderStatus orderStatus)
+        {
+            try
+            {
+                var order = _orderService.ChangeOrderStatus(id,orderStatus);
+                return Ok(order);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
             }
         }
     }
