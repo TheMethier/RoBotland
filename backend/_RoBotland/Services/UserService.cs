@@ -3,6 +3,7 @@ using _RoBotland.Interfaces;
 using _RoBotland.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
@@ -25,7 +26,6 @@ namespace _RoBotland.Services
             this._mapper = mapper;
             this._config = configuration;
         }
-
         public string Login(UserLoginDto request)
         {
             var user = _dataContext.Users.FirstOrDefault(x=>x.Username == request.Username);           
@@ -37,7 +37,6 @@ namespace _RoBotland.Services
             var token = GenerateToken(response);
             return token;
         }
-
         public UserDto Register(UserRegisterDto request)
         {
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
@@ -68,6 +67,49 @@ namespace _RoBotland.Services
                 );
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
             return jwt;
+        }       
+        public float GetAccountBalance(string username)
+        {
+            var user = _dataContext.Users.FirstOrDefault(x => x.Username == username) ?? throw new Exception();
+            return user != null ? user.AccountBalance : 0.0f;
+        }
+        private void UpdateAccountBalanceUser(User user)
+        {
+            var existingUser = _dataContext.Users.Find(user.Id);
+            if (existingUser != null)
+            {
+                existingUser.AccountBalance = user.AccountBalance;   
+                _dataContext.SaveChanges();
+            }
+        }
+        private User GetUserById(Guid id)
+        {
+            var user = _dataContext.Users.Find(id);          
+            return user;           
+        }
+
+        public bool DepositToAccount(string username, float amount)
+        {
+            var user = _dataContext.Users.FirstOrDefault(x => x.Username == username) ?? throw new Exception();
+            if (user != null)
+            {
+                user.AccountBalance += amount;
+                UpdateAccountBalanceUser(user);
+                return true;
+            }
+            return false;
+        }
+
+        public bool WithdrawFromAccount(string username, float amount)
+        {
+            var user = _dataContext.Users.FirstOrDefault(x => x.Username == username) ?? throw new Exception();
+            if (user != null && user.AccountBalance >= amount)
+            {
+                user.AccountBalance -= amount;
+                UpdateAccountBalanceUser(user);
+                return true;
+            }
+            return false;
         }
     }
 }
