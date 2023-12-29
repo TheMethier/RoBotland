@@ -17,10 +17,9 @@ namespace _RoBotland.Controllers
             _shoppingCartService = shoppingCartService;
         }
 
-        [HttpPost("/add/{productId:int}")]
-        public IActionResult AddProductToShoppingCart(int productId)
+        [HttpPost("/add")]
+        public IActionResult AddProductToShoppingCart([FromBody] ProductDto product)//Na froncie egzekwuj mapowanie Product na ProductDto
         {
-
             var session = HttpContext.Session;
             var context = SessionHelper.GetObjectFromJson<List<ShoppingCartItem>>(session, "shoppingcart");
             if(context == null)
@@ -28,16 +27,9 @@ namespace _RoBotland.Controllers
                 context = new List<ShoppingCartItem>();
                 SessionHelper.SetObjectAsJson(HttpContext.Session, "shoppingcart", context);
             }
-            try
-            {
-                var shoppingCartContent = _shoppingCartService.AddItemToShoppingCart(productId, context);
-                SessionHelper.SetObjectAsJson(HttpContext.Session, "shoppingcart", shoppingCartContent);
-                return Ok(shoppingCartContent);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var shoppingCartContent =_shoppingCartService.AddItemToShoppingCart(product,context);
+            SessionHelper.SetObjectAsJson(HttpContext.Session, "shoppingcart", shoppingCartContent);
+            return Ok(shoppingCartContent);
         }
         [HttpGet("/actual")]
         public IActionResult GetShoppingCartItems()
@@ -47,8 +39,8 @@ namespace _RoBotland.Controllers
             if (context == null) return NoContent();
             return Ok(context);
         }
-        [HttpDelete("/remove/{productId:int}")]
-        public IActionResult RemoveProductFromShoppingCard(int productId) 
+        [HttpDelete("/remove")]
+        public IActionResult RemoveProductFromShoppingCard([FromBody] ProductDto product) 
         {
             var session = HttpContext.Session;
             var context = SessionHelper.GetObjectFromJson<List<ShoppingCartItem>>(session, "shoppingcart");
@@ -58,7 +50,7 @@ namespace _RoBotland.Controllers
             }
             try
             {
-                var shoppingCartContent = _shoppingCartService.RemoveItemFromShoppingCart(productId, context);
+                var shoppingCartContent = _shoppingCartService.RemoveItemFromShoppingCart(product, context);
                 SessionHelper.SetObjectAsJson(HttpContext.Session, "shoppingcart", shoppingCartContent);
                 return Ok(shoppingCartContent);
             }
