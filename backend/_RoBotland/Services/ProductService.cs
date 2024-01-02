@@ -96,17 +96,9 @@ public class ProductService : IProductService
 
         Category categoryToAddTo = _dataContext.Categories.Find(categoryId) ?? throw new Exception("Category Not Exist");
         Product productToAdd = _dataContext.Products.Find(productId) ?? throw new Exception("Product Not Exist");
-
-        if (categoryToAddTo != null && productToAdd != null)
-        {
-            categoryToAddTo.Products.Add(productToAdd);
-            _dataContext.SaveChanges();
-            return categoryId;
-        }
-        else
-        {
-            throw new Exception("Product Not Exist");
-        }
+        categoryToAddTo.Products.Add(productToAdd);
+        _dataContext.SaveChanges();
+        return categoryId;
     }
 
     public ProductDto ChangeProductAvailability(Availability availability, ProductDto dto)
