@@ -37,7 +37,18 @@ namespace _RoBotland.Controllers
                 return NotFound();
             }
         }
-        
+        [HttpGet("filtred")]
+        public IActionResult GetProducts([FromQuery] ProductFilterDto filterParameters)
+        {
+            var products = _productService.GetFilteredProducts(filterParameters);
+            return Ok(products);
+        }
+        [HttpGet("searched")]
+        public IActionResult SearchProductsByName(string productName)
+        {
+            var products = _productService.SearchProductsByName(productName);
+            return Ok(products);
+        }
         [HttpPost("/addProduct")]
         public IActionResult AddNewProduct([FromBody] ProductDto dto)
         {
@@ -75,12 +86,12 @@ namespace _RoBotland.Controllers
             }
 
         }
-
-        [HttpGet("filtred")]
-        public IActionResult GetProducts([FromQuery] ProductFilterDto filterParameters)
+        [HttpPost("addCategoryToProduct")]
+        public IActionResult AddCategoryToProduct([FromBody] AddCategoryToProductDto dto)
         {
-            var products = _productService.GetFilteredProducts(filterParameters);
-            return Ok(products);
+            int id = _productService.AddCategoryToProduct(dto.CategoryId, dto.ProductId);
+            return Ok(id);
         }
+
     }
 }

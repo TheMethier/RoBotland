@@ -1,4 +1,5 @@
-﻿using _RoBotland.Interfaces;
+﻿using _RoBotland.Enums;
+using _RoBotland.Interfaces;
 using _RoBotland.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -63,25 +64,58 @@ public class ProductService : IProductService
         });
         return productList;
     }
+    public List<ProductDto> SearchProductsByName(string productName)
+    {
+        var query = _dataContext.Products.AsQueryable();
 
+        if (!string.IsNullOrEmpty(productName))
+        {
+            var upperProductName = productName.ToUpper();
+            query = query.Where(p => p.Name.ToUpper().Contains(upperProductName));
+        }
+        var products = query.ToList();
+        return _mapper.Map<List<ProductDto>>(products);
+    }
 
     public List<ProductDto> GetFilteredProducts(ProductFilterDto filterParameters)
     {
         var query = _dataContext.Products.AsQueryable();
-
         if (filterParameters.MinPrice.HasValue)
          query = query.Where(p => p.Price >= filterParameters.MinPrice);
-
         if (filterParameters.MaxPrice.HasValue)
            query = query.Where(p => p.Price <= filterParameters.MaxPrice);
-
-       
-
-        //if (filterParameters.CategoryId.HasValue)
-        //query = query.Where(p => p.Categories.Any(c => c.Id == filterParameters.CategoryId.Value));
-
+        if (filterParameters.CategoryId.HasValue)
+            query = query.Where(p => p.Categories.Any(c => c.Id == filterParameters.CategoryId.Value));
+        if (filterParameters.IsAvailable.HasValue)
+            query = query.Where(p => p.IsAvailable == filterParameters.IsAvailable.Value);
         var products = query.ToList();
         return _mapper.Map<List<ProductDto>>(products);
+    }
+    public int AddCategoryToProduct(int categoryId, int productId)
+    {
+
+        Category categoryToAddTo = _dataContext.Categories.Find(categoryId) ?? throw new Exception("Category Not Exist");
+        Product productToAdd = _dataContext.Products.Find(productId) ?? throw new Exception("Product Not Exist");
+
+        if (categoryToAddTo != null && productToAdd != null)
+        {
+            categoryToAddTo.Products.Add(productToAdd);
+            _dataContext.SaveChanges();
+            return categoryId;
+        }
+        else
+        {
+            throw new Exception("Product Not Exist");
+        }
+    }
+
+    public ProductDto ChangeProductAvailability(Availability availability, ProductDto dto)
+    {
+        var product = _dataContext.Products.Find(dto.Id) ?? throw new Exception("Product Not Exist");
+        product.IsAvailable = availability;
+        _dataContext.SaveChanges();
+        var productToReturn = _mapper.Map<ProductDto>(product);
+        return productToReturn;
     }
 
 }
