@@ -9,6 +9,8 @@ namespace _RoBotland.Interfaces
         bool DepositToAccount(string username, float amount);
         float GetAccountBalance(string username);
         bool WithdrawFromAccount(string username, float amount);
+        List<OrderDto> GetHistory(string username);
+
 
     }
 }

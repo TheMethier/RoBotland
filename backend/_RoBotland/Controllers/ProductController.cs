@@ -37,7 +37,6 @@ namespace _RoBotland.Controllers
                 return NotFound();
             }
         }
-        
         [HttpGet("filtred")]
         public IActionResult GetProducts([FromQuery] ProductFilterDto filterParameters)
         {
@@ -50,39 +49,42 @@ namespace _RoBotland.Controllers
             var products = _productService.SearchProductsByName(productName);
             return Ok(products);
         }
-     
-     
-        [HttpPost]
+        [HttpPost("/addProduct")]
         public IActionResult AddNewProduct([FromBody] ProductDto dto)
         {
             int id = _productService.AddNewProduct(dto);
-            return Created("/api/v1/admin/products/{id}", id);
+            return Created("$/api/v1/products/{id}",id);
         }
+
         [HttpDelete("{id:int}")]
         public IActionResult RemoveProductById(int id)
         {
             try
             {
-                _productService.DeleteProduct(id);
+               _productService.DeleteProduct(id);
             }
-            catch
+            catch 
             {
+                      
                 return NotFound();
             }
             return NoContent();
+
         }
+
         [HttpPut("{id:int}")]
-        public IActionResult UpgradeProduct(int id, [FromBody] ProductDto dto)
+        public IActionResult UpgradeProduct(int id,[FromBody] ProductDto dto)
         {
             try
             {
                 int productId = _productService.UpdateProduct(id, dto);
-                return Created("/api/v1/admin/products/{id}", productId);
+                return Created("$/api/v1/products/{id}", productId);
             }
             catch (Exception ex)
             {
                 return NotFound(ex);
             }
+
         }
         [HttpPost("addCategoryToProduct")]
         public IActionResult AddCategoryToProduct([FromBody] AddCategoryToProductDto dto)
@@ -90,5 +92,6 @@ namespace _RoBotland.Controllers
             int id = _productService.AddCategoryToProduct(dto.CategoryId, dto.ProductId);
             return Ok(id);
         }
+
     }
 }

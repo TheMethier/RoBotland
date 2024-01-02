@@ -12,8 +12,8 @@ using _RoBotland.Models;
 namespace _RoBotland.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231222172321_initia1")]
-    partial class initia1
+    [Migration("20231217100540_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -52,7 +52,12 @@ namespace _RoBotland.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("ProductDtoId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("ProductDtoId");
 
                     b.ToTable("Categories");
                 });
@@ -66,15 +71,9 @@ namespace _RoBotland.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DeliveryType")
-                        .HasColumnType("int");
-
                     b.Property<string>("OrderStatus")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PaymentType")
-                        .HasColumnType("int");
 
                     b.Property<float>("Total")
                         .HasColumnType("real");
@@ -148,6 +147,40 @@ namespace _RoBotland.Migrations
 
                     b.HasKey("Id");
 
+                    b.ToTable("Product");
+                });
+
+            modelBuilder.Entity("_RoBotland.Models.ProductDto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("IsAvailable")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("Price")
+                        .HasColumnType("real");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
                     b.ToTable("Products");
                 });
 
@@ -178,7 +211,7 @@ namespace _RoBotland.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("b4f86cfc-bbad-44fb-bfdb-b7b3f6a1fc77"),
+                            Id = new Guid("155834a3-3cf6-45a5-aed0-cbbed18f42f0"),
                             AccountBalance = 100000f,
                             PasswordHash = "$2a$11$sG0/Wsg4E9WWDC8NRJCGRu5Vgb78tf1UiLi1WTziC2xYNBukpqTOy",
                             Role = 1,
@@ -199,7 +232,7 @@ namespace _RoBotland.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("HomeAddress")
+                    b.Property<string>("HomeAdress")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -231,11 +264,20 @@ namespace _RoBotland.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("_RoBotland.Models.Category", b =>
+                {
+                    b.HasOne("_RoBotland.Models.ProductDto", null)
+                        .WithMany("Categories")
+                        .HasForeignKey("ProductDtoId");
+                });
+
             modelBuilder.Entity("_RoBotland.Models.Order", b =>
                 {
                     b.HasOne("_RoBotland.Models.UserDetails", "UserDetails")
                         .WithMany("Orders")
-                        .HasForeignKey("UserDetailsId");
+                        .HasForeignKey("UserDetailsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("UserDetails");
                 });
@@ -263,9 +305,7 @@ namespace _RoBotland.Migrations
                 {
                     b.HasOne("_RoBotland.Models.User", "User")
                         .WithOne("UserDetails")
-                        .HasForeignKey("_RoBotland.Models.UserDetails", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("_RoBotland.Models.UserDetails", "Id");
 
                     b.Navigation("User");
                 });
@@ -278,6 +318,11 @@ namespace _RoBotland.Migrations
             modelBuilder.Entity("_RoBotland.Models.Product", b =>
                 {
                     b.Navigation("OrderDetails");
+                });
+
+            modelBuilder.Entity("_RoBotland.Models.ProductDto", b =>
+                {
+                    b.Navigation("Categories");
                 });
 
             modelBuilder.Entity("_RoBotland.Models.User", b =>

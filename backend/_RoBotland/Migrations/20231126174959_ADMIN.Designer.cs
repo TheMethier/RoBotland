@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using _RoBotland.Models;
 
@@ -11,9 +12,11 @@ using _RoBotland.Models;
 namespace _RoBotland.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231126174959_ADMIN")]
+    partial class ADMIN
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -63,15 +66,9 @@ namespace _RoBotland.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DeliveryType")
-                        .HasColumnType("int");
-
                     b.Property<string>("OrderStatus")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PaymentType")
-                        .HasColumnType("int");
 
                     b.Property<float>("Total")
                         .HasColumnType("real");
@@ -145,6 +142,37 @@ namespace _RoBotland.Migrations
 
                     b.HasKey("Id");
 
+                    b.ToTable("Product");
+                });
+
+            modelBuilder.Entity("_RoBotland.Models.ProductDto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("Price")
+                        .HasColumnType("real");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
                     b.ToTable("Products");
                 });
 
@@ -175,7 +203,7 @@ namespace _RoBotland.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("8fde8fd0-33ca-49a7-9265-377fbd65feaa"),
+                            Id = new Guid("9cbe7e88-6475-4011-8e7e-b7e6eba8660e"),
                             AccountBalance = 100000f,
                             PasswordHash = "$2a$11$sG0/Wsg4E9WWDC8NRJCGRu5Vgb78tf1UiLi1WTziC2xYNBukpqTOy",
                             Role = 1,
@@ -196,7 +224,7 @@ namespace _RoBotland.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("HomeAddress")
+                    b.Property<string>("HomeAdress")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -232,7 +260,9 @@ namespace _RoBotland.Migrations
                 {
                     b.HasOne("_RoBotland.Models.UserDetails", "UserDetails")
                         .WithMany("Orders")
-                        .HasForeignKey("UserDetailsId");
+                        .HasForeignKey("UserDetailsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("UserDetails");
                 });
@@ -260,9 +290,7 @@ namespace _RoBotland.Migrations
                 {
                     b.HasOne("_RoBotland.Models.User", "User")
                         .WithOne("UserDetails")
-                        .HasForeignKey("_RoBotland.Models.UserDetails", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("_RoBotland.Models.UserDetails", "Id");
 
                     b.Navigation("User");
                 });

@@ -3,12 +3,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace _RoBotland.Models
 {
-    public class DataContext : DbContext
+    public class DataContext: DbContext
     {
         public DataContext(DbContextOptions<DataContext> options)
             : base(options)
         {
-
+           
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -38,22 +38,22 @@ namespace _RoBotland.Models
                 .HasMany(x => x.Categories)
                 .WithMany(x => x.Products).UsingEntity("ProductCategory");
             modelBuilder.Entity<Product>().HasMany(x => x.OrderDetails)
-                .WithOne(x => x.Product).HasForeignKey(x => x.ProductId);
+                .WithOne(x => x.Product).HasForeignKey(x=>x.ProductId);
             modelBuilder.Entity<Order>()
                 .HasMany(x => x.OrderDetails)
                 .WithOne(x => x.Order)
-                .HasForeignKey(x => x.OrderId);
+                .HasForeignKey(x=>x.OrderId);
             modelBuilder.Entity<UserDetails>()
                 .HasMany(x => x.Orders)
                 .WithOne(x => x.UserDetails)
-                .HasForeignKey(x => x.UserDetailsId).IsRequired(false);
+                .HasForeignKey(x=>x.UserDetailsId).IsRequired(false);
             modelBuilder.Entity<UserDetails>()
                 .HasOne(x => x.User)
                 .WithOne(x => x.UserDetails)
                 .HasForeignKey<UserDetails>(x => x.Id)
                 .IsRequired(true);
-
-            modelBuilder.Entity<User>().HasData(new User("ADMIN", "$2a$11$sG0/Wsg4E9WWDC8NRJCGRu5Vgb78tf1UiLi1WTziC2xYNBukpqTOy", Role.ADMIN, 100000));
+                
+            modelBuilder.Entity<User>().HasData(new User("ADMIN", "$2a$11$sG0/Wsg4E9WWDC8NRJCGRu5Vgb78tf1UiLi1WTziC2xYNBukpqTOy", Role.ADMIN,100000) );
         }
 
         public DbSet<Product> Products { get; set; }

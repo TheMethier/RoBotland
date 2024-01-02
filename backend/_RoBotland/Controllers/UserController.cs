@@ -1,10 +1,7 @@
 ﻿using _RoBotland.Interfaces;
-
 using _RoBotland.Models;
-using _RoBotland.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace _RoBotland.Controllers
 {
@@ -23,8 +20,16 @@ namespace _RoBotland.Controllers
         [HttpPost("/register")]
         public IActionResult Register([FromBody] UserRegisterDto request)
         {
-            var newUser=_userService.Register(request);
-            return Ok(newUser);
+            try
+            {
+                var newUser = _userService.Register(request);
+                return Ok(newUser);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+
+            }
         }
         [HttpPost("/login")]
         public IActionResult Login([FromBody] UserLoginDto request)
@@ -44,12 +49,12 @@ namespace _RoBotland.Controllers
         [HttpPost("/logout")]
         public IActionResult Logout()
         {
-
             return Ok();
         }
         [Authorize]
         [HttpGet("/getAccountBalance")]
-        public IActionResult GetAccountBalance() {
+        public IActionResult GetAccountBalance()
+        {
             if (!HttpContext.User.Identity.IsAuthenticated)
             {
                 return Unauthorized("User Not Authenticated");
@@ -68,11 +73,12 @@ namespace _RoBotland.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            
+
         }
         [Authorize]
         [HttpPut("/depositToAccount")]
-        public IActionResult DepositToAccount(float amount) {
+        public IActionResult DepositToAccount(float amount)
+        {
             if (!HttpContext.User.Identity.IsAuthenticated)
             {
                 return Unauthorized("User Not Authenticated");
@@ -91,11 +97,12 @@ namespace _RoBotland.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            
+
         }
         [Authorize]
         [HttpPut("/withdrawFromAccount")]
-        public IActionResult WithdrawFromAccount(float amount) {
+        public IActionResult WithdrawFromAccount(float amount)
+        {
             if (!HttpContext.User.Identity.IsAuthenticated)
             {
                 return Unauthorized("User Not Authenticated");
@@ -109,6 +116,25 @@ namespace _RoBotland.Controllers
             {
                 _userService.WithdrawFromAccount(username, amount);
                 return Ok("WithdrawFromAccount");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [Authorize]
+        [HttpGet("/getHistory")]
+        public IActionResult GetHistory()
+        {
+            var session = HttpContext.Session;
+            if (HttpContext.User.Identity == null)
+                return NoContent();
+            var username = HttpContext.User.Identity.Name
+                != null ? HttpContext.User.Identity.Name : string.Empty;
+            try
+            {
+                var history = _userService.GetHistory(username);
+                return Ok(history);
             }
             catch (Exception ex)
             {
