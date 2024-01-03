@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 import './ProductDetails.css';
 
 
 const ProductDetails = () => {
     const { id } = useParams();
 
-    const navigate = useNavigate();
 
     const [product, setProduct] = useState();
 
@@ -24,19 +22,26 @@ const ProductDetails = () => {
 
     return ( 
         <div className="container">
-            <h1>{product.name}</h1>
-            <div className="up">           
+            <div className="name">  
+             <h1>{product.name}</h1>
+            </div>
+            <div className="content">           
                 <div className="img">
                     <img src={`${process.env.REACT_APP_API_URL}/images/${product.imageUrl}`} alt={product.name} />
                 </div>
                 <div className="info">
-                    <h2>{product.price} PLN</h2>
-                    <p>{product.description}</p>
+                    <div className="description">
+                        <p>{product.description}</p>
+                    </div>
+                    <div className="price">
+                        <h2>{product.price} PLN</h2>
+                        Dostępność: {product.isAvailable}
+                        <button className="addToCartBtn">Dodaj do koszyka</button>
+
+                    </div>
                 </div>
             </div>
         </div>
-
-    
     );
 }
  

@@ -1,11 +1,11 @@
 import { DataGrid } from '@mui/x-data-grid';
 import { Box } from '@mui/material';
-import './ProductList.css';
-import Forms from './components/Forms.js';
+import './Orders.css';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const columns = [
+    //zaimplementowac liste zamowien i ich akceptacje
     { field: 'id', headerName: 'ID'},
     { field: 'name', headerName: 'Nazwa',flex: 1, },
     { field: 'price', headerName: 'Cena'},
@@ -19,7 +19,7 @@ const columns = [
     { field: 'isAvailable', headerName: 'Dostępność' },
 ];
 
-const ProductList = () => {
+const Orders = () => {
 
     const [products, setProducts] = useState([]);
     const [filter, setFilter] = useState({}); 
@@ -48,12 +48,6 @@ const ProductList = () => {
      
     return ( 
         <div><Box display="flex" >
-            <div className='filtred_forms'>
-                <Forms 
-                    onFilterChange={handleFilterChange}
-                    filter={filter}
-                />
-            </div>
             <div className='table'>
                 {products.length > 0 ? (
                     <DataGrid
@@ -71,4 +65,4 @@ const ProductList = () => {
      );
 }
  
-export default ProductList;
+export default Orders;

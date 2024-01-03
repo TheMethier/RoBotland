@@ -3,6 +3,7 @@ using _RoBotland.Interfaces;
 using _RoBotland.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Http.HttpResults;
+using System.Linq;
 
 namespace _RoBotland.Services;
 
@@ -21,7 +22,7 @@ public class ProductService : IProductService
         var product = _mapper.Map<Product>(dto);
         _dataContext.Products.Add(product);
         _dataContext.SaveChanges();
-        var productDto= _mapper.Map<ProductDto>(dto);
+        var productDto= _mapper.Map<ProductDto>(product);
         return productDto.Id;
     }
 
@@ -50,6 +51,20 @@ public class ProductService : IProductService
         return getProduct;
     }
 
+    public List<CategoryDto> GetCategories()
+    {
+        var categories = _dataContext.Categories.ToList();
+        List<CategoryDto> categoryList = new List<CategoryDto>();
+        categories.ForEach(x =>
+        {
+            if (x != null)
+            {
+                var categoryDto = _mapper.Map<CategoryDto>(x);
+                categoryList.Add(categoryDto);
+            }
+        });
+        return categoryList;
+    }
     public List<ProductDto> GetProducts()
     {
         var products = _dataContext.Products.ToList();
@@ -81,6 +96,12 @@ public class ProductService : IProductService
     public List<ProductDto> GetFilteredProducts(ProductFilterDto filterParameters)
     {
         var query = _dataContext.Products.AsQueryable();
+
+        if (!string.IsNullOrEmpty(filterParameters.ProductName))
+        {
+            var upperProductName = filterParameters.ProductName.ToUpper();
+            query = query.Where(p => p.Name.ToUpper().Contains(upperProductName));
+        }
 
         if (filterParameters.MinPrice.HasValue)
             query = query.Where(p => p.Price >= filterParameters.MinPrice);

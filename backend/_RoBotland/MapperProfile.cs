@@ -8,6 +8,8 @@ namespace _RoBotland
         public MapperProfile() {
             CreateMap<ProductDto, Product>();
             CreateMap<Product, ProductDto>();
+            CreateMap<CategoryDto, Category>();
+            CreateMap<Category, CategoryDto>();
             CreateMap<UserRegisterDto, User>()
                 .ForMember(dest => dest.PasswordHash, opt => opt.Ignore());
             CreateMap<UserRegisterDto, UserDetails>()

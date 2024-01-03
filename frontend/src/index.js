@@ -6,9 +6,18 @@ import Home from './pages/Home/Home';
 import Navbar from './components/Navbar/Navbar';
 import ProductList from './pages/ProductList/ProductList';
 import ProductDetails from './pages/ProductDetails/ProductDetails';
+import ProductManagement from './pages/ProductManagement/ProductManagement';
+import ProductEdit from './pages/ProductEdit/ProductEdit';
+import AddNewProduct from './pages/AddNewProduct/AddNewProduct';
+import Orders from './pages/Orders/Orders';
+import Admin from './components/Admin/Admin';
 
-
-
+//TODO
+//tabelka z produktami do dodania?
+//dodawanie zdjeć?
+//dostęp do panelu admina 
+//obsługa zamówień
+//dodawnie kategorii do produktu
 const router = createBrowserRouter(
   [
     {
@@ -30,6 +39,28 @@ const router = createBrowserRouter(
         {
           path: '/about',
           element: <div>O nas</div>,
+        },
+        {
+          path: '/admin',
+          element: <Admin />,
+          children: [
+            {
+              path: 'orders',
+              element: <Orders />,
+            },
+            {
+              path: '/admin/productManagement',
+              element: <ProductManagement />,
+            },
+            {
+              path: '/admin/productManagement/productEdit/:id',
+              element: <ProductEdit />,
+            },
+            {
+              path: '/admin/productManagement/addNewProduct',
+              element: <AddNewProduct />,
+            },
+          ]
         },
       ],
     },

@@ -1,0 +1,40 @@
+.edit-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.forms {
+    width: 50%;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+
+form {
+    width: 50%;
+}
+
+textarea {
+    width: 100%;
+}
+
+label {
+    display: block;
+    width: 100%;
+    text-align: left;
+}
+
+input {
+    width: 100%;
+    height: 30px;
+    font-size: 17px;
+}
+
+/* Zmiany dla elementu select */
+.select {
+    width: 100%;
+    height: 33px;
+}

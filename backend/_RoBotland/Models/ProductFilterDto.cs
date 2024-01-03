@@ -8,7 +8,9 @@ namespace _RoBotland.Models
         public float? MaxPrice { get; set; }
         public int? CategoryId { get; set; }
         public Availability? IsAvailable { get; set; }
-        
+        public string? ProductName {  get; set; }
+
+
     }
 
 }

@@ -1,4 +1,5 @@
 ﻿using _RoBotland.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace _RoBotland.Models
 {

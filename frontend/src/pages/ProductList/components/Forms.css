@@ -1,6 +1,27 @@
 .BoxWidth{
-    width: 200px;
+    width: 90%;
     display: flex;
-    padding: 2%;
+    padding: 1%;
   }
 
+  table {
+    border-collapse: collapse;
+    width: 90%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  
+  th, td {
+    border: 1px solid #ddd;
+    padding: 4px;
+    text-align: left;
+  } 
+  
+  td:hover {
+    background-color: #f5f5f5;
+    cursor: pointer;
+  }
+  
+  #table tbody tr.clicked {
+    background-color: #e0e0e0;
+  }

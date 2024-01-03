@@ -36,20 +36,21 @@ namespace _RoBotland.Controllers
                 return NotFound();
             }
         }
-        [Authorize(Roles = "ADMIN")]
-        [HttpPost("/products")]
+        //[Authorize(Roles = "ADMIN")]
+        [HttpPost]
         public IActionResult AddNewProduct([FromBody] ProductDto dto)
         {
             int id = _productService.AddNewProduct(dto);
             return Created("/api/v1/admin/products/{id}", id);
         }
-        [Authorize(Roles = "ADMIN")]
-        [HttpDelete("/products/{id:int}")]
+        //[Authorize(Roles = "ADMIN")]
+        [HttpDelete("{id:int}")]
         public IActionResult RemoveProductById(int id)
         {
             try
             {
                 _productService.DeleteProduct(id);
+                return Ok();
             }
             catch
             {
@@ -57,8 +58,8 @@ namespace _RoBotland.Controllers
             }
             return NoContent();
         }
-        [Authorize(Roles = "ADMIN")]
-        [HttpPut("/products/{id:int}")]
+        //[Authorize(Roles = "ADMIN")]
+        [HttpPut("{id:int}")]
         public IActionResult UpgradeProduct(int id, [FromBody] ProductDto dto)
         {
             try
@@ -71,12 +72,19 @@ namespace _RoBotland.Controllers
                 return NotFound(ex);
             }
         }
-        [Authorize(Roles = "ADMIN")]
-        [HttpPost("/categories/{categoryId}/products/{productId}")]
+        //[Authorize(Roles = "ADMIN")]
+        [HttpPost("categories/products")]
         public IActionResult AddCategoryToProduct([FromBody] AddCategoryToProductDto dto)
         {
-            int id = _productService.AddCategoryToProduct(dto.CategoryId, dto.ProductId);
-            return Ok(id);
+            try
+            {
+                int id = _productService.AddCategoryToProduct(dto.CategoryId, dto.ProductId);
+                return Ok(id);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Wystąpił błąd podczas przetwarzania żądania.");
+            }
         }
         [HttpGet("/products/filtred")]
         public IActionResult GetProducts([FromQuery] ProductFilterDto filterParameters)

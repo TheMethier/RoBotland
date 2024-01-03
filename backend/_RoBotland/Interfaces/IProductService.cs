@@ -14,5 +14,6 @@ namespace _RoBotland.Interfaces
         int AddCategoryToProduct(int categoryId, int productId);
         public List<ProductDto> SearchProductsByName(string productName);
         ProductDto ChangeProductAvailability(Availability availability, ProductDto dto);
+        List<CategoryDto> GetCategories();
     }
 }
