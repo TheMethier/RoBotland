@@ -1,5 +1,8 @@
-﻿public class AddCategoryToProductDto
+﻿namespace _RoBotland.Models
 {
-    public int CategoryId { get; set; }
-    public int ProductId { get; set; }
+    public class AddCategoryToProductDto
+    {
+        public int CategoryId { get; set; }
+        public int ProductId { get; set; }
+    }
 }

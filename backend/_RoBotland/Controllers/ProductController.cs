@@ -44,7 +44,6 @@ namespace _RoBotland.Controllers
                 return NotFound();
             }
         }
-        
         [HttpGet("filtred")]
         public IActionResult GetProducts([FromQuery] ProductFilterDto filterParameters)
         {
@@ -65,5 +64,6 @@ namespace _RoBotland.Controllers
             int id = _productService.AddCategoryToProduct(dto.CategoryId, dto.ProductId);
             return Ok(id);
         }
+
     }
 }

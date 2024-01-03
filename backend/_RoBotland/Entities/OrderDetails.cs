@@ -18,11 +18,11 @@ public class OrderDetails
         Order = order;
     }
 
-    public Guid Id { get; }
-    public int Quantity { get; }
-    public float Total { get; }
-    public int ProductId;
-    public Guid OrderId;
+    public Guid Id { get; set; }
+    public int Quantity { get; set; }
+    public float Total { get; set; }
+    public int ProductId { get; set; }
+    public Guid OrderId { get; set; }
     public Product Product { get; set; }
     public Order Order { get; set; }
 
