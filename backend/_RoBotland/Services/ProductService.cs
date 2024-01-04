@@ -1,8 +1,10 @@
 ﻿using _RoBotland.Enums;
 using _RoBotland.Interfaces;
+using _RoBotland.Migrations;
 using _RoBotland.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 namespace _RoBotland.Services;
@@ -113,16 +115,38 @@ public class ProductService : IProductService
         var products = query.ToList();
         return _mapper.Map<List<ProductDto>>(products);
     }
-    public int AddCategoryToProduct(int categoryId, int productId)
+    public ICollection<Category> AddCategoryToProduct(List<string> categoryNames, int productId)
     {
+        using (var transaction = _dataContext.Database.BeginTransaction())
+        {
+            try
+            {
+                Product product = _dataContext.Products.Include(p => p.Categories).FirstOrDefault(p => p.Id == productId) ?? throw new Exception("Product Not Exist");
 
-        Category categoryToAddTo = _dataContext.Categories.Find(categoryId) ?? throw new Exception("Category Not Exist");
-        Product productToAdd = _dataContext.Products.Find(productId) ?? throw new Exception("Product Not Exist");
-        categoryToAddTo.Products.Add(productToAdd);
-        _dataContext.SaveChanges();
-        return categoryId;
+                product.Categories.Clear();
+
+                foreach (var categoryName in categoryNames)
+                {
+                    Category category = _dataContext.Categories.FirstOrDefault(c => c.Name == categoryName);
+                    if (category == null)
+                    {
+                        category = new Category { Name = categoryName };
+                        _dataContext.Categories.Add(category);
+                    }
+                    product.Categories.Add(category);
+                }
+                _dataContext.SaveChanges();
+                transaction.Commit();
+                var categories = product.Categories.ToList();
+                return categories;
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                throw new Exception("Error during category assignment", ex);
+            }
+        }
     }
-
     public ProductDto ChangeProductAvailability(Availability availability, ProductDto dto)
     {
         var product = _dataContext.Products.Find(dto.Id) ?? throw new Exception("Product Not Exist");
@@ -132,6 +156,15 @@ public class ProductService : IProductService
         return productToReturn;
     }
 
+    public List<Category> GetProductCategories(int productId)
+    {
+        var categories = _dataContext.Products
+             .Where(p => p.Id == productId)
+             .SelectMany(p => p.Categories)
+             .ToList();
+
+        return categories;
+    }
 }
 
     

@@ -73,7 +73,7 @@ const ProductManagement = () => {
     
       const columns = [
         { field: 'name', headerName: 'Nazwa',flex:1 ,style: { whiteSpace: 'normal', wordWrap: 'break-word' }, },
-        { field: 'price', headerName: 'Cena', width: 60, },
+        { field: 'price', headerName: 'Cena', width: 75, renderCell: (params) => (`${params.value} PLN`) },
         { field: 'quantity', headerName: 'Stan magazynowy'},
         {
           field: 'imageUrl', headerName: 'Zdjęcie', renderCell: (params) => (

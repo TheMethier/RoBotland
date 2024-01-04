@@ -24,5 +24,7 @@ namespace _RoBotland.Models
         public UserDetailsDto UserDetails { get; set;}
         public DeliveryType DeliveryType {  get; set; }
         public PaymentType PaymentType { get; set; }
+
+        public OrderStatus OrderStatus { get; set; }
     }
 }

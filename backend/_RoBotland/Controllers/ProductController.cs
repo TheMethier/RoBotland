@@ -56,14 +56,5 @@ namespace _RoBotland.Controllers
             var products = _productService.SearchProductsByName(productName);
             return Ok(products);
         }
-     
-     
-        [HttpPost("addCategoryToProduct")]
-        public IActionResult AddCategoryToProduct([FromBody] AddCategoryToProductDto dto)
-        {
-            int id = _productService.AddCategoryToProduct(dto.CategoryId, dto.ProductId);
-            return Ok(id);
-        }
-
     }
 }

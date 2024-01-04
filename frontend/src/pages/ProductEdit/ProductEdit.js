@@ -6,12 +6,19 @@ import MenuItem from '@mui/material/MenuItem';
 import { useNavigate } from 'react-router-dom';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import Checkbox from '@mui/material/Checkbox';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 
 const ProductEdit = () => {
     const { id } = useParams();
     const [product, setProduct] = useState();
     const [editedProduct, setEditedProduct] = useState({});
     const navigate = useNavigate();
+    const [categories, setCategories] = useState([]);
+    const [productCategories, setProductCategories] = useState([]);
+    const [newCategory, setNewCategory] = useState('');
+    const [selectedCategories, setSelectedCategories] = useState([]);
 
     useEffect(() => {
         fetch(`${process.env.REACT_APP_API_URL}/api/v1/products/Product/${id}`)
@@ -25,6 +32,23 @@ const ProductEdit = () => {
             .catch(error => console.log(error));
     }, [id]);
 
+    useEffect(() => {
+        fetch(`${process.env.REACT_APP_API_URL}/api/v1/admin/products/Admin/categories/${id}`)
+        .then(response => response.json())
+        .then(data => {
+            setProductCategories(data);
+            setSelectedCategories(data.map(category => category.name));
+
+        })
+        .catch(error => console.log(error));
+    }, [id]);
+
+    useEffect(() => {
+        fetch(`${process.env.REACT_APP_API_URL}/api/v1/products/Product/categories`)
+            .then(response => response.json())
+            .then(data => setCategories(data))
+            .catch(error => console.error('Error fetching categories:', error));
+    }, []);
 
     const handleInputChange =( name, value ) => {
         setEditedProduct({
@@ -54,11 +78,58 @@ const ProductEdit = () => {
                     }
                 ]
             });
+            const productId = data;
+            if (selectedCategories.length > 0) {
+                fetch(`${process.env.REACT_APP_API_URL}/api/v1/admin/products/Admin/categories/products`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ CategoryNames: selectedCategories, ProductId: productId }),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error adding category to product');
+                    }
+                    return response.json();
+                })
+                .then(categoryData => {
+                    console.log('Response kghjggjjfhghory to product:', categoryData);
+                })
+                .catch(error => {
+                    console.error('Error adding category to product:', error);
+                });
+            }
             navigate(`/admin/productManagement`);
         })
         .catch(error => console.error('Error updating product:', error));
     };
 
+    const handleCategoryChange = (categoryName, checked) => {
+        if (checked) {
+            setSelectedCategories([...selectedCategories, categoryName]);
+        } else {
+            setSelectedCategories(selectedCategories.filter(id => id !== categoryName));
+        }
+    };
+
+    const handleNewCategoryChange = (e) => {
+        setNewCategory(e.target.value);
+    };
+
+    const handleAddNewCategory = () => {
+        if (newCategory.trim() === '') {
+            return;
+        }
+        if (categories.some(category => category.name === newCategory)) {
+            return;
+        }
+        
+        const newCategoryObject = {name: newCategory };
+        
+        setCategories([...categories, newCategoryObject]);
+        setNewCategory('');
+    };
 
     if (!product) {
         return <h1>Loading...</h1>
@@ -111,14 +182,52 @@ const ProductEdit = () => {
                             <MenuItem value={1}>1</MenuItem>
                             <MenuItem value={2}>2</MenuItem>
                         </Select>
-                        <button type="button" onClick={handleSaveClick}>Zapisz</button>
+                        <button className="button" type="button" onClick={handleSaveClick}>Zapisz</button>
                     </form>
                 </div>
                 <div className="edit-form">
-                    <img src={`${process.env.REACT_APP_API_URL}/images/${product.imageUrl}`} alt={product.name} />
-                </div>
+                        <form className="forms">
+                        <div className="checkboxContainer">
+                            <label>Kategorie:</label>
+                            <div className="categoryContainer">
+                                <div className="categoryColumn">
+                                    {categories.slice(0, Math.ceil(categories.length / 2)).map(category => (
+                                    <div key={category.id}>
+                                        <Checkbox
+                                        checked={selectedCategories.includes(category.name)}
+                                        onChange={(e) => handleCategoryChange(category.name, e.target.checked)}
+                                        />
+                                        {category.name}
+                                    </div>
+                                    ))}
+                                </div>
+                                <div className="categoryColumn">
+                                    {categories.slice(Math.ceil(categories.length / 2)).map(category => (
+                                    <div key={category.id}>
+                                        <Checkbox
+                                        checked={selectedCategories.includes(category.name)}
+                                        onChange={(e) => handleCategoryChange(category.name, e.target.checked)}
+                                        />
+                                        {category.name}
+                                    </div>
+                                    ))}
+                                </div>
+                                </div>
+                    <div className="butoo"> 
+                        <TextField
+                            label="Nowa kategoria"
+                            value={newCategory}
+                            onChange={handleNewCategoryChange}
+                        />
+                        <Button variant="contained" onClick={handleAddNewCategory}>
+                            Dodaj nową kategorię
+                        </Button></div>
+                        
+                    
+                   </div>
+                </form>
             </div>
-            
+            </div>
         </div>
     );
 }

@@ -4,6 +4,7 @@ using _RoBotland.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore.Query;
 using _RoBotland.Enums;
+using _RoBotland.Services;
 
 
 namespace _RoBotland.Controllers
@@ -83,8 +84,8 @@ namespace _RoBotland.Controllers
         {
             try
             {
-                int id = _productService.AddCategoryToProduct(dto.CategoryId, dto.ProductId);
-                return Ok(id);
+                ICollection<Category> categories = _productService.AddCategoryToProduct(dto.CategoryNames, dto.ProductId);
+                return Ok(categories);
             }
             catch (Exception ex)
             {
@@ -117,7 +118,7 @@ namespace _RoBotland.Controllers
                 return BadRequest(ex);
             }
         }
-        [Authorize(Roles = "ADMIN")]
+        //[Authorize(Roles = "ADMIN")]
         [HttpPut("/finalize/{id:Guid}")]
         public IActionResult ChangeOrderStatus(Guid id,[FromBody] OrderStatus orderStatus)
         {
@@ -130,6 +131,26 @@ namespace _RoBotland.Controllers
             {
                 return BadRequest(ex);
             }
+        }
+        [HttpGet("categories/{id:int}")]
+        public IActionResult GetProductCategories(int id)
+        {
+            try
+            {
+                List<Category> categories = _productService.GetProductCategories(id);
+                return Ok(categories);
+            }
+            catch
+            {
+                return NotFound();
+            }
+        }
+        //[Authorize(Roles = "ADMIN")]
+        [HttpGet("getOrders")]
+        public IActionResult GetOrders()
+        {
+            List<OrderDto> orders = _orderService.GetOrders();
+            return Ok(orders);
         }
     }
 }

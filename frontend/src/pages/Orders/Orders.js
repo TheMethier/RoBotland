@@ -5,60 +5,52 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const columns = [
-    //zaimplementowac liste zamowien i ich akceptacje
     { field: 'id', headerName: 'ID'},
-    { field: 'name', headerName: 'Nazwa',flex: 1, },
-    { field: 'price', headerName: 'Cena'},
+    { field: 'createdDate', headerName: 'Data', width: 172 },
     {
-        field: 'imageUrl', headerName: 'Zdjęcie', renderCell: (params) => (
-          <img src={`${process.env.REACT_APP_API_URL}/images/${params.value}`} alt={params.row.name} style={{ height: 'auto' }} />
-        ),
-        width: 200, 
-      },
-      
-    { field: 'isAvailable', headerName: 'Dostępność' },
+        field: 'userDetails.FirstName',
+        headerName: 'Użytkownik',
+        flex: 1,
+        valueGetter: (params) =>
+            params.row.userDetails ?`${params.row.userDetails.firstName} ${params.row.userDetails.lastName}` : '',
+    },
+    {field: 'paymentType', headerName: 'Płatność', width: 70},
+    { field: 'deliveryType', headerName: 'Dostawa' , width: 70},
+    { field: 'orderStatus', headerName: 'Status' , width: 70},
 ];
 
 const Orders = () => {
 
-    const [products, setProducts] = useState([]);
-    const [filter, setFilter] = useState({}); 
-
+    const [orders, setOrders] = useState([]);
     const navigate = useNavigate();
-
     useEffect(() => {
-
-        const queryParams = new URLSearchParams(filter).toString();
     
-        fetch(`${process.env.REACT_APP_API_URL}/api/v1/products/Product/filtred?${queryParams}`)
+        fetch(`${process.env.REACT_APP_API_URL}/api/v1/admin/products/Admin/getOrders`)
           .then((response) => response.json())
-          .then((data) => setProducts(data))
+          .then((data) => setOrders(data))
           .catch((error) => console.log(error));
-    }, [filter]);
+    }, []);
 
-    const handleRowClick = (row) => {
-        navigate(`/products/${row.id}`);
-    }
-
-    const handleFilterChange = (newFilter) => {
-        setFilter(newFilter);
+    const handleRowClick = (params) => {
+        const orderId = params.id;
+        const selectedOrder = orders.find(order => order.id === orderId);
+        navigate(`/admin/productManagement/orderDetails/${orderId}`, { state: { order: selectedOrder } });
     };
-   
-    
-     
+       
+  
     return ( 
         <div><Box display="flex" >
             <div className='table'>
-                {products.length > 0 ? (
+                {orders.length > 0 ? (
                     <DataGrid
-                        onRowClick={handleRowClick}
-                        rows={products}
+                        onRowClick={(params) => handleRowClick(params.row)}
+                        rows={orders}
                         columns={columns}
                         pageSizeOptions={[5, 10]}
                         rowHeight={150} 
                     />
                     ) : (
-                        <h1>Brak produktów</h1>
+                        <h1>Brak zamówień</h1>
                     )}
             </div>
         </Box></div>

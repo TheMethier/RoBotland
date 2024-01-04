@@ -9,6 +9,7 @@ import ProductDetails from './pages/ProductDetails/ProductDetails';
 import ProductManagement from './pages/ProductManagement/ProductManagement';
 import ProductEdit from './pages/ProductEdit/ProductEdit';
 import AddNewProduct from './pages/AddNewProduct/AddNewProduct';
+import OrderDetails from './pages/OrderDetails/OrderDetails';
 import Orders from './pages/Orders/Orders';
 import Admin from './components/Admin/Admin';
 
@@ -17,7 +18,6 @@ import Admin from './components/Admin/Admin';
 //dodawanie zdjeć?
 //dostęp do panelu admina 
 //obsługa zamówień
-//dodawnie kategorii do produktu
 const router = createBrowserRouter(
   [
     {
@@ -47,6 +47,10 @@ const router = createBrowserRouter(
             {
               path: 'orders',
               element: <Orders />,
+            },
+            {
+              path: '/admin/productManagement/orderDetails/:order',
+              element: <OrderDetails />
             },
             {
               path: '/admin/productManagement',

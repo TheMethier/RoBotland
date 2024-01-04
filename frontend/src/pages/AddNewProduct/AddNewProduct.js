@@ -68,13 +68,13 @@ const AddNewProduct = () => {
                 ]
             });
                 const productId = data;
-                selectedCategories.forEach(categoryId => {
+                if (selectedCategories.length > 0) {
                     fetch(`${process.env.REACT_APP_API_URL}/api/v1/admin/products/Admin/categories/products`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify({ CategoryId: categoryId, ProductId: productId }),
+                        body: JSON.stringify({ CategoryNames: selectedCategories, ProductId: productId }),
                     })
                     .then(response => {
                         if (!response.ok) {
@@ -88,21 +88,21 @@ const AddNewProduct = () => {
                     .catch(error => {
                         console.error('Error adding category to product:', error);
                     });
-                });
+                
+            }
             navigate(`/admin/productManagement`);
         })
         .catch(error =>{
-      
-        console.error('Error added product:', error);
-        alert('Wystąpił błąd podczas dodawania produktu. Spróbuj ponownie.');
-        console.error('Error added product:', error)});
+            console.error('Error added product:', error);
+            alert('Wystąpił błąd podczas dodawania produktu. Spróbuj ponownie.');
+            console.error('Error added product:', error)});
     };
 
-    const handleCategoryChange = (categoryId, checked) => {
+    const handleCategoryChange = (categoryName, checked) => {
         if (checked) {
-            setSelectedCategories([...selectedCategories, categoryId]);
+            setSelectedCategories([...selectedCategories, categoryName]);
         } else {
-            setSelectedCategories(selectedCategories.filter(id => id !== categoryId));
+            setSelectedCategories(selectedCategories.filter(id => id !== categoryName));
         }
     };
 
@@ -117,8 +117,8 @@ const AddNewProduct = () => {
         if (categories.some(category => category.name === newCategory)) {
             return;
         }
-        const newCategoryId = categories.length + 1;
-        const newCategoryObject = {id:0, name: newCategory };
+        
+        const newCategoryObject = {name: newCategory };
         
         setCategories([...categories, newCategoryObject]);
         setNewCategory('');
@@ -181,18 +181,33 @@ const AddNewProduct = () => {
                 </div>
                 <div className="edit-form">
                 <form className="forms">
-                  
-                    <label>Kategorie:</label>
-                    {categories.map(category => (
-                        <div key={category.id}>
-                            <Checkbox
-                                checked={selectedCategories.includes(category.id)}
-                                onChange={(e) => handleCategoryChange(category.id, e.target.checked)}
-                            />
-                            {category.name}
-                        </div>
-                    ))}
-                    <div>
+                        <div className="checkboxContainer">
+                            <label>Kategorie:</label>
+                            <div className="categoryContainer">
+                                <div className="categoryColumn">
+                                    {categories.slice(0, Math.ceil(categories.length / 2)).map(category => (
+                                    <div key={category.id}>
+                                        <Checkbox
+                                        checked={selectedCategories.includes(category.name)}
+                                        onChange={(e) => handleCategoryChange(category.name, e.target.checked)}
+                                        />
+                                        {category.name}
+                                    </div>
+                                    ))}
+                                </div>
+                                <div className="categoryColumn">
+                                    {categories.slice(Math.ceil(categories.length / 2)).map(category => (
+                                    <div key={category.id}>
+                                        <Checkbox
+                                        checked={selectedCategories.includes(category.name)}
+                                        onChange={(e) => handleCategoryChange(category.name, e.target.checked)}
+                                        />
+                                        {category.name}
+                                    </div>
+                                    ))}
+                                </div>
+                                </div>
+                    <div className="butoo"> 
                         <TextField
                             label="Nowa kategoria"
                             value={newCategory}
@@ -200,9 +215,8 @@ const AddNewProduct = () => {
                         />
                         <Button variant="contained" onClick={handleAddNewCategory}>
                             Dodaj nową kategorię
-                        </Button>
-                    </div>
-                   
+                        </Button></div>
+                   </div>
                 </form>
             </div>
             </div>
@@ -211,29 +225,3 @@ const AddNewProduct = () => {
 }
  
 export default AddNewProduct;
-
-// if (!data || !data.id) {
-//     throw new Error('Invalid response from the server');
-// }
-// const productId = data.id;
-// selectedCategories.forEach(categoryId => {
-//     fetch(`${process.env.REACT_APP_API_URL}/api/v1/categories/${categoryId}/products/${productId}`, {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify({ CategoryId: categoryId, ProductId: productId }),
-//     })
-//     .then(response => {
-//         if (!response.ok) {
-//             throw new Error('Error adding category to product');
-//         }
-//         return response.json();
-//     })
-//     .then(categoryData => {
-//         console.log('Response kghjggjjfhghory to product:', categoryData);
-//     })
-//     .catch(error => {
-//         console.error('Error adding category to product:', error);
-//     });
-// });
