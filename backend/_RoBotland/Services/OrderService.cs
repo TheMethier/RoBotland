@@ -41,13 +41,13 @@ namespace _RoBotland.Services
                     var orderDto = _mapper.Map<OrderDto>(x);
                     var userD = _dataContext.UserDetails.FirstOrDefault(p => p.Id == x.UserDetailsId) ?? throw new Exception("User not found");
                     var orderDetails = _dataContext.OrderDetails.Where(d => d.OrderId == x.Id).ToList();
-                    int i = 0;
+                    int i = 1;
                     orderDto.Items = new List<ShoppingCartItem>();
                     orderDetails.ForEach(d => {
                         if (d != null)
                         {
                             var product = _mapper.Map<ProductDto>(_dataContext.Products.Find(d.ProductId)) ?? throw new Exception("");
-                            ShoppingCartItem item = new ShoppingCartItem(i, product, d.Quantity, d.Total);
+                            ShoppingCartItem item = new ShoppingCartItem(i++, product, d.Quantity, d.Total);
                             orderDto.Items.Add(item);
                         }
                     });

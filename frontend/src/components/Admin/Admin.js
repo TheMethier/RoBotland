@@ -15,9 +15,8 @@ const Admin = () => {
             </nav>
             <div className="wrapper">
                 <Outlet />
-            </div>
-          
-            </div>
+            </div>     
+        </div>
      );
 }
  
