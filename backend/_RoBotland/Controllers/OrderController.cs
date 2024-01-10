@@ -9,7 +9,7 @@ using System.Security.Claims;
 
 namespace _RoBotland.Controllers
 {
-    [Route("/api/v1/orders/[controller]")]
+    [Route("/api/v1/[controller]")]
     [ApiController]
     public class OrderController : ControllerBase
     {
@@ -19,7 +19,7 @@ namespace _RoBotland.Controllers
             this._orderService = orderService;
         }
         [Authorize]
-        [HttpPost("/placeOrderByLoggedIn")]
+        [HttpPost("placeOrderByLoggedIn")]
         public IActionResult PlaceOrderByLoggedInUser([FromBody] OrderOptionsDto orderOptions )
         {
             var session = HttpContext.Session;
@@ -27,6 +27,7 @@ namespace _RoBotland.Controllers
                  return NoContent();
             var username = HttpContext.User.Identity.Name
                 != null ? HttpContext.User.Identity.Name : string.Empty; //pobieranie użytkownika z sesji
+            Console.WriteLine(username);
             try
             {
                 var order = _orderService.PlaceOrderByLoggedInUser(session, username,orderOptions);
@@ -38,7 +39,7 @@ namespace _RoBotland.Controllers
                 return BadRequest(ex.Message);//dodaj ify na errory
             }
         }
-        [HttpPost("/placeOrderWithoutRegister")]
+        [HttpPost("placeOrderWithoutRegister")]
         public IActionResult PlaceOrderWithoutRegister([FromBody]UserDetailsDto userDetails)
         //Test it
         {

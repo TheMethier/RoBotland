@@ -23,7 +23,7 @@ export const Forms = ({filter, onFilterChange}) => {
   };
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/api/v1/products/Product/categories`)
+    fetch(`${process.env.REACT_APP_API_URL}/api/v1/Product/categories`)
       .then((response) => response.json())
       .then((data) => setCategories(data))
       .catch((error) => console.log(error));

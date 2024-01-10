@@ -12,7 +12,8 @@ import AddNewProduct from './pages/AddNewProduct/AddNewProduct';
 import OrderDetails from './pages/OrderDetails/OrderDetails';
 import Orders from './pages/Orders/Orders';
 import Admin from './components/Admin/Admin';
-
+import Login from './pages/Login/Login';
+import Register from './pages/Register/Register';
 //TODO
 //tabelka z produktami do dodania?
 //dodawanie zdjeć?
@@ -39,6 +40,14 @@ const router = createBrowserRouter(
         {
           path: '/about',
           element: <div>O nas</div>,
+        },
+        {
+          path: '/login',
+          element: <Login />,
+        },
+        {
+          path: '/register',
+          element: <Register />
         },
         {
           path: '/admin',

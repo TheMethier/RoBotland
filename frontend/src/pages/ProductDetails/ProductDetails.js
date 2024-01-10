@@ -10,7 +10,7 @@ const ProductDetails = () => {
     const [product, setProduct] = useState();
 
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_API_URL}/api/v1/products/Product/${id}`)
+        fetch(`${process.env.REACT_APP_API_URL}/api/v1/Product/${id}`)
             .then(response => response.json())
             .then(data => setProduct(data))
             .catch(error => console.log(error));

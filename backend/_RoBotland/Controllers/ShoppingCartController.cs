@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Query;
 
 namespace _RoBotland.Controllers
 {
-    [Route("/api/v1/shoppingCart/[controller]")]
+    [Route("/api/v1/[controller]")]
     [ApiController]
     public class ShoppingCartController: ControllerBase
     {
@@ -17,7 +17,7 @@ namespace _RoBotland.Controllers
             _shoppingCartService = shoppingCartService;
         }
 
-        [HttpPost("/add/{productId:int}")]
+        [HttpPost("add/{productId:int}")]
         public IActionResult AddProductToShoppingCart(int productId)
         {
 
@@ -39,7 +39,7 @@ namespace _RoBotland.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("/actual")]
+        [HttpGet("actual")]
         public IActionResult GetShoppingCartItems()
         {
             var session = HttpContext.Session;
@@ -47,7 +47,7 @@ namespace _RoBotland.Controllers
             if (context == null) return NoContent();
             return Ok(context);
         }
-        [HttpDelete("/remove/{productId:int}")]
+        [HttpDelete("remove/{productId:int}")]
         public IActionResult RemoveProductFromShoppingCard(int productId) 
         {
             var session = HttpContext.Session;

@@ -27,7 +27,7 @@ const AddNewProduct = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_API_URL}/api/v1/products/Product/categories`)
+        fetch(`${process.env.REACT_APP_API_URL}/api/v1/Product/categories`)
             .then(response => response.json())
             .then(data => setCategories(data))
             .catch(error => console.error('Error fetching categories:', error));
@@ -41,7 +41,7 @@ const AddNewProduct = () => {
     };
 
     const handleSaveClick = () => {
-        fetch(`${process.env.REACT_APP_API_URL}/api/v1/admin/products/Admin`, {
+        fetch(`${process.env.REACT_APP_API_URL}/api/v1/Admin`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -69,7 +69,7 @@ const AddNewProduct = () => {
             });
                 const productId = data;
                 if (selectedCategories.length > 0) {
-                    fetch(`${process.env.REACT_APP_API_URL}/api/v1/admin/products/Admin/categories/products`, {
+                    fetch(`${process.env.REACT_APP_API_URL}/api/v1/Admin/categories/products`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

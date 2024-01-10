@@ -30,7 +30,7 @@ const ProductList = () => {
 
         const queryParams = new URLSearchParams(filter).toString();
     
-        fetch(`${process.env.REACT_APP_API_URL}/api/v1/products/Product/filtred?${queryParams}`)
+        fetch(`${process.env.REACT_APP_API_URL}/api/v1/Product/filtred?${queryParams}`)
           .then((response) => response.json())
           .then((data) => setProducts(data))
           .catch((error) => console.log(error));

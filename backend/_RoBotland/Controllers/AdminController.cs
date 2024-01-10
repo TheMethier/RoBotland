@@ -4,13 +4,12 @@ using _RoBotland.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore.Query;
 using _RoBotland.Enums;
-using _RoBotland.Services;
 
 
 namespace _RoBotland.Controllers
 {
     
-    [Route("/api/v1/admin/products/[controller]")]
+    [Route("/api/v1/[controller]")]
     [ApiController]
     public class AdminController : ControllerBase
     {
@@ -21,15 +20,15 @@ namespace _RoBotland.Controllers
             _productService = productService;
             _orderService = orderService;
         }
-        [Authorize(Roles = "ADMIN")]
-        [HttpGet("/all")]
+        //[Authorize(Roles = "ADMIN")]
+        [HttpGet("all")]
         public IActionResult GetProducts()
         {
             List<ProductDto> products = _productService.GetProducts();
             return Ok(products);
         }
-        [Authorize(Roles = "ADMIN")]
-        [HttpGet("/{id:int}")]
+        //[Authorize(Roles = "ADMIN")]
+        [HttpGet("{id:int}")]
         public IActionResult GetProductById(int id)
         {
             try
@@ -57,13 +56,14 @@ namespace _RoBotland.Controllers
             {
                 _productService.DeleteProduct(id);
                 return Ok();
+
             }
             catch
             {
                 return NotFound();
             }
-            return NoContent();
         }
+
         //[Authorize(Roles = "ADMIN")]
         [HttpPut("{id:int}")]
         public IActionResult UpgradeProduct(int id, [FromBody] ProductDto dto)
@@ -78,7 +78,8 @@ namespace _RoBotland.Controllers
                 return NotFound(ex);
             }
         }
-        //[Authorize(Roles = "ADMIN")]
+        
+                //[Authorize(Roles = "ADMIN")]
         [HttpPost("categories/products")]
         public IActionResult AddCategoryToProduct([FromBody] AddCategoryToProductDto dto)
         {
@@ -92,11 +93,27 @@ namespace _RoBotland.Controllers
                 return StatusCode(500, "Wystąpił błąd podczas przetwarzania żądania.");
             }
         }
+        
         [HttpGet("/products/filtred")]
         public IActionResult GetProducts([FromQuery] ProductFilterDto filterParameters)
         {
             var products = _productService.GetFilteredProducts(filterParameters);
             return Ok(products);
+        }
+        
+        [Authorize(Roles = "ADMIN")]
+        [HttpPut("/products/{id:int}/ChangeProductAvailability")]
+        public IActionResult ChangeProductAvailability(Availability availability, [FromBody] ProductDto dto)
+        {
+            try
+            {
+                var productId = _productService.ChangeProductAvailability(availability, dto);
+                return Created("/api/v1/admin/products/{id}", productId);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex);
+            }
         }
         [HttpGet("/products/searched")]
         public IActionResult SearchProductsByName(string productName)
@@ -104,20 +121,7 @@ namespace _RoBotland.Controllers
             var products = _productService.SearchProductsByName(productName);
             return Ok(products);
         }
-        [Authorize(Roles = "ADMIN")]
-        [HttpPut("/products/{id:int}/ChangeProductAvailability")]
-        public IActionResult ChangeProductAvailability(Availability availability, [FromBody] ProductDto dto)
-        {
-            try
-            {
-                var orders = _orderService.GetOrders();
-                return Ok(orders);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
-            }
-        }
+
         //[Authorize(Roles = "ADMIN")]
         [HttpPut("/finalize/{id:Guid}")]
         public IActionResult ChangeOrderStatus(Guid id,[FromBody] OrderStatus orderStatus)
@@ -153,4 +157,6 @@ namespace _RoBotland.Controllers
             return Ok(orders);
         }
     }
-}
+
+    }
+

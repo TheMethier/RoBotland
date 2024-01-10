@@ -26,14 +26,16 @@ namespace _RoBotland.Services
             this._config = configuration;
         }
 
-        public string Login(UserLoginDto request)
+        public UserLoginResponseDto Login(UserLoginDto request)
         {
             var user = _dataContext.Users.FirstOrDefault(x=>x.Username == request.Username)??throw new Exception("Not Found");
             if (!(BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash) && user.Username == request.Username)) 
                 throw new Exception("Bad Password");
-            var response = _mapper.Map<UserDto>(user);
-            var token = GenerateToken(response);
-            return token;
+            var userd = _mapper.Map<UserDto>(user);
+            string token = GenerateToken(userd);
+            UserLoginResponseDto userLoginResponseDto = new UserLoginResponseDto(token);
+            return userLoginResponseDto;
+            
         }
 
         public UserDto Register(UserRegisterDto request)
