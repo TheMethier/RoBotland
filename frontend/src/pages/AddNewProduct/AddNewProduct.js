@@ -22,6 +22,7 @@ const AddNewProduct = () => {
         description: '',
         imageUrl: 'image1.jpg',
         isAvailable: 0, 
+        
     };
     const [product, setProduct] = useState(defaultProduct);
     const navigate = useNavigate();

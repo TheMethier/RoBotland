@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { json, useParams } from "react-router-dom";
 import './ProductDetails.css';
+import { confirmAlert } from 'react-confirm-alert';
 
 
 const ProductDetails = () => {
     const { id } = useParams();
-
+    const [cart, setCart]= useState([]);
 
     const [product, setProduct] = useState();
 
@@ -15,7 +16,50 @@ const ProductDetails = () => {
             .then(data => setProduct(data))
             .catch(error => console.log(error));
     }, [id]);
-
+    
+    const addProductToCard= (product) =>{
+        let cart=sessionStorage.getItem("cart")
+        if (cart==null){
+            sessionStorage.setItem("cart","[]")
+            setCart([])
+        }
+        fetch(`${process.env.REACT_APP_API_URL}/api/v1/ShoppingCart/add/${product.id}`, {
+            method: 'POST',
+            headers: {
+                    'Content-Type': 'application/json'
+                    
+            },            
+            body: sessionStorage.getItem("cart")
+        })
+        .then(response => {
+            if(!response.ok)
+                {
+                    console.log(product);
+                    console.log(response);
+                    throw Error("");
+                }
+            return response.json();
+        })
+        .catch(error => {
+            console.log(error)
+            return Promise.reject(error);
+        })
+        .then(data => {
+            console.log(data);
+            sessionStorage.setItem("cart",JSON.stringify(data));
+            confirmAlert({
+                title: 'Sukces',
+                message: `Dodano ${product.name} do koszyka!`,
+                buttons: [
+                    {
+                        label: 'OK',
+                        onClick: () => window.location.replace("/cart")
+                    }
+                ]
+            });
+            
+        });
+    }
     if (!product) {
         return <h1>Loading...</h1>
     }
@@ -36,7 +80,7 @@ const ProductDetails = () => {
                     <div className="price">
                         <h2>{product.price} PLN</h2>
                         Dostępność: {product.isAvailable}
-                        <button className="addToCartBtn">Dodaj do koszyka</button>
+                        <button className="addToCartBtn" onClick={(x)=>addProductToCard(product)}>Dodaj do koszyka</button>
 
                     </div>
                 </div>

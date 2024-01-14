@@ -20,14 +20,13 @@ namespace _RoBotland.Controllers
         }
         [Authorize]
         [HttpPost("placeOrderByLoggedIn")]
-        public IActionResult PlaceOrderByLoggedInUser([FromBody] OrderOptionsDto orderOptions )
+        public IActionResult PlaceOrderByLoggedInUser([FromQuery] OrderOptionsDto orderOptions, [FromBody] List<ShoppingCartItem> shoppingCartItems )
         {
             var session = HttpContext.Session;
             if (HttpContext.User.Identity == null)
                  return NoContent();
             var username = HttpContext.User.Identity.Name
                 != null ? HttpContext.User.Identity.Name : string.Empty; //pobieranie użytkownika z sesji
-            Console.WriteLine(username);
             try
             {
                 var order = _orderService.PlaceOrderByLoggedInUser(session, username,orderOptions);

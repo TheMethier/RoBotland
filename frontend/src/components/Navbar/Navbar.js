@@ -3,7 +3,9 @@ import { Link, Outlet } from "react-router-dom";
 import '../../images/icons/css/fontello.css'
 import { useEffect, useState } from 'react';
 import { Button } from '@mui/material';
-
+import LogoutIcon from '@mui/icons-material/Logout';
+import { Margin } from '@mui/icons-material';
+import LoginIcon from '@mui/icons-material/Login';
 
 const Navbar = () => {
     const [user, setUser]=useState({username: "", role: ""});
@@ -55,42 +57,40 @@ const Navbar = () => {
                     <Link to="/about">About</Link>
                     {isAdmin && <Link to="/admin/orders">Admin</Link>}
                 </div>
+                
+                    {user.username!="" && 
                 <div className='icons'>
-                <div className='icon'>
+                    <div className='icon'>
                     <Link className='cart' to="/cart">
                         <i className="icon-basket"></i>
                     </Link>
-                </div>
-                    {user.username!="" && 
-                <div>
-
-                <div className='icon'>
-                    <Link className='cart' to={{pathname:`/user/${user.username}`}}>
-                        <h1>
-                            {user.username}
-                        </h1>
-                    </Link>
-                </div>
-                <div className='icon'>
-                        <Button
-                            color='success'
-                            onClick={x=>{Logout()}}>
-                                Logout
-                        </Button>
-                </div>
-                </div>
-
-            //        <Button onClick={x=>{Logout()}}></Button>
+                    </div>
+                    <div className='icon'>
+                        <Link className='cart' to={{pathname:`/user/${user.username}`}}>
+                        <i className='icon-user'/>
+                        </Link>
+                    </div>
+                    <div className='icon'>
+                            <LogoutIcon  onClick={x=>{Logout()}} color='inherit'sx={{marginTop:"1.5vh"}}/>
+                    </div>
+               </div>
                     }
                     {user.username==""&&
+                    <div className='icons'>
+                    <div className='icon'>
+                    <Link className='cart' to="/cart">
+                        <i className="icon-basket"></i>
+                    </Link>
+                    </div>
+                    <div className='icon' >
+
                     <Link className='cart' to="/login">
-                    <i className="icon-user"></i>
-                </Link>
+                        <LoginIcon/>
+                    </Link>
+                </div>
+                </div>
                     }
                    
-                    
-                    
-                </div>
             </nav>
             <div className="wrapper">
                 <Outlet />

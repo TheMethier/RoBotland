@@ -26,6 +26,9 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(10);
     options.Cookie.HttpOnly = false;
     options.Cookie.IsEssential = true;
+    options.Cookie.Name = "d";
+    options.Cookie.SameSite = SameSiteMode.Strict;
+    options.Cookie.Path = "";
 });
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddEndpointsApiExplorer();
@@ -67,7 +70,7 @@ builder.Services.AddCors(options =>
     {
         builder.WithOrigins("http://localhost:3000")
                .AllowAnyHeader()
-               .AllowAnyMethod();
+               .AllowAnyMethod().AllowCredentials();
     });
 });
 var app = builder.Build();

@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { json, useNavigate } from 'react-router-dom';
-import { Card, TextField, Paper, Button, Typography, Stack, CardContent, CardHeader } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { Card, TextField, Button,  CardContent } from '@mui/material';
 import Grid from '@mui/material/Grid';
-
 import { confirmAlert } from 'react-confirm-alert';
 export default function Register()
 {
