@@ -55,31 +55,15 @@ public class ProductService : IProductService
 
     public List<CategoryDto> GetCategories()
     {
-        var categories = _dataContext.Categories.ToList();
-        List<CategoryDto> categoryList = new List<CategoryDto>();
-        categories.ForEach(x =>
-        {
-            if (x != null)
-            {
-                var categoryDto = _mapper.Map<CategoryDto>(x);
-                categoryList.Add(categoryDto);
-            }
-        });
-        return categoryList;
+        var categories = _dataContext.Categories
+            .Select(x=>_mapper.Map<CategoryDto>(x))
+            .ToList();
+        return categories;
     }
     public List<ProductDto> GetProducts()
     {
-        var products = _dataContext.Products.ToList();
-        List<ProductDto> productList = new List<ProductDto>();
-        products.ForEach(x =>
-        {
-            if (x != null)
-            {
-                var productDto = _mapper.Map<ProductDto>(x);
-                productList.Add(productDto);
-            }
-        });
-        return productList;
+        var products = _dataContext.Products.Select(x=>_mapper.Map<ProductDto>(x)).ToList();
+        return products;
     }
     public List<ProductDto> SearchProductsByName(string productName)
     {
@@ -103,7 +87,6 @@ public class ProductService : IProductService
             var upperProductName = filterParameters.ProductName.ToUpper();
             query = query.Where(p => p.Name.ToUpper().Contains(upperProductName));
         }
-
         if (filterParameters.MinPrice.HasValue)
          query = query.Where(p => p.Price >= filterParameters.MinPrice);
         if (filterParameters.MaxPrice.HasValue)
@@ -162,7 +145,6 @@ public class ProductService : IProductService
              .Where(p => p.Id == productId)
              .SelectMany(p => p.Categories)
              .ToList();
-
         return categories;
     }
 }

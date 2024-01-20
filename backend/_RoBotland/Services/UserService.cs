@@ -66,6 +66,7 @@ namespace _RoBotland.Services
                 .ThenInclude(x=>x.User)
                 .Where(x=>x.UserDetails.User.Username==username).ToList();
             List<OrderDto> orders = new List<OrderDto>();
+            
             foreach (var order in history)
             {
                 var detail = _mapper.Map<OrderDto>(order);
@@ -111,9 +112,9 @@ namespace _RoBotland.Services
                 _dataContext.SaveChanges();
             }
         }
-        private User GetUserById(Guid id)
+        public UserInfoDto GetUserInfo(string username)
         {
-            var user = _dataContext.Users.Find(id);
+            var user = _mapper.Map<UserInfoDto>(_dataContext.Users.Where(x=>x.Username==username).Include(x=>x.UserDetails).First());
             return user;
         }
 

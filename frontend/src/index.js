@@ -15,6 +15,8 @@ import Admin from './components/Admin/Admin';
 import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
 import ShoppingCart from './pages/ShoppingCart/ShoppingCart';
+import PlaceOrder from './pages/PlaceOrder/PlaceOrder' 
+import PlaceOrderR from './pages/PlaceOrder/PlaceOrderR';
 //TODO
 //tabelka z produktami do dodania?
 //dodawanie zdjeć?
@@ -54,6 +56,15 @@ const router = createBrowserRouter(
           path: '/cart',
           element: <ShoppingCart />
         },
+        {
+          path: '/placeorder',
+          element: <PlaceOrder />
+        },
+{
+  path: '/placeorderr',
+  element: <PlaceOrderR/>
+}
+        ,
         {
           path: '/admin',
           element: <Admin />,

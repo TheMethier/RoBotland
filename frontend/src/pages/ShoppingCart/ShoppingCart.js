@@ -24,7 +24,9 @@ export default function ShoppingCart()
     const navigate = useNavigate();
 
     useEffect(()=>{
+      if(sessionStorage.getItem("cart")==null)setShoppingCartItems([]);
       setShoppingCartItems(JSON.parse(sessionStorage.getItem("cart")));
+
     },[press]);
     
     const addProductToCart= (product) =>{
@@ -80,10 +82,14 @@ export default function ShoppingCart()
     const handlePlaceOrderClick=()=>{
       navigate("/placeorder")
     }
+    function sum(acc, a)
+    {
+      return acc+a.total;
+    }
 
     return(
       <div>
-      {shoppingCartItems.length!=0 ? (
+      {shoppingCartItems!=null && shoppingCartItems.length!=0 ? (
         <Stack sx={{display:"flex"}}>
             <TableContainer component={Paper} sx={{
               fontSize: "30px",
@@ -93,7 +99,7 @@ export default function ShoppingCart()
               <Table  aria-label="simple table">
                 <TableHead>
                   <TableRow>
-                    <TableCell>Id</TableCell>
+                    <TableCell>nr.</TableCell>
                     <TableCell align="center">Zdjęcie</TableCell>
                     <TableCell align="center">Nazwa</TableCell>
                     <TableCell align="center">Cena</TableCell>
@@ -149,7 +155,7 @@ export default function ShoppingCart()
                 </Grid>
                 <Grid item xs={5} md={6}>
                 <h2 >
-                  {total} zł
+                  {shoppingCartItems.reduce((accumulate, total)=>accumulate+total.total,0)} zł
                 </h2>
                 </Grid>
       

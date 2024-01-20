@@ -13,7 +13,7 @@ const Navbar = () => {
     const [isAdmin, setIsAdmin] =useState(false);
 
     const Logout=()=>{
-        localStorage.setItem("token","")
+        localStorage.setItem("token","");
         setIsLoggedIn(false);
         setIsAdmin(false);
     }

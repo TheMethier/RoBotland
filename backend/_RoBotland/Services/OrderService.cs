@@ -38,7 +38,7 @@ namespace _RoBotland.Services
                 .Include(x=> x.OrderDetails).
                 ThenInclude(x=>x.Product).
                 ToList();
-            List<OrderDto> orderList = new List<OrderDto>();
+            List<OrderDto> orderList =new List<OrderDto>();
             orders.ForEach(x =>
             {
                 var orderDto = _mapper.Map<OrderDto>(x);
@@ -53,11 +53,10 @@ namespace _RoBotland.Services
             return orderList;
         }
 
-        public OrderDto PlaceOrderByLoggedInUser(ISession session,string username,OrderOptionsDto orderOptions)
+        public OrderDto PlaceOrderByLoggedInUser(List <ShoppingCartItem> items,string username,OrderOptionsDto orderOptions)
         {
             if (username is null) throw new Exception("unlogged user");
             float total = 0;
-            var items = SessionHelper.GetObjectFromJson<List<ShoppingCartItem>>(session, "shoppingcart") ?? throw new Exception("Empty card");
             var user = _dataContext.Users.Include(x=>x.UserDetails).FirstOrDefault(x => x.Username == username) ?? throw new Exception("User not found");
             var order = new Order(Guid.NewGuid(), user.UserDetails.Id, user.UserDetails, total, Enums.OrderStatus.A, orderOptions.DeliveryType, orderOptions.PaymentType);
             _dataContext.Orders.Add(order);
@@ -72,29 +71,21 @@ namespace _RoBotland.Services
             });
             order.Total = total;
             if (user.AccountBalance >= total)
-            {
                 _dataContext.Entry(user).Entity.AccountBalance -= total;
-            }
             else
-            {
                 throw new Exception("lack of account funds\r\n");
-            }
             _dataContext.SaveChanges();
             OrderDto orderDto = new OrderDto(order.Id,DateTime.Now,items,_mapper.Map<UserDetailsDto>(user.UserDetails),orderOptions.DeliveryType,orderOptions.PaymentType);
             return orderDto;
         }
 
-        public OrderDto PlaceOrderWithoutRegister(ISession session, UserDetailsDto userDetails)
+        public OrderDto PlaceOrderWithoutRegister(List<ShoppingCartItem> items, UserDetailsDto userDetails)
         {
-            var items = SessionHelper.GetObjectFromJson<List<ShoppingCartItem>>(session, "shoppingcart") ?? throw new Exception("Empty card");
             float total = 0;
             var orderId = Guid.NewGuid();
             var userDId = Guid.NewGuid();
             var userD =_mapper.Map<UserDetails>(userDetails);
-            userD.User = new Models.User();
-            userD.User.Id = userDId;
-            userD.User.Username = "";
-            userD.User.PasswordHash = string.Empty;
+            userD.User = new Models.User(userDId, "", "");
             userD.Id = userDId;
             _dataContext.UserDetails.Add(userD);
             _dataContext.SaveChanges();

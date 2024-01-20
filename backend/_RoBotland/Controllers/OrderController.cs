@@ -29,7 +29,7 @@ namespace _RoBotland.Controllers
                 != null ? HttpContext.User.Identity.Name : string.Empty; //pobieranie użytkownika z sesji
             try
             {
-                var order = _orderService.PlaceOrderByLoggedInUser(session, username,orderOptions);
+                var order = _orderService.PlaceOrderByLoggedInUser(shoppingCartItems, username,orderOptions);
                 SessionHelper.SetObjectAsJson(session, "shoppingcart", new List<ShoppingCartItem>());
                 return Ok(order);
             }
@@ -39,13 +39,13 @@ namespace _RoBotland.Controllers
             }
         }
         [HttpPost("placeOrderWithoutRegister")]
-        public IActionResult PlaceOrderWithoutRegister([FromBody]UserDetailsDto userDetails)
+        public IActionResult PlaceOrderWithoutRegister([FromQuery]UserDetailsDto userDetails, [FromBody] List<ShoppingCartItem> shoppingCartItems)
         //Test it
         {
             var session = HttpContext.Session;
             try
             {
-                var order = _orderService.PlaceOrderWithoutRegister(session, userDetails);
+                var order = _orderService.PlaceOrderWithoutRegister(shoppingCartItems, userDetails);
                 SessionHelper.SetObjectAsJson(session, "shoppingcart", new List<ShoppingCartItem>());
                 return Ok(order);
             }

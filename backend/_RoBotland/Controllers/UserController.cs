@@ -53,8 +53,18 @@ namespace _RoBotland.Controllers
             
             return BadRequest(ex.Message);
             }
-            
-
+        }
+        [Authorize]
+        [HttpGet("getUserInfo")]
+        public IActionResult GetUserInfo()
+        {
+            var username = HttpContext.User.Identity != null ?
+                   HttpContext.User.Identity.Name != null ?
+                       HttpContext.User.Identity.Name :
+                       string.Empty
+                   : string.Empty;
+            var userInfo = _userService.GetUserInfo(username);
+            return Ok(userInfo);
         }
         [HttpPost("logout")]
         public IActionResult Logout()
