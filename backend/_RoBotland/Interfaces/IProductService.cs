@@ -11,8 +11,10 @@ namespace _RoBotland.Interfaces
         void DeleteProduct(int id);
         int UpdateProduct(int id,ProductDto product);
         public List<ProductDto> GetFilteredProducts(ProductFilterDto filterParameters);
-        int AddCategoryToProduct(int categoryId, int productId);
+        ICollection<Category> AddCategoryToProduct(List<string> categoryNames, int productId);
         public List<ProductDto> SearchProductsByName(string productName);
-        ProductDto ChangeProductAvailability(Availability availability, ProductDto dto);
+        ProductDto ChangeProductAvailability(Availability availability, int productId);
+        List<CategoryDto> GetCategories();
+        List<Category> GetProductCategories(int productId);
     }
 }

@@ -1,0 +1,32 @@
+.table_button{
+    display: flex;
+}
+p{
+    margin-top: 8px;
+    margin-bottom: 4px;
+}
+.table{
+    margin-top: 10px;
+}
+.status-button{
+    padding: 10px;
+}
+
+.buttons{
+    display: flex;
+    flex-direction: column;
+}
+
+.status-button{
+    background-color: rgb(239, 236, 236);
+    margin-top: 15%;
+    padding: 20%;
+    border: 1px solid black;
+    border-radius: 8px;
+    cursor: pointer;   
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+}
+
+.status-button:hover {
+    background-color: lightgrey;
+}

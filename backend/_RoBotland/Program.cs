@@ -24,8 +24,12 @@ builder.Services.AddTransient<IOrderService, OrderService>();
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(10);
-    options.Cookie.HttpOnly = true;
+    options.Cookie.HttpOnly = false;
+    options.Cookie.SameSite = SameSiteMode.Lax;
     options.Cookie.IsEssential = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+
+
 });
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddEndpointsApiExplorer();
@@ -42,6 +46,9 @@ builder.Services.AddSwaggerGen(options =>
 });
 builder.Services.AddAuthentication().AddJwtBearer(options =>
 {
+    options.SaveToken = true;
+    options.RequireHttpsMetadata = false;
+
     options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
     {
         ValidateIssuer = false,
@@ -64,7 +71,7 @@ builder.Services.AddCors(options =>
     {
         builder.WithOrigins("http://localhost:3000")
                .AllowAnyHeader()
-               .AllowAnyMethod();
+               .AllowAnyMethod().AllowCredentials();
     });
 });
 var app = builder.Build();

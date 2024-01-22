@@ -31,7 +31,7 @@ namespace _RoBotland.Models
         public DeliveryType DeliveryType { get; set; }
         public PaymentType PaymentType { get; set; }
         public float Total { get; set; }
-        public OrderStatus OrderStatus;
+        public OrderStatus OrderStatus { get; set; }
 
         public override bool Equals(object? obj)
         {

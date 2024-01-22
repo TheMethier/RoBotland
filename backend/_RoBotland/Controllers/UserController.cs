@@ -2,10 +2,12 @@
 using _RoBotland.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.Security.Claims;
 
 namespace _RoBotland.Controllers
 {
-    [Route("/api/v1/user/[controller]")]
+    [Route("/api/v1/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -17,7 +19,7 @@ namespace _RoBotland.Controllers
             this._userService = userService;
         }
 
-        [HttpPost("/register")]
+        [HttpPost("register")]
         public IActionResult Register([FromBody] UserRegisterDto request)
         {
             try
@@ -31,39 +33,68 @@ namespace _RoBotland.Controllers
 
             }
         }
-        [HttpPost("/login")]
+        [HttpPost("login")]
         public IActionResult Login([FromBody] UserLoginDto request)
         {
             try
             {
                 var jwt = _userService.Login(request);
+                HttpContext.Response.Cookies.Append("token", jwt.Token, new Microsoft.AspNetCore.Http.CookieOptions
+                {
+                    Expires = DateTime.Now.AddMinutes(15),
+                    HttpOnly = false,
+                    IsEssential = true,
+                    Secure = true
+                });
+                
                 return Ok(jwt);
             }
             catch (Exception ex) {
             
             return BadRequest(ex.Message);
             }
-            
-
-        }
-        [HttpPost("/logout")]
-        public IActionResult Logout()
-        {
-            return Ok();
         }
         [Authorize]
-        [HttpGet("/getAccountBalance")]
+        [HttpGet("getUserInfo")]
+        public IActionResult GetUserInfo()
+        {
+            var username = HttpContext.User.Identity != null ?
+                   HttpContext.User.Identity.Name != null ?
+                       HttpContext.User.Identity.Name :
+                       string.Empty
+                   : string.Empty;
+            var userInfo = _userService.GetUserInfo(username);
+            return Ok(userInfo);
+        }
+        
+
+        [Authorize]
+        [HttpGet("identify")]
+        public IActionResult GetUsername()
+        {
+
+            var username = new
+            { username =
+                HttpContext.User.Identity != null ?
+                        HttpContext.User.Identity.Name != null ?
+                            HttpContext.User.Identity.Name :
+                            string.Empty
+                        : string.Empty,
+                role = HttpContext.User.HasClaim(ClaimTypes.Role, "USER") ? "USER" : "ADMIN"
+            };
+            
+            return Ok(username);
+        }
+        [Authorize]
+        [HttpGet("getAccountBalance")]
         public IActionResult GetAccountBalance()
         {
-            if (!HttpContext.User.Identity.IsAuthenticated)
-            {
-                return Unauthorized("User Not Authenticated");
-            }
-            var session = HttpContext.Session;
-            if (HttpContext.User.Identity == null)
-                return NoContent();
-            var username = HttpContext.User.Identity.Name
-                != null ? HttpContext.User.Identity.Name : string.Empty;
+
+            var username = HttpContext.User.Identity != null ?
+                HttpContext.User.Identity.Name !=null ? 
+                    HttpContext.User.Identity.Name :
+                    string.Empty
+                : string.Empty;
             try
             {
                 var accountBalance = _userService.GetAccountBalance(username);
@@ -76,22 +107,18 @@ namespace _RoBotland.Controllers
 
         }
         [Authorize]
-        [HttpPut("/depositToAccount")]
+        [HttpPut("depositToAccount")]
         public IActionResult DepositToAccount(float amount)
         {
-            if (!HttpContext.User.Identity.IsAuthenticated)
-            {
-                return Unauthorized("User Not Authenticated");
-            }
-            var session = HttpContext.Session;
-            if (HttpContext.User.Identity == null)
-                return NoContent();
-            var username = HttpContext.User.Identity.Name
-                != null ? HttpContext.User.Identity.Name : string.Empty;
+            var username = HttpContext.User.Identity != null ?
+                HttpContext.User.Identity.Name != null ?
+                    HttpContext.User.Identity.Name :
+                    string.Empty
+                : string.Empty;
             try
             {
-                _userService.DepositToAccount(username, amount);
-                return Ok("DepositToAccount");
+                var accountBalance = _userService.DepositToAccount(username, amount);
+                return Ok(accountBalance);
             }
             catch (Exception ex)
             {
@@ -100,22 +127,19 @@ namespace _RoBotland.Controllers
 
         }
         [Authorize]
-        [HttpPut("/withdrawFromAccount")]
+        [HttpPut("withdrawFromAccount")]
         public IActionResult WithdrawFromAccount(float amount)
         {
-            if (!HttpContext.User.Identity.IsAuthenticated)
-            {
-                return Unauthorized("User Not Authenticated");
-            }
-            var session = HttpContext.Session;
-            if (HttpContext.User.Identity == null)
-                return NoContent();
-            var username = HttpContext.User.Identity.Name
-                != null ? HttpContext.User.Identity.Name : string.Empty;
+
+            var username = HttpContext.User.Identity != null ?
+                            HttpContext.User.Identity.Name != null ?
+                                HttpContext.User.Identity.Name :
+                                string.Empty
+                            : string.Empty;
             try
             {
-                _userService.WithdrawFromAccount(username, amount);
-                return Ok("WithdrawFromAccount");
+                var accountBalance=_userService.WithdrawFromAccount(username, amount);
+                return Ok(accountBalance);
             }
             catch (Exception ex)
             {
@@ -123,14 +147,15 @@ namespace _RoBotland.Controllers
             }
         }
         [Authorize]
-        [HttpGet("/getHistory")]
+        [HttpGet("getHistory")]
         public IActionResult GetHistory()
         {
-            var session = HttpContext.Session;
-            if (HttpContext.User.Identity == null)
-                return NoContent();
-            var username = HttpContext.User.Identity.Name
-                != null ? HttpContext.User.Identity.Name : string.Empty;
+
+            var username = HttpContext.User.Identity != null ?
+                        HttpContext.User.Identity.Name != null ?
+                            HttpContext.User.Identity.Name :
+                            string.Empty
+                        : string.Empty;
             try
             {
                 var history = _userService.GetHistory(username);

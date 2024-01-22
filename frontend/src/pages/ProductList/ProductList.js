@@ -1,20 +1,22 @@
 import { DataGrid } from '@mui/x-data-grid';
+import { Box } from '@mui/material';
 import './ProductList.css';
-import {Box } from '@mui/material';
 import Forms from './components/Forms.js';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const columns = [
-    { field: 'id', headerName: 'ID' },
-    { field: 'name', headerName: 'Nazwa' },
-    { field: 'price', headerName: 'Cena' },
+    { field: 'id', headerName: 'ID'},
+    { field: 'name', headerName: 'Nazwa',flex: 1, },
+    { field: 'price', headerName: 'Cena'},
     {
         field: 'imageUrl', headerName: 'Zdjęcie', renderCell: (params) => (
           <img src={`${process.env.REACT_APP_API_URL}/images/${params.value}`} alt={params.row.name} style={{ height: 'auto' }} />
         ),
         width: 200, 
       },
+      
+    { field: 'isAvailable', headerName: 'Dostępność' },
 ];
 
 const ProductList = () => {
@@ -25,13 +27,14 @@ const ProductList = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+
         const queryParams = new URLSearchParams(filter).toString();
     
-        fetch(`${process.env.REACT_APP_API_URL}/api/v1/products/Product/filtred?${queryParams}`)
+        fetch(`${process.env.REACT_APP_API_URL}/api/v1/Product/filtred?${queryParams}`)
           .then((response) => response.json())
           .then((data) => setProducts(data))
           .catch((error) => console.log(error));
-      }, [filter]);
+    }, [filter]);
 
     const handleRowClick = (row) => {
         navigate(`/products/${row.id}`);
@@ -39,9 +42,10 @@ const ProductList = () => {
 
     const handleFilterChange = (newFilter) => {
         setFilter(newFilter);
-      };
-
-
+    };
+   
+    
+     
     return ( 
         <div><Box display="flex" >
             <div className='filtred_forms'>

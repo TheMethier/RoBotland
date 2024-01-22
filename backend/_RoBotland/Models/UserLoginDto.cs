@@ -5,9 +5,9 @@ namespace _RoBotland.Models
 {
     public class UserLoginDto
     {
-        [Required]
+        [Required, MinLength(4)]
         public string Username { get; set; }
-        [Required]
+        [Required, MinLength(5)]
         public string Password { get; set; }
     }
 }

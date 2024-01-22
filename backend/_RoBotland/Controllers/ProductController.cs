@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Query;
 
 namespace _RoBotland.Controllers
 {
-    [Route("/api/v1/products/[controller]")]
+    [Route("/api/v1/[controller]")]
     [ApiController]
     public class ProductController : ControllerBase
     {
@@ -22,6 +22,12 @@ namespace _RoBotland.Controllers
         {
             List<ProductDto> products = _productService.GetProducts();
             return Ok(products);
+        }
+        [HttpGet("categories")]
+        public IActionResult GetCategories()
+        {
+            List<CategoryDto> categories = _productService.GetCategories();
+            return Ok(categories);
         }
 
         [HttpGet("{id:int}")]
@@ -49,7 +55,7 @@ namespace _RoBotland.Controllers
             var products = _productService.SearchProductsByName(productName);
             return Ok(products);
         }
-        [HttpPost("/addProduct")]
+        [HttpPost("addProduct")]
         public IActionResult AddNewProduct([FromBody] ProductDto dto)
         {
             int id = _productService.AddNewProduct(dto);
@@ -68,7 +74,7 @@ namespace _RoBotland.Controllers
                       
                 return NotFound();
             }
-            return NoContent();
+            return Ok(_productService.GetProducts());
 
         }
 
@@ -80,17 +86,11 @@ namespace _RoBotland.Controllers
                 int productId = _productService.UpdateProduct(id, dto);
                 return Created("$/api/v1/products/{id}", productId);
             }
-            catch (Exception ex)
+            catch 
             {
-                return NotFound(ex);
+                return NotFound();
             }
 
-        }
-        [HttpPost("addCategoryToProduct")]
-        public IActionResult AddCategoryToProduct([FromBody] AddCategoryToProductDto dto)
-        {
-            int id = _productService.AddCategoryToProduct(dto.CategoryId, dto.ProductId);
-            return Ok(id);
         }
 
     }

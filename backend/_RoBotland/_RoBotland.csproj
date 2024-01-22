@@ -29,7 +29,8 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Migrations\" />
+    <None Include="wwwroot\images\image1.jpg" />
+    <None Include="wwwroot\images\image2.jpg" />
   </ItemGroup>
 
 </Project>

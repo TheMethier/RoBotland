@@ -2,7 +2,7 @@
 {
     public class AddCategoryToProductDto
     {
-        public int CategoryId { get; set; }
+        public List<string> CategoryNames { get; set; }
         public int ProductId { get; set; }
     }
 }
