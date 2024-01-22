@@ -1,5 +1,6 @@
 ﻿using _RoBotland.Enums;
 using _RoBotland.Interfaces;
+using _RoBotland.Migrations;
 using _RoBotland.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
@@ -43,7 +44,7 @@ namespace _RoBotland.Services
         {
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
             var userDetails = _mapper.Map<UserDetails>(request);
-            var user= _mapper.Map<User>(request);
+            var user= _mapper.Map<Models.User>(request);
             if (_dataContext.Users
                 .Include(x=>x.UserDetails)
                 .FirstOrDefault(x => x.Username == request.Username||x.UserDetails.Email==request.Email) != null)
@@ -65,8 +66,7 @@ namespace _RoBotland.Services
                 .Include(x=>x.UserDetails)
                 .ThenInclude(x=>x.User)
                 .Where(x=>x.UserDetails.User.Username==username).ToList();
-            List<OrderDto> orders = new List<OrderDto>();
-            
+            List<OrderDto> orders = new List<OrderDto>(); 
             foreach (var order in history)
             {
                 var detail = _mapper.Map<OrderDto>(order);
@@ -78,7 +78,6 @@ namespace _RoBotland.Services
                 }
                 orders.Add(detail);
             }
-            //i assume that user cannot change his userdetails between orders
             return orders;
         }
         private string GenerateToken(UserDto user)
@@ -98,12 +97,12 @@ namespace _RoBotland.Services
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
             return jwt;
         }
-        public float GetAccountBalance(string username)
+        public AccountBalanceDto GetAccountBalance(string username)
         {
             var user = _dataContext.Users.FirstOrDefault(x => x.Username == username) ?? throw new Exception();
-            return user != null ? user.AccountBalance : 0.0f;
+            return new AccountBalanceDto(user.AccountBalance);
         }
-        private void UpdateAccountBalanceUser(User user)
+        private void UpdateAccountBalanceUser(Models.User user)
         {
             var existingUser = _dataContext.Users.Find(user.Id);
             if (existingUser != null)
@@ -118,24 +117,29 @@ namespace _RoBotland.Services
             return user;
         }
 
-        public bool DepositToAccount(string username, float amount)
+        public AccountBalanceDto DepositToAccount(string username, float amount)
         {
             var user = _dataContext.Users.FirstOrDefault(x => x.Username == username) ?? throw new Exception();   
             user.AccountBalance += amount;
             UpdateAccountBalanceUser(user);
-            return true;
+            return new AccountBalanceDto(user.AccountBalance);
         }
 
-        public bool WithdrawFromAccount(string username, float amount)
+        public AccountBalanceDto WithdrawFromAccount(string username, float amount)
         {
             var user = _dataContext.Users.FirstOrDefault(x => x.Username == username) ?? throw new Exception();
             if (user.AccountBalance >= amount)
             {
                 user.AccountBalance -= amount;
                 UpdateAccountBalanceUser(user);
-                return true;
             }
-            return false;
+            else
+            {
+                throw new Exception("");
+            }
+            return new AccountBalanceDto(user.AccountBalance);
         }
+
+
     }
 }

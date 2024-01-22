@@ -38,7 +38,7 @@ public class ProductService : IProductService
     public int UpdateProduct(int id, ProductDto product)
     {
 
-        var oldProduct = _dataContext.Products.Find(id) ?? throw new Exception("Not Exist");
+        var oldProduct = _dataContext.Products.Find(id) ?? throw new Exception();
         var nproduct = _mapper.Map<Product>(product);
         nproduct.Id = id;
         _dataContext.Entry(oldProduct).CurrentValues.SetValues(nproduct);
@@ -105,9 +105,7 @@ public class ProductService : IProductService
             try
             {
                 Product product = _dataContext.Products.Include(p => p.Categories).FirstOrDefault(p => p.Id == productId) ?? throw new Exception("Product Not Exist");
-
                 product.Categories.Clear();
-
                 foreach (var categoryName in categoryNames)
                 {
                     Category category = _dataContext.Categories.FirstOrDefault(c => c.Name == categoryName);
@@ -130,9 +128,9 @@ public class ProductService : IProductService
             }
         }
     }
-    public ProductDto ChangeProductAvailability(Availability availability, ProductDto dto)
+    public ProductDto ChangeProductAvailability(Availability availability,int id)
     {
-        var product = _dataContext.Products.Find(dto.Id) ?? throw new Exception("Product Not Exist");
+        var product = _dataContext.Products.Find(id) ?? throw new Exception("Product Not Exist");
         product.IsAvailable = availability;
         _dataContext.SaveChanges();
         var productToReturn = _mapper.Map<ProductDto>(product);

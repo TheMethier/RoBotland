@@ -2,16 +2,14 @@ import './Navbar.css';
 import { Link, Outlet } from "react-router-dom";
 import '../../images/icons/css/fontello.css'
 import { useEffect, useState } from 'react';
-import { Button } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { Margin } from '@mui/icons-material';
 import LoginIcon from '@mui/icons-material/Login';
 
-const Navbar = () => {
+function Navbar() 
+{
     const [user, setUser]=useState({username: "", role: ""});
     const [isLoggedIn, setIsLoggedIn] =useState(true);
     const [isAdmin, setIsAdmin] =useState(false);
-
     const Logout=()=>{
         localStorage.setItem("token","");
         setIsLoggedIn(false);
@@ -66,7 +64,7 @@ const Navbar = () => {
                     </Link>
                     </div>
                     <div className='icon'>
-                        <Link className='cart' to={{pathname:`/user/${user.username}`}}>
+                        <Link className='cart' to={{pathname: `/user/${user.username}`}}  >
                         <i className='icon-user'/>
                         </Link>
                     </div>

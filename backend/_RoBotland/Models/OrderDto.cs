@@ -8,13 +8,14 @@ namespace _RoBotland.Models
         {
         }
 
-        public OrderDto(Guid id, DateTime createdDate, List<ShoppingCartItem> items, UserDetailsDto userDetails, DeliveryType deliveryType, PaymentType paymentType)
+        public OrderDto(Guid id, DateTime createdDate, List<ShoppingCartItem> items, UserDetailsDto userDetails, DeliveryType deliveryType, PaymentType paymentType, OrderStatus orderStatus)
         {
             Id = id;
             CreatedDate = createdDate;
             Items = items;
             UserDetails = userDetails;
             DeliveryType = deliveryType;
+            OrderStatus = orderStatus;
             PaymentType = paymentType;
         }
 
@@ -24,5 +25,6 @@ namespace _RoBotland.Models
         public UserDetailsDto UserDetails { get; set;}
         public DeliveryType DeliveryType {  get; set; }
         public PaymentType PaymentType { get; set; }
+        public OrderStatus OrderStatus { get; set; }
     }
 }

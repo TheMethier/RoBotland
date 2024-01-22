@@ -26,8 +26,8 @@ const ProductDetails = () => {
         fetch(`${process.env.REACT_APP_API_URL}/api/v1/ShoppingCart/add/${product.id}`, {
             method: 'POST',
             headers: {
-                    'Content-Type': 'application/json'
-                    
+               'credential':'include',
+               'Content-Type': 'application/json'
             },            
             body: sessionStorage.getItem("cart")
         })

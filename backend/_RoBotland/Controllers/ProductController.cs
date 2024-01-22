@@ -74,7 +74,7 @@ namespace _RoBotland.Controllers
                       
                 return NotFound();
             }
-            return NoContent();
+            return Ok(_productService.GetProducts());
 
         }
 
@@ -86,9 +86,9 @@ namespace _RoBotland.Controllers
                 int productId = _productService.UpdateProduct(id, dto);
                 return Created("$/api/v1/products/{id}", productId);
             }
-            catch (Exception ex)
+            catch 
             {
-                return NotFound(ex);
+                return NotFound();
             }
 
         }

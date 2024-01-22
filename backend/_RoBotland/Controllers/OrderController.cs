@@ -40,7 +40,6 @@ namespace _RoBotland.Controllers
         }
         [HttpPost("placeOrderWithoutRegister")]
         public IActionResult PlaceOrderWithoutRegister([FromQuery]UserDetailsDto userDetails, [FromBody] List<ShoppingCartItem> shoppingCartItems)
-        //Test it
         {
             var session = HttpContext.Session;
             try

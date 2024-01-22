@@ -9,6 +9,7 @@ using _RoBotland.Enums;
 using _RoBotland.Migrations;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 
 namespace _RoBotland.Services
 {
@@ -24,7 +25,7 @@ namespace _RoBotland.Services
 
         public OrderDto ChangeOrderStatus(Guid id, OrderStatus orderStatus)
         {
-            var order=_dataContext.Orders.Find(id)?? throw new Exception();
+            var order=_dataContext.Orders.First(x=>x.Id==id)?? throw new Exception();
             _dataContext.Entry(order).Entity.OrderStatus = orderStatus;
             _dataContext.SaveChanges();
             order.OrderStatus = orderStatus;
@@ -56,6 +57,7 @@ namespace _RoBotland.Services
         public OrderDto PlaceOrderByLoggedInUser(List <ShoppingCartItem> items,string username,OrderOptionsDto orderOptions)
         {
             if (username is null) throw new Exception("unlogged user");
+            if (items.IsNullOrEmpty()) throw new Exception("empty cart");
             float total = 0;
             var user = _dataContext.Users.Include(x=>x.UserDetails).FirstOrDefault(x => x.Username == username) ?? throw new Exception("User not found");
             var order = new Order(Guid.NewGuid(), user.UserDetails.Id, user.UserDetails, total, Enums.OrderStatus.A, orderOptions.DeliveryType, orderOptions.PaymentType);
@@ -75,7 +77,7 @@ namespace _RoBotland.Services
             else
                 throw new Exception("lack of account funds\r\n");
             _dataContext.SaveChanges();
-            OrderDto orderDto = new OrderDto(order.Id,DateTime.Now,items,_mapper.Map<UserDetailsDto>(user.UserDetails),orderOptions.DeliveryType,orderOptions.PaymentType);
+            OrderDto orderDto = new OrderDto(order.Id,DateTime.Now,items,_mapper.Map<UserDetailsDto>(user.UserDetails),orderOptions.DeliveryType,orderOptions.PaymentType,Enums.OrderStatus.A);
             return orderDto;
         }
 
@@ -84,6 +86,7 @@ namespace _RoBotland.Services
             float total = 0;
             var orderId = Guid.NewGuid();
             var userDId = Guid.NewGuid();
+            if (items.IsNullOrEmpty()) throw new Exception("empty cart");
             var userD =_mapper.Map<UserDetails>(userDetails);
             userD.User = new Models.User(userDId, "", "");
             userD.Id = userDId;
@@ -101,7 +104,7 @@ namespace _RoBotland.Services
                 _dataContext.OrderDetails.Add(orderDetail);
             });
             order.Total = total;
-            OrderDto orderDto = new OrderDto(orderId, DateTime.Now, items, _mapper.Map<UserDetailsDto>(userD), userDetails.DeliveryType, userDetails.PaymentType);
+            OrderDto orderDto = new OrderDto(orderId, DateTime.Now, items, _mapper.Map<UserDetailsDto>(userD), userDetails.DeliveryType, userDetails.PaymentType, Enums.OrderStatus.A);
             return orderDto;
         }
     }

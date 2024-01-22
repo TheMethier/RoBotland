@@ -66,11 +66,8 @@ namespace _RoBotland.Controllers
             var userInfo = _userService.GetUserInfo(username);
             return Ok(userInfo);
         }
-        [HttpPost("logout")]
-        public IActionResult Logout()
-        {
-            return Ok();
-        }
+        
+
         [Authorize]
         [HttpGet("identify")]
         public IActionResult GetUsername()
@@ -86,14 +83,13 @@ namespace _RoBotland.Controllers
                 role = HttpContext.User.HasClaim(ClaimTypes.Role, "USER") ? "USER" : "ADMIN"
             };
             
-            return Ok(JsonConvert.SerializeObject(username));
+            return Ok(username);
         }
         [Authorize]
         [HttpGet("getAccountBalance")]
         public IActionResult GetAccountBalance()
         {
 
-            var session = HttpContext.Session;
             var username = HttpContext.User.Identity != null ?
                 HttpContext.User.Identity.Name !=null ? 
                     HttpContext.User.Identity.Name :
@@ -114,19 +110,15 @@ namespace _RoBotland.Controllers
         [HttpPut("depositToAccount")]
         public IActionResult DepositToAccount(float amount)
         {
-            if (!HttpContext.User.Identity.IsAuthenticated)
-            {
-                return Unauthorized("User Not Authenticated");
-            }
-            var session = HttpContext.Session;
-            if (HttpContext.User.Identity == null)
-                return NoContent();
-            var username = HttpContext.User.Identity.Name
-                != null ? HttpContext.User.Identity.Name : string.Empty;
+            var username = HttpContext.User.Identity != null ?
+                HttpContext.User.Identity.Name != null ?
+                    HttpContext.User.Identity.Name :
+                    string.Empty
+                : string.Empty;
             try
             {
-                _userService.DepositToAccount(username, amount);
-                return Ok("DepositToAccount");
+                var accountBalance = _userService.DepositToAccount(username, amount);
+                return Ok(accountBalance);
             }
             catch (Exception ex)
             {
@@ -138,19 +130,16 @@ namespace _RoBotland.Controllers
         [HttpPut("withdrawFromAccount")]
         public IActionResult WithdrawFromAccount(float amount)
         {
-            if (!HttpContext.User.Identity.IsAuthenticated)
-            {
-                return Unauthorized("User Not Authenticated");
-            }
-            var session = HttpContext.Session;
-            if (HttpContext.User.Identity == null)
-                return NoContent();
-            var username = HttpContext.User.Identity.Name
-                != null ? HttpContext.User.Identity.Name : string.Empty;
+
+            var username = HttpContext.User.Identity != null ?
+                            HttpContext.User.Identity.Name != null ?
+                                HttpContext.User.Identity.Name :
+                                string.Empty
+                            : string.Empty;
             try
             {
-                _userService.WithdrawFromAccount(username, amount);
-                return Ok("WithdrawFromAccount");
+                var accountBalance=_userService.WithdrawFromAccount(username, amount);
+                return Ok(accountBalance);
             }
             catch (Exception ex)
             {
@@ -161,11 +150,12 @@ namespace _RoBotland.Controllers
         [HttpGet("getHistory")]
         public IActionResult GetHistory()
         {
-            var session = HttpContext.Session;
-            if (HttpContext.User.Identity == null)
-                return NoContent();
-            var username = HttpContext.User.Identity.Name
-                != null ? HttpContext.User.Identity.Name : string.Empty;
+
+            var username = HttpContext.User.Identity != null ?
+                        HttpContext.User.Identity.Name != null ?
+                            HttpContext.User.Identity.Name :
+                            string.Empty
+                        : string.Empty;
             try
             {
                 var history = _userService.GetHistory(username);

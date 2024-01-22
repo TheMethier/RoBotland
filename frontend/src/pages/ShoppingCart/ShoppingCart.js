@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, TextField, Button,  CardContent, Stack,Table, CardHeader } from '@mui/material';
-import { confirmAlert } from 'react-confirm-alert';
-import { DataGrid } from '@mui/x-data-grid';
+import { Card,  Button,  CardContent, Stack,Table } from '@mui/material';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
@@ -33,6 +31,7 @@ export default function ShoppingCart()
       fetch(`${process.env.REACT_APP_API_URL}/api/v1/ShoppingCart/add/${product.id}`, {
           method: 'POST',
           headers: {
+            'credential':'include',
             'Content-Type': 'application/json'
           },            
           body: sessionStorage.getItem("cart")
@@ -57,6 +56,7 @@ export default function ShoppingCart()
       fetch(`${process.env.REACT_APP_API_URL}/api/v1/ShoppingCart/remove/${product.id}`, {
         method: 'DELETE',
         headers: {
+          'credential':'include',
           'Content-Type': 'application/json'
         },            
         body: sessionStorage.getItem("cart")

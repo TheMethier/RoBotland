@@ -6,9 +6,9 @@ namespace _RoBotland.Interfaces
     {
         UserDto Register(UserRegisterDto request);
         UserLoginResponseDto Login(UserLoginDto request);
-        bool DepositToAccount(string username, float amount);
-        float GetAccountBalance(string username);
-        bool WithdrawFromAccount(string username, float amount);
+        AccountBalanceDto DepositToAccount(string username, float amount);
+        AccountBalanceDto GetAccountBalance(string username);
+        AccountBalanceDto WithdrawFromAccount(string username, float amount);
         List<OrderDto> GetHistory(string username);
         UserInfoDto GetUserInfo(string username);
 

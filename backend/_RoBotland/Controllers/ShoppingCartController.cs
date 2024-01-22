@@ -31,27 +31,11 @@ namespace _RoBotland.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("actual")]
-        public IActionResult GetShoppingCartItems()
-        {
-            var session = HttpContext.Session;
-            var context = SessionHelper.GetObjectFromJson<List<ShoppingCartItem>>(session, "shoppingcart");
-            if(context == null)
-            {
-                context = new List<ShoppingCartItem>();
-                SessionHelper.SetObjectAsJson(session, "shoppingcart", context);
-            }
-            return Ok(context);
-        }
         [HttpDelete("remove/{productId:int}")]
         public IActionResult RemoveProductFromShoppingCard(int productId, [FromBody] List<ShoppingCartItem> shoppingCartItems=null) 
         {
             var session = HttpContext.Session;
-            var context = SessionHelper.GetObjectFromJson<List<ShoppingCartItem>>(session, "shoppingcart");
-            if(context == null)
-            {
-                SessionHelper.SetObjectAsJson(session, "shoppingcart", shoppingCartItems);
-            }
+
             try
             {
                 var shoppingCartContent = _shoppingCartService.RemoveItemFromShoppingCart(productId, shoppingCartItems);

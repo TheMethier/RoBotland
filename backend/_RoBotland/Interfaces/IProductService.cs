@@ -13,7 +13,7 @@ namespace _RoBotland.Interfaces
         public List<ProductDto> GetFilteredProducts(ProductFilterDto filterParameters);
         ICollection<Category> AddCategoryToProduct(List<string> categoryNames, int productId);
         public List<ProductDto> SearchProductsByName(string productName);
-        ProductDto ChangeProductAvailability(Availability availability, ProductDto dto);
+        ProductDto ChangeProductAvailability(Availability availability, int productId);
         List<CategoryDto> GetCategories();
         List<Category> GetProductCategories(int productId);
     }
