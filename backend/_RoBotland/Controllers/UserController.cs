@@ -43,14 +43,14 @@ namespace _RoBotland.Controllers
             
             return BadRequest(ex.Message);
             }
-            
-
         }
+
         [HttpPost("/logout")]
         public IActionResult Logout()
         {
             return Ok();
         }
+
         [Authorize]
         [HttpGet("/getAccountBalance")]
         public IActionResult GetAccountBalance()
@@ -79,11 +79,6 @@ namespace _RoBotland.Controllers
         [HttpPut("/depositToAccount")]
         public IActionResult DepositToAccount(float amount)
         {
-            if (!HttpContext.User.Identity.IsAuthenticated)
-            {
-                return Unauthorized("User Not Authenticated");
-            }
-            var session = HttpContext.Session;
             if (HttpContext.User.Identity == null)
                 return NoContent();
             var username = HttpContext.User.Identity.Name
