@@ -37,7 +37,6 @@ public class ProductService : IProductService
 
     public int UpdateProduct(int id, ProductDto product)
     {
-
         var oldProduct = _dataContext.Products.Find(id) ?? throw new Exception();
         var nproduct = _mapper.Map<Product>(product);
         nproduct.Id = id;
@@ -68,7 +67,6 @@ public class ProductService : IProductService
     public List<ProductDto> SearchProductsByName(string productName)
     {
         var query = _dataContext.Products.AsQueryable();
-
         if (!string.IsNullOrEmpty(productName))
         {
             var upperProductName = productName.ToUpper();
@@ -81,7 +79,6 @@ public class ProductService : IProductService
     public List<ProductDto> GetFilteredProducts(ProductFilterDto filterParameters)
     {
         var query = _dataContext.Products.AsQueryable();
-
         if (!string.IsNullOrEmpty(filterParameters.ProductName))
         {
             var upperProductName = filterParameters.ProductName.ToUpper();
@@ -93,6 +90,7 @@ public class ProductService : IProductService
            query = query.Where(p => p.Price <= filterParameters.MaxPrice);
         if (filterParameters.CategoryId.HasValue)
             query = query.Where(p => p.Categories.Any(c => c.Id == filterParameters.CategoryId.Value));
+        query = query.Where(p => p.IsAvailable != Availability.D);
         if (filterParameters.IsAvailable.HasValue)
             query = query.Where(p => p.IsAvailable == filterParameters.IsAvailable.Value);
         var products = query.ToList();
@@ -104,7 +102,9 @@ public class ProductService : IProductService
         {
             try
             {
-                Product product = _dataContext.Products.Include(p => p.Categories).FirstOrDefault(p => p.Id == productId) ?? throw new Exception("Product Not Exist");
+                Product product = _dataContext.Products
+                    .Include(p => p.Categories)
+                    .FirstOrDefault(p => p.Id == productId) ?? throw new Exception("Product Not Exist");
                 product.Categories.Clear();
                 foreach (var categoryName in categoryNames)
                 {
@@ -130,7 +130,7 @@ public class ProductService : IProductService
     }
     public ProductDto ChangeProductAvailability(Availability availability,int id)
     {
-        var product = _dataContext.Products.Find(id) ?? throw new Exception("Product Not Exist");
+        var product = _dataContext.Products.Find(id) ?? throw new Exception("Product doesn't exist");
         product.IsAvailable = availability;
         _dataContext.SaveChanges();
         var productToReturn = _mapper.Map<ProductDto>(product);

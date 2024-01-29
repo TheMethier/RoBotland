@@ -1,5 +1,6 @@
 ﻿using _RoBotland.Enums;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace _RoBotland.Models
 {

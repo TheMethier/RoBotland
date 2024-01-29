@@ -79,9 +79,25 @@ const ProductDetails = () => {
                     </div>
                     <div className="price">
                         <h2>{product.price} PLN</h2>
-                        Dostępność: {product.isAvailable}
-                        <button className="addToCartBtn" onClick={(x)=>addProductToCard(product)}>Dodaj do koszyka</button>
+                        <p>
+                        Dostępność: {product.isAvailable === 0
+                        ? 'Wysyłka w 24h'
+                        : product.isAvailable === 1
+                        ? 'Wysyłka w 7 dni'
+                        : 'Niedostępny'}
+                    </p>
+                    <p>{product.quantity}</p>
+                    {product.quantity > 0 && product.isAvailable !== 2 ? (
+                        <button className="addToCartBtn" onClick={() => addProductToCard(product)}>
+                            Dodaj do koszyka
+                        </button>
+                        ) : (
+                        product.quantity === 0 && (
+                            <p>Niedostępny</p>
+                        )
+                    )}
 
+                        
                     </div>
                 </div>
             </div>

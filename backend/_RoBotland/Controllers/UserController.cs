@@ -1,4 +1,4 @@
-﻿using _RoBotland.Interfaces;
+using _RoBotland.Interfaces;
 using _RoBotland.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -39,14 +39,6 @@ namespace _RoBotland.Controllers
             try
             {
                 var jwt = _userService.Login(request);
-                HttpContext.Response.Cookies.Append("token", jwt.Token, new Microsoft.AspNetCore.Http.CookieOptions
-                {
-                    Expires = DateTime.Now.AddMinutes(15),
-                    HttpOnly = false,
-                    IsEssential = true,
-                    Secure = true
-                });
-                
                 return Ok(jwt);
             }
             catch (Exception ex) {
@@ -54,6 +46,7 @@ namespace _RoBotland.Controllers
             return BadRequest(ex.Message);
             }
         }
+
         [Authorize]
         [HttpGet("getUserInfo")]
         public IActionResult GetUserInfo()

@@ -12,6 +12,7 @@ import Paper from '@mui/material/Paper';
 
 export default function PlaceOrderR()
 {
+    const [errors, setErrors]=useState([]);
     const [order, setOrder]= useState({});
     const [orderDetails, setOrderDetails]= useState([]);
     useEffect(()=>
@@ -25,6 +26,9 @@ export default function PlaceOrderR()
     };
     const handlePayClick= (order) => 
     {
+      if(order.PaymentType==null || order.DeliveryType==null){
+        return;
+      }
       const queryParams = new URLSearchParams(order).toString();
       console.log(`${process.env.REACT_APP_API_URL}/api/v1/Order/placeOrderWithoutRegister?${queryParams}`)
       fetch(`${process.env.REACT_APP_API_URL}/api/v1/Order/placeOrderWithoutRegister?${queryParams}`,{
@@ -37,15 +41,24 @@ export default function PlaceOrderR()
       .then(response => {
           if(!response.ok)
               {
-                  throw Error("");
+                response.text().then(text => {
+                  console.log(text);
+                  let p=JSON.parse(text);
+                  setErrors(p.errors);
+                  console.log(p.errors)
+                });  
               }
-          return response.json();
+            else
+            {
+              return response.json();
+            }
       })
       .catch(error => {
           console.log(error)
           return Promise.reject(error);
       })
       .then(data => {
+        if(data){
           sessionStorage.setItem("cart","[]");
           confirmAlert({
               title: 'Sukces',
@@ -57,6 +70,8 @@ export default function PlaceOrderR()
                   }
               ]
           });
+        }
+
           
       });
     
@@ -66,17 +81,17 @@ export default function PlaceOrderR()
     }
     return(
        <div>
-          <Grid container rowSpacing={1}>
+          <Grid container rowSpacing={1} >
             <Grid item xs={5}>
               <Card
                 sx={{
-                marginTop: "12rem",
+                marginTop: "14rem",
                 marginLeft:"18rem",
                 borderRadius: '16px',  
                 position: 'absolute',
                 transform: 'translate(-50%, -50%)',
                 width: "23rem",
-                height: "18rem",
+                height: "23rem",
                 bgcolor: 'white',
                 boxShadow: 24,
                 p: 4, }}>
@@ -94,9 +109,14 @@ export default function PlaceOrderR()
                           size="normal"
                           sx={{
                             width: '21rem',
-                            height: '4rem'
+                            height: '4rem',
+                            marginBottom: errors?.["Email"]?
+                            "0.5rem": null
                           }}
                           onChange={(x)=>handleChange("Email",x.target.value)}
+                          error={!!errors?.["Email"]}       
+                          helperText={errors?.["Email"]? errors["Email"][0]: null}
+      
                         />  
                       </Grid>
                       <Grid item xs={10}>
@@ -108,9 +128,13 @@ export default function PlaceOrderR()
                           size="normal"
                           sx={{
                               width: '21rem',
-                              height: '4rem'
+                              height: '4rem',
+                              marginBottom: errors?.["PhoneNumber"]?
+                              "0.5rem": null
                           }}
                           onChange={(x)=>handleChange("PhoneNumber",x.target.value)}
+                          error={!!errors?.["PhoneNumber"]}       
+                          helperText={errors?.["PhoneNumber"]? errors["PhoneNumber"][0]: null}
                         />  
                       </Grid>
                       <Grid item xs={10} md={6}>
@@ -121,9 +145,13 @@ export default function PlaceOrderR()
                           autoComplete='current-firstname'
                           size="normal"
                           sx={{
-                              height: '4rem'
+                              height: '4rem',
+                              marginBottom: errors?.["FirstName"]?
+                              "0.5rem": null
                           }}
                           onChange={(x)=>handleChange("FirstName",x.target.value)}
+                          error={!!errors?.["FirstName"]}       
+                          helperText={errors?.["FirstName"]? errors["FirstName"][0]: null}
                         />  
                       </Grid>
                       <Grid item xs={10} md={6}>
@@ -134,9 +162,13 @@ export default function PlaceOrderR()
                           autoComplete='current-lastname'
                           size="normal"
                           sx={{
-                              height: '4rem'
+                              height: '4rem',
+                              marginBottom: errors?.["LastName"]?
+                              "0.5rem": null
                           }}
                           onChange={(x)=>handleChange("LastName",x.target.value)}
+                          error={!!errors?.["LastName"]}       
+                          helperText={errors?.["LastName"]? errors["LastName"][0]: null}
                         />  
                       </Grid>
                     </Grid>
@@ -145,11 +177,11 @@ export default function PlaceOrderR()
               </Grid>
               <Grid item xs={4}>
                 <Card sx={{
-                  marginTop: "23rem",
+                  marginTop: "20rem",
                   marginLeft:"32rem",
                   borderRadius: '16px',  
                   position: 'absolute',
-                  maxHeight:"100rem",
+                  maxHeight:"1000rem",
                   minWidth:"30rem",
                   maxWidth:"70rem",
                   left: '50%',
@@ -163,7 +195,6 @@ export default function PlaceOrderR()
                    <TableContainer component={Paper} sx={{
                       fontSize: "30px",
                       marginTop: "2rem",
-                      maxWidth: "70rem",
                       alignSelf: "center",
                       }}>
                       <Table  aria-label="simple table">
@@ -181,18 +212,18 @@ export default function PlaceOrderR()
                           <TableRow
                             key={row.name}>   
                               <TableCell align="center">
-                                <img alt={row.product.name}sx={{width:"10rem", height : "10rem"}} />
+                              <img src={`${process.env.REACT_APP_API_URL}/images/${row.product.imageUrl}`}  alt={row.product.name} style={{ width: '200px' }}  />
                               </TableCell>
                               <TableCell align="center">
-                                <h1>{row.product.name}</h1>
+                                <h3>{row.product.name}</h3>
                               </TableCell>
                               <TableCell align='center'>
-                                <h1>
+                                <h3>
                                   {row.quantity}
-                                </h1>
+                                </h3>
                               </TableCell>
                               <TableCell align="center">
-                                <h1>{row.product.price} zł</h1>
+                                <h3>{row.product.price} zł</h3>
                               </TableCell>
                           </TableRow>))}
                         </TableBody>
@@ -201,19 +232,21 @@ export default function PlaceOrderR()
                     <h2>
                       Razem:                          {orderDetails.reduce((accumulate, total)=>accumulate+total.total,0)} zł
                     </h2>
-                    <FormControl>
+                    <FormControl sx={{marginLeft:'5rem', marginBottom:'1rem'}}>
                       <InputLabel id="demo-simple-select-label">Rodzaj płatności</InputLabel>
                       <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
+                        defaultValue={null}
                         value={order.PaymentType}
                         label="DeliveryType"
                         onChange={x=>handleChange("PaymentType",x.target.value)}
                         sx={{
                             width: '21rem',
-                            height: '4rem'}}>
-                        <MenuItem value={0}>Blik</MenuItem>
-                        <MenuItem value={1}>Przy odbiorze</MenuItem>
+                            height: '4rem',
+                            }}>
+                        <MenuItem value={2}>Blik</MenuItem>
+                        <MenuItem value={1}>Płatność przy odbiorze</MenuItem>
                       </Select>
                     </FormControl>
                     <div sx={{alignSelf: "center", marginTop:"40vh"}}>
@@ -235,13 +268,13 @@ export default function PlaceOrderR()
                 <Grid item xs={5}>
                   <Card
                   sx={{
-                    marginLeft: "18rem",
-                    marginTop: "35rem",
+                    marginLeft: "50rem",
+                    marginTop: "14rem",
                     borderRadius: '16px',  
                     position: 'absolute',
                     transform: 'translate(-50%, -50%)',
                     width: "23rem",
-                    height: "18rem",
+                    height: "23rem",
                     bgcolor: 'white',
                     boxShadow: 24,
                     p: 4, }}>
@@ -258,10 +291,14 @@ export default function PlaceOrderR()
                             autoComplete='current-zipCode'
                             size="normal"
                             sx={{
-                                height: '4rem'
+                                height: '4rem',
+                                marginBottom: errors?.["City"]?
+                                "0.5rem": null
                             }}
                             onChange={(x)=>handleChange("City",x.target.value)}
-                          />  
+                            error={!!errors?.["City"]}       
+                            helperText={errors?.["City"]? errors["City"][0]: null}
+                            />  
                         </Grid>                
                         <Grid item xs={10}md={6}>
                           <TextField
@@ -272,8 +309,12 @@ export default function PlaceOrderR()
                               size="normal"
                               sx={{
                                   height: '4rem',
+                                  marginBottom: errors?.["ZipCode"]?
+                                  "0.5rem": null
                               }}
                               onChange={(x)=>handleChange("ZipCode",x.target.value)}
+                              error={!!errors?.["ZipCode"]}       
+                              helperText={errors?.["ZipCode"]? errors["ZipCode"][0]: null}
                           />  
                         </Grid>       
                         <Grid item xs={10} md={7}>
@@ -284,9 +325,13 @@ export default function PlaceOrderR()
                             autoComplete='current-street'
                             size="normal"
                             sx={{
-                                height: '4rem'
+                                height: '4rem',
+                                marginBottom: errors?.["Street"]?
+                                "0.5rem": null
                               }}
                             onChange={(x)=>handleChange("Street",x.target.value)}
+                            error={!!errors?.["Street"]}       
+                            helperText={errors?.["Street"]? errors["Street"][0]: null}
                             />  
                         </Grid>    
                         <Grid item xs={10} md={5}>
@@ -297,9 +342,13 @@ export default function PlaceOrderR()
                             autoComplete='current-houseNumber'
                             size="normal"
                             sx={{
-                                height: '4rem'
+                                height: '4rem',
+                                marginBottom: errors?.["HouseNumber"]?
+                                "2rem": null
                             }}
                             onChange={(x)=>handleChange("HouseNumber",x.target.value)}
+                            error={!!errors?.["HouseNumber"]}       
+                            helperText={errors?.["HouseNumber"]? errors["HouseNumber"][0]: null}
                             />  
                         </Grid>
                         <Grid item xs={10}>
@@ -308,6 +357,7 @@ export default function PlaceOrderR()
                               <Select
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
+                                defaultValue={null}
                                 value={order.DeliveryType}
                                 label="DeliveryType"
                                 onChange={x=>handleChange("DeliveryType",x.target.value)}

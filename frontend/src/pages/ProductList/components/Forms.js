@@ -37,16 +37,17 @@ export const Forms = ({filter, onFilterChange}) => {
 
   return (
     <Box className="MainBox">
-      <Box className="BoxWidth">
+      <Box className="BoxWidth"sx={{marginTop:"1rem"}}>
       <TextField
           id="TextInput"
           label="Szukaj"
           name="ProductName"
+          
           value={filter.ProductName}
           onChange={(e) => handleInputChange('ProductName', e.target.value)}
       />
       </Box>
-      <table id="table">
+      <table id="table" sx={{marginTop: "1rem"}}>
         <thead>
           <tr>
             <th>Kategorie</th>
@@ -74,7 +75,7 @@ export const Forms = ({filter, onFilterChange}) => {
       name="MinPrice"
       value={filter.MinPrice}
       onChange={(e) => handleInputChange('MinPrice', e.target.value)}
-
+      sx={{marginRight:"0.5rem"}}
     />
       <TextField
       id="TextInput"
@@ -91,16 +92,17 @@ export const Forms = ({filter, onFilterChange}) => {
         <Select
           label="wybierz jedno z trzech 0, 1 lub 2"
           name="IsAvailable"
-          value={filter.IsAvailable || ''}
+          value={filter.IsAvailable || ""}
+          
           onChange={(e) => handleInputChange('IsAvailable', e.target.value)}
         >
-          <MenuItem value={0}>0</MenuItem>
-          <MenuItem value={1}>1</MenuItem>
-          <MenuItem value={2}>2</MenuItem>
+          <MenuItem value={'A'}>Wysyłka w 24h</MenuItem>
+          <MenuItem value={'B'}>Wysyłka w 7 dni</MenuItem>
+          <MenuItem value={'C'}>Niedostępny</MenuItem>
         </Select>
       </FormControl>
     </Box>
-    <Button variant="outlined" onClick={handleClearFilters}> 
+    <Button variant="outlined" onClick={handleClearFilters} sx={{marginTop:"1rem"}}> 
       Wyczyść filtry
     </Button>
   </Box>

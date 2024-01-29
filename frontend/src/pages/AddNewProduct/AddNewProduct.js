@@ -42,10 +42,12 @@ const AddNewProduct = () => {
     };
 
     const handleSaveClick = () => {
-        fetch(`${process.env.REACT_APP_API_URL}/api/v1/Admin`, {
+        fetch(`${process.env.REACT_APP_API_URL}/api/v1/Admin/products/addProduct`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem("token")}` 
+
             },
             body: JSON.stringify(product),
         })
@@ -74,6 +76,8 @@ const AddNewProduct = () => {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${localStorage.getItem("token")}` 
+
                         },
                         body: JSON.stringify({ CategoryNames: selectedCategories, ProductId: productId }),
                     })
@@ -173,9 +177,9 @@ const AddNewProduct = () => {
                             value={product.isAvailable || 0}
                             onChange={(e) => handleInputChange('isAvailable', e.target.value)}
                         >
-                            <MenuItem value={0}>0</MenuItem>
-                            <MenuItem value={1}>1</MenuItem>
-                            <MenuItem value={2}>2</MenuItem>
+                            <MenuItem value={0}>Wysyłka w 24h</MenuItem>
+                            <MenuItem value={1}>Wysyłka w 7 dni</MenuItem>
+                            <MenuItem value={2}>Niedostępny</MenuItem>
                         </Select>
                         <button className="button" type="button" onClick={handleSaveClick}>Zapisz</button>
                     </form>

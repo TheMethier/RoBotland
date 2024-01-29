@@ -4,6 +4,7 @@ import '../../images/icons/css/fontello.css'
 import { useEffect, useState } from 'react';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LoginIcon from '@mui/icons-material/Login';
+import PrecisionManufacturingIcon from '@mui/icons-material/PrecisionManufacturing';
 
 function Navbar() 
 {
@@ -50,9 +51,8 @@ function Navbar()
         <div>
             <nav className="nav">
                 <div className='navbar'>
-                    <Link to="/">Home</Link>
+                    <Link to="/products"><PrecisionManufacturingIcon sx={{fontSize: "32px", marginRight:"1rem"}}/></Link>
                     <Link to="/products">Products</Link>
-                    <Link to="/about">About</Link>
                     {isAdmin && <Link to="/admin/orders">Admin</Link>}
                 </div>
                 
@@ -69,7 +69,7 @@ function Navbar()
                         </Link>
                     </div>
                     <div className='icon'>
-                            <LogoutIcon  onClick={x=>{Logout()}} color='inherit'sx={{marginTop:"1.5vh"}}/>
+                            <LogoutIcon  onClick={x=>{Logout()}} color='inherit'sx={{marginTop:"2.5vh"}}/>
                     </div>
                </div>
                     }

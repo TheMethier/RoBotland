@@ -34,7 +34,7 @@ namespace _RoBotland.Migrations
 
                     b.HasIndex("ProductsId");
 
-                    b.ToTable("ProductCategory");
+                    b.ToTable("ProductCategory", (string)null);
                 });
 
             modelBuilder.Entity("_RoBotland.Models.Category", b =>
@@ -51,7 +51,7 @@ namespace _RoBotland.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("_RoBotland.Models.Order", b =>
@@ -83,7 +83,7 @@ namespace _RoBotland.Migrations
 
                     b.HasIndex("UserDetailsId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("_RoBotland.Models.OrderDetails", b =>
@@ -110,7 +110,7 @@ namespace _RoBotland.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderDetails");
+                    b.ToTable("OrderDetails", (string)null);
                 });
 
             modelBuilder.Entity("_RoBotland.Models.Product", b =>
@@ -145,7 +145,7 @@ namespace _RoBotland.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("_RoBotland.Models.User", b =>
@@ -170,7 +170,7 @@ namespace _RoBotland.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
 
                     b.HasData(
                         new
@@ -210,7 +210,7 @@ namespace _RoBotland.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserDetails");
+                    b.ToTable("UserDetails", (string)null);
                 });
 
             modelBuilder.Entity("ProductCategory", b =>

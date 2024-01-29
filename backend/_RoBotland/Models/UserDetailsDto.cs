@@ -21,21 +21,23 @@ namespace _RoBotland.Models
             ZipCode = zipCode;
         }
 
-        [Required, MinLength(5)]
+        [Required(ErrorMessage = "To pole jest wymagane!")]
         public string FirstName { get; set; }
-        [Required, MinLength(5)]
+        [Required(ErrorMessage = "To pole jest wymagane!")]
         public string LastName { get; set; }
+        [Required(ErrorMessage = "To pole jest wymagane!")]
         [EmailAddress]
         public string Email { get; set; }
-        [Phone]
+        [Required(ErrorMessage = "To pole jest wymagane!")]
         public string PhoneNumber { get; set; }
-        [Required]
+        [Required(ErrorMessage = "To pole jest wymagane!")]
         public string Street { get; set; }
-        [Required]
+        [Required(ErrorMessage = "To pole jest wymagane!")]
         public string City { get; set; }
-        [Required]
+        [Required(ErrorMessage = "To pole jest wymagane!")]
         public string HouseNumber { get; set; }
-        [Required]
+        [Required(ErrorMessage = "To pole jest wymagane!")]
+
         public string ZipCode { get; set; }
 
     }

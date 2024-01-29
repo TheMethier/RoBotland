@@ -33,7 +33,9 @@ const ProductEdit = () => {
     }, [id]);
 
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_API_URL}/api/v1/Admin/categories/${id}`)
+        fetch(`${process.env.REACT_APP_API_URL}/api/v1/Admin/categories/getProductCategories/${id}`,{            
+            'Authorization': `Bearer ${localStorage.getItem("token")}` 
+    })
         .then(response => response.json())
         .then(data => {
             setProductCategories(data);
@@ -58,10 +60,12 @@ const ProductEdit = () => {
     };
 
     const handleSaveClick = () => {
-        fetch(`${process.env.REACT_APP_API_URL}/api/v1/Admin/${id}`, {
+        fetch(`${process.env.REACT_APP_API_URL}/api/v1/Admin/products/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem("token")}` 
+
             },
             body: JSON.stringify(editedProduct),
         })
@@ -80,10 +84,13 @@ const ProductEdit = () => {
             });
             const productId = data;
             if (selectedCategories.length > 0) {
+                console.log(selectedCategories)
                 fetch(`${process.env.REACT_APP_API_URL}/api/v1/Admin/categories/products`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem("token")}` 
+
                     },
                     body: JSON.stringify({ CategoryNames: selectedCategories, ProductId: productId }),
                 })
@@ -178,9 +185,9 @@ const ProductEdit = () => {
                             value={editedProduct.isAvailable || product.isAvailable}
                             onChange={(e) => handleInputChange('isAvailable', e.target.value)}
                         >
-                            <MenuItem value={0}>0</MenuItem>
-                            <MenuItem value={1}>1</MenuItem>
-                            <MenuItem value={2}>2</MenuItem>
+                            <MenuItem value={0}>Wysyłka w 24h</MenuItem>
+                            <MenuItem value={1}>Wysyłka w 7 dni</MenuItem>
+                            <MenuItem value={2}>Niedostępny</MenuItem>
                         </Select>
                         <button className="button" type="button" onClick={handleSaveClick}>Zapisz</button>
                     </form>
