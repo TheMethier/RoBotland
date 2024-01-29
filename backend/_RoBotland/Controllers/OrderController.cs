@@ -9,7 +9,7 @@ using System.Security.Claims;
 
 namespace _RoBotland.Controllers
 {
-    [Route("/api/v1/orders/[controller]")]
+    [Route("/api/v1/[controller]")]
     [ApiController]
     public class OrderController : ControllerBase
     {
@@ -19,8 +19,8 @@ namespace _RoBotland.Controllers
             this._orderService = orderService;
         }
         [Authorize]
-        [HttpPost("/placeOrderByLoggedIn")]
-        public IActionResult PlaceOrderByLoggedInUser([FromBody] OrderOptionsDto orderOptions )
+        [HttpPost("placeOrderByLoggedIn")]
+        public IActionResult PlaceOrderByLoggedInUser([FromQuery] OrderOptionsDto orderOptions, [FromBody] List<ShoppingCartItem> shoppingCartItems )
         {
             var session = HttpContext.Session;
             if (HttpContext.User.Identity == null)
@@ -29,7 +29,7 @@ namespace _RoBotland.Controllers
                 != null ? HttpContext.User.Identity.Name : string.Empty; //pobieranie użytkownika z sesji
             try
             {
-                var order = _orderService.PlaceOrderByLoggedInUser(session, username,orderOptions);
+                var order = _orderService.PlaceOrderByLoggedInUser(shoppingCartItems, username,orderOptions);
                 SessionHelper.SetObjectAsJson(session, "shoppingcart", new List<ShoppingCartItem>());
                 return Ok(order);
             }
@@ -38,14 +38,13 @@ namespace _RoBotland.Controllers
                 return BadRequest(ex.Message);//dodaj ify na errory
             }
         }
-        [HttpPost("/placeOrderWithoutRegister")]
-        public IActionResult PlaceOrderWithoutRegister([FromBody]UserDetailsDto userDetails)
-        //Test it
+        [HttpPost("placeOrderWithoutRegister")]
+        public IActionResult PlaceOrderWithoutRegister([FromQuery]UserDetailsDto userDetails, [FromBody] List<ShoppingCartItem> shoppingCartItems)
         {
             var session = HttpContext.Session;
             try
             {
-                var order = _orderService.PlaceOrderWithoutRegister(session, userDetails);
+                var order = _orderService.PlaceOrderWithoutRegister(shoppingCartItems, userDetails);
                 SessionHelper.SetObjectAsJson(session, "shoppingcart", new List<ShoppingCartItem>());
                 return Ok(order);
             }

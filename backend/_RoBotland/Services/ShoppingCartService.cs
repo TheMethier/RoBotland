@@ -26,7 +26,9 @@ namespace _RoBotland.Services
             }
             var identicalItem = shoppingCart.FirstOrDefault(x=>x.Product.Id==product.Id);
             if (identicalItem == null)
-                shoppingCart.Add(new ShoppingCartItem(shoppingCart.Count(),product,1,product.Price));
+            {
+                shoppingCart.Add(new ShoppingCartItem(shoppingCart.Count(), product, 1, product.Price));
+            }
             else
             {
                 shoppingCart[identicalItem.Id].Quantity++;
@@ -43,7 +45,10 @@ namespace _RoBotland.Services
             var product = _mapper.Map<ProductDto>(_dataContext.Products.Find(productId)) ?? throw new Exception("Product not found");
             var identicalItem = shoppingCart.FirstOrDefault(x => x.Product.Id == productId) ?? throw new Exception("Not found");
             if (identicalItem.Quantity == 1)
+            {
                 shoppingCart.Remove(identicalItem);
+                shoppingCart.ForEach(x => x.Id = shoppingCart.IndexOf(x));
+            }
             else
             {
                 shoppingCart[identicalItem.Id].Quantity--;

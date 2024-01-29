@@ -1,8 +1,10 @@
 ﻿using _RoBotland.Enums;
 using _RoBotland.Interfaces;
+using _RoBotland.Migrations;
 using _RoBotland.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
@@ -26,22 +28,26 @@ namespace _RoBotland.Services
             this._config = configuration;
         }
 
-        public string Login(UserLoginDto request)
+        public UserLoginResponseDto Login(UserLoginDto request)
         {
             var user = _dataContext.Users.FirstOrDefault(x=>x.Username == request.Username)??throw new Exception("Not Found");
-            if (!(BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash) && user.Username == request.Username)) 
+            if (!(BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))) 
                 throw new Exception("Bad Password");
-            var response = _mapper.Map<UserDto>(user);
-            var token = GenerateToken(response);
-            return token;
+            var userd = _mapper.Map<UserDto>(user);
+            string token = GenerateToken(userd);
+            UserLoginResponseDto userLoginResponseDto = new UserLoginResponseDto(token);
+            return userLoginResponseDto;
+            
         }
 
         public UserDto Register(UserRegisterDto request)
         {
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
             var userDetails = _mapper.Map<UserDetails>(request);
-            var user= _mapper.Map<User>(request);
-            if (_dataContext.Users.FirstOrDefault(x => x.Username == request.Username) != null || _dataContext.UserDetails.FirstOrDefault(x=>x.Email==request.Email)!=null)
+            var user= _mapper.Map<Models.User>(request);
+            if (_dataContext.Users
+                .Include(x=>x.UserDetails)
+                .FirstOrDefault(x => x.Username == request.Username||x.UserDetails.Email==request.Email) != null)
                 throw new Exception("User with current username or current email already exists");
             user.PasswordHash = passwordHash;
             user.UserDetails = userDetails;
@@ -54,25 +60,24 @@ namespace _RoBotland.Services
          }
         public List<OrderDto> GetHistory(string username)
         {
-            var user = _dataContext.Users.FirstOrDefault(x => x.Username == username) ?? throw new Exception();
-            var history = _dataContext.Orders.Where(x => x.UserDetails.Id == user.Id).ToList();
-            var userD = _dataContext.UserDetails.FirstOrDefault(x => x.Id == user.Id);
-            List<OrderDto> orders = new List<OrderDto>();
+            var history = _dataContext.Orders
+                .Include(x=>x.OrderDetails)
+                .ThenInclude(x=>x.Product)
+                .Include(x=>x.UserDetails)
+                .ThenInclude(x=>x.User)
+                .Where(x=>x.UserDetails.User.Username==username).ToList();
+            List<OrderDto> orders = new List<OrderDto>(); 
             foreach (var order in history)
             {
                 var detail = _mapper.Map<OrderDto>(order);
-                var products = _dataContext.OrderDetails.Where(x => x.OrderId == order.Id).ToList();
-                List<ShoppingCartItem> items = new List<ShoppingCartItem>();
-                foreach (var product in products)
+                detail.Items = new List<ShoppingCartItem>();
+                foreach (var position in order.OrderDetails)
                 {
-                    var prod=_dataContext.Products.Find(product.ProductId) ?? throw new Exception();
-                    ShoppingCartItem item = new ShoppingCartItem(items.Count, _mapper.Map<ProductDto>(prod), product.Quantity, product.Total);
-                    items.Add(item);
+                    ShoppingCartItem item = new ShoppingCartItem(detail.Items.Count, _mapper.Map<ProductDto>(position.Product), position.Quantity, position.Total);
+                    detail.Items.Add(item);
                 }
-                detail.Items = items;
                 orders.Add(detail);
             }
-            //i assume that user cannot change his userdetails between orders
             return orders;
         }
         private string GenerateToken(UserDto user)
@@ -92,12 +97,12 @@ namespace _RoBotland.Services
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
             return jwt;
         }
-        public float GetAccountBalance(string username)
+        public AccountBalanceDto GetAccountBalance(string username)
         {
             var user = _dataContext.Users.FirstOrDefault(x => x.Username == username) ?? throw new Exception();
-            return user != null ? user.AccountBalance : 0.0f;
+            return new AccountBalanceDto(user.AccountBalance);
         }
-        private void UpdateAccountBalanceUser(User user)
+        private void UpdateAccountBalanceUser(Models.User user)
         {
             var existingUser = _dataContext.Users.Find(user.Id);
             if (existingUser != null)
@@ -106,34 +111,35 @@ namespace _RoBotland.Services
                 _dataContext.SaveChanges();
             }
         }
-        private User GetUserById(Guid id)
+        public UserInfoDto GetUserInfo(string username)
         {
-            var user = _dataContext.Users.Find(id);
+            var user = _mapper.Map<UserInfoDto>(_dataContext.Users.Where(x=>x.Username==username).Include(x=>x.UserDetails).First());
             return user;
         }
 
-        public bool DepositToAccount(string username, float amount)
+        public AccountBalanceDto DepositToAccount(string username, float amount)
         {
-            var user = _dataContext.Users.FirstOrDefault(x => x.Username == username) ?? throw new Exception();
-            if (user != null)
-            {
-                user.AccountBalance += amount;
-                UpdateAccountBalanceUser(user);
-                return true;
-            }
-            return false;
+            var user = _dataContext.Users.FirstOrDefault(x => x.Username == username) ?? throw new Exception();   
+            user.AccountBalance += amount;
+            UpdateAccountBalanceUser(user);
+            return new AccountBalanceDto(user.AccountBalance);
         }
 
-        public bool WithdrawFromAccount(string username, float amount)
+        public AccountBalanceDto WithdrawFromAccount(string username, float amount)
         {
             var user = _dataContext.Users.FirstOrDefault(x => x.Username == username) ?? throw new Exception();
-            if (user != null && user.AccountBalance >= amount)
+            if (user.AccountBalance >= amount)
             {
                 user.AccountBalance -= amount;
                 UpdateAccountBalanceUser(user);
-                return true;
             }
-            return false;
+            else
+            {
+                throw new Exception("");
+            }
+            return new AccountBalanceDto(user.AccountBalance);
         }
+
+
     }
 }

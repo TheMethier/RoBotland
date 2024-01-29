@@ -14,7 +14,12 @@ namespace _RoBotland.Models
             Id = id;
             UserDetails = userDetails;
         }
-
+        public User (Guid id, string username, string passwordHash)
+        {
+            Id = id;
+            Username = username;
+            PasswordHash = passwordHash;
+        }
         public User(string username, string passwordHash, Role role, float accountBalance)
         {
             Id = Guid.NewGuid();

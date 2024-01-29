@@ -14,7 +14,7 @@ const ProductManagement = () => {
 
     const fetchProducts= () => {
         const queryParams = new URLSearchParams(filter).toString();
-        fetch(`${process.env.REACT_APP_API_URL}/api/v1/products/Product/filtred?${queryParams}`)
+        fetch(`${process.env.REACT_APP_API_URL}/api/v1/Product/filtred?${queryParams}`)
           .then((response) => response.json())
           .then((data) => setProducts(data))
           .catch((error) => console.log(error));
@@ -41,7 +41,7 @@ const ProductManagement = () => {
             {
               label: 'Tak',
               onClick: () => {
-                fetch(`${process.env.REACT_APP_API_URL}/api/v1/admin/products/Admin/${productId}`, {
+                fetch(`${process.env.REACT_APP_API_URL}/api/v1/Admin/${productId}`, {
                   method: 'DELETE',
                 })
                   .then((response) => {

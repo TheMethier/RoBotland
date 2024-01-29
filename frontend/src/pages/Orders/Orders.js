@@ -25,7 +25,7 @@ const Orders = () => {
     const navigate = useNavigate();
     useEffect(() => {
     
-        fetch(`${process.env.REACT_APP_API_URL}/api/v1/admin/products/Admin/getOrders`)
+        fetch(`${process.env.REACT_APP_API_URL}/api/v1/Admin/getOrders`)
           .then((response) => response.json())
           .then((data) => setOrders(data))
           .catch((error) => console.log(error));

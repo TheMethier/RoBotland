@@ -21,7 +21,7 @@ const ProductEdit = () => {
     const [selectedCategories, setSelectedCategories] = useState([]);
 
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_API_URL}/api/v1/products/Product/${id}`)
+        fetch(`${process.env.REACT_APP_API_URL}/api/v1/Product/${id}`)
             .then(response => response.json())
             .then(data => {
                 setProduct(data);
@@ -33,7 +33,7 @@ const ProductEdit = () => {
     }, [id]);
 
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_API_URL}/api/v1/admin/products/Admin/categories/${id}`)
+        fetch(`${process.env.REACT_APP_API_URL}/api/v1/Admin/categories/${id}`)
         .then(response => response.json())
         .then(data => {
             setProductCategories(data);
@@ -44,7 +44,7 @@ const ProductEdit = () => {
     }, [id]);
 
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_API_URL}/api/v1/products/Product/categories`)
+        fetch(`${process.env.REACT_APP_API_URL}/api/v1/Product/categories`)
             .then(response => response.json())
             .then(data => setCategories(data))
             .catch(error => console.error('Error fetching categories:', error));
@@ -58,7 +58,7 @@ const ProductEdit = () => {
     };
 
     const handleSaveClick = () => {
-        fetch(`${process.env.REACT_APP_API_URL}/api/v1/admin/products/Admin/${id}`, {
+        fetch(`${process.env.REACT_APP_API_URL}/api/v1/Admin/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -80,7 +80,7 @@ const ProductEdit = () => {
             });
             const productId = data;
             if (selectedCategories.length > 0) {
-                fetch(`${process.env.REACT_APP_API_URL}/api/v1/admin/products/Admin/categories/products`, {
+                fetch(`${process.env.REACT_APP_API_URL}/api/v1/Admin/categories/products`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

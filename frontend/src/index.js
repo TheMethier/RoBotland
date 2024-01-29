@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import Home from './pages/Home/Home';
+import UserPanel from './pages/UserPanel/UserPanel';
 import Navbar from './components/Navbar/Navbar';
 import ProductList from './pages/ProductList/ProductList';
 import ProductDetails from './pages/ProductDetails/ProductDetails';
@@ -12,7 +13,11 @@ import AddNewProduct from './pages/AddNewProduct/AddNewProduct';
 import OrderDetails from './pages/OrderDetails/OrderDetails';
 import Orders from './pages/Orders/Orders';
 import Admin from './components/Admin/Admin';
-
+import Login from './pages/Login/Login';
+import Register from './pages/Register/Register';
+import ShoppingCart from './pages/ShoppingCart/ShoppingCart';
+import PlaceOrder from './pages/PlaceOrder/PlaceOrder' 
+import PlaceOrderR from './pages/PlaceOrder/PlaceOrderR';
 //TODO
 //tabelka z produktami do dodania?
 //dodawanie zdjeć?
@@ -33,6 +38,10 @@ const router = createBrowserRouter(
           element: <ProductList />
         },
         {
+          path: '/user/:user',
+          element: <UserPanel  />
+        }
+        ,{
           path: '/products/:id',
           element: <ProductDetails />
         },
@@ -40,6 +49,27 @@ const router = createBrowserRouter(
           path: '/about',
           element: <div>O nas</div>,
         },
+        {
+          path: '/login',
+          element: <Login />,
+        },
+        {
+          path: '/register',
+          element: <Register />
+        },
+        {
+          path: '/cart',
+          element: <ShoppingCart />
+        },
+        {
+          path: '/placeorder',
+          element: <PlaceOrder />
+        },
+{
+  path: '/placeorderr',
+  element: <PlaceOrderR/>
+}
+        ,
         {
           path: '/admin',
           element: <Admin />,
