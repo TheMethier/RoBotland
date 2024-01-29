@@ -177,9 +177,9 @@ const AddNewProduct = () => {
                             value={product.isAvailable || 0}
                             onChange={(e) => handleInputChange('isAvailable', e.target.value)}
                         >
-                            <MenuItem value={0}>0</MenuItem>
-                            <MenuItem value={1}>1</MenuItem>
-                            <MenuItem value={2}>2</MenuItem>
+                            <MenuItem value={0}>Wysyłka w 24h</MenuItem>
+                            <MenuItem value={1}>Wysyłka w 7 dni</MenuItem>
+                            <MenuItem value={2}>Niedostępny</MenuItem>
                         </Select>
                         <button className="button" type="button" onClick={handleSaveClick}>Zapisz</button>
                     </form>

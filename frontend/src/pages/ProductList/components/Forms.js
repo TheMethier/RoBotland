@@ -92,12 +92,13 @@ export const Forms = ({filter, onFilterChange}) => {
         <Select
           label="wybierz jedno z trzech 0, 1 lub 2"
           name="IsAvailable"
-          value={filter.IsAvailable || ''}
+          value={filter.IsAvailable || ""}
+          
           onChange={(e) => handleInputChange('IsAvailable', e.target.value)}
         >
-          <MenuItem value={0}>0</MenuItem>
-          <MenuItem value={1}>1</MenuItem>
-          <MenuItem value={2}>2</MenuItem>
+          <MenuItem value={'A'}>Wysyłka w 24h</MenuItem>
+          <MenuItem value={'B'}>Wysyłka w 7 dni</MenuItem>
+          <MenuItem value={'C'}>Niedostępny</MenuItem>
         </Select>
       </FormControl>
     </Box>

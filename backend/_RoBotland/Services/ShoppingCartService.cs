@@ -25,7 +25,13 @@ namespace _RoBotland.Services
             }
             if (shoppingCart.IsNullOrEmpty())
             {
-                shoppingCart.Add(new ShoppingCartItem(0, product, 1, product.Price));
+                if(product.Quantity==0) throw new Exception("You cannot add unexisting products to your shoppingcart");
+                else
+                {
+                    shoppingCart.Add(new ShoppingCartItem(0, product, 1, product.Price));
+
+                }
+
                 return shoppingCart;
             }
             var identicalItem = shoppingCart.FirstOrDefault(x=>x.Product.Id==product.Id);

@@ -103,7 +103,7 @@ namespace _RoBotland.Services
                 var product = _dataContext.Products.Find(x.Product.Id) ?? throw new Exception("Product not found");
                 orderDetail.OrderId = order.Id;
                 orderDetail.Product = product;
-                if (product.Quantity >x.Quantity ) product.Quantity-=x.Quantity;
+                if (product.Quantity >=x.Quantity ) product.Quantity-=x.Quantity;
                 orderDetail.Order = order;
                 _dataContext.OrderDetails.Add(orderDetail);
             });

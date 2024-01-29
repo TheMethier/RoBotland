@@ -26,6 +26,9 @@ export default function PlaceOrderR()
     };
     const handlePayClick= (order) => 
     {
+      if(order.PaymentType==null || order.DeliveryType==null){
+        return;
+      }
       const queryParams = new URLSearchParams(order).toString();
       console.log(`${process.env.REACT_APP_API_URL}/api/v1/Order/placeOrderWithoutRegister?${queryParams}`)
       fetch(`${process.env.REACT_APP_API_URL}/api/v1/Order/placeOrderWithoutRegister?${queryParams}`,{
@@ -178,7 +181,7 @@ export default function PlaceOrderR()
                   marginLeft:"32rem",
                   borderRadius: '16px',  
                   position: 'absolute',
-                  maxHeight:"100rem",
+                  maxHeight:"1000rem",
                   minWidth:"30rem",
                   maxWidth:"70rem",
                   left: '50%',
@@ -209,18 +212,18 @@ export default function PlaceOrderR()
                           <TableRow
                             key={row.name}>   
                               <TableCell align="center">
-                                <img alt={row.product.name}sx={{width:"10rem", height : "10rem"}} />
+                              <img src={`${process.env.REACT_APP_API_URL}/images/${row.product.imageUrl}`}  alt={row.product.name} style={{ width: '200px' }}  />
                               </TableCell>
                               <TableCell align="center">
-                                <h1>{row.product.name}</h1>
+                                <h3>{row.product.name}</h3>
                               </TableCell>
                               <TableCell align='center'>
-                                <h1>
+                                <h3>
                                   {row.quantity}
-                                </h1>
+                                </h3>
                               </TableCell>
                               <TableCell align="center">
-                                <h1>{row.product.price} zł</h1>
+                                <h3>{row.product.price} zł</h3>
                               </TableCell>
                           </TableRow>))}
                         </TableBody>
@@ -234,6 +237,7 @@ export default function PlaceOrderR()
                       <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
+                        defaultValue={null}
                         value={order.PaymentType}
                         label="DeliveryType"
                         onChange={x=>handleChange("PaymentType",x.target.value)}
@@ -353,6 +357,7 @@ export default function PlaceOrderR()
                               <Select
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
+                                defaultValue={null}
                                 value={order.DeliveryType}
                                 label="DeliveryType"
                                 onChange={x=>handleChange("DeliveryType",x.target.value)}

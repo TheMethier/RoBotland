@@ -142,6 +142,8 @@ function UserPanel()
         return ;
     })
         .then((data)=>{
+            if(data){
+
             confirmAlert({
                 title: 'Sukces',
                 message: 'Dodano środki!',
@@ -152,6 +154,7 @@ function UserPanel()
                     }
                 ]
             });
+        }
         });
     }
 

@@ -155,17 +155,17 @@ export default function PlaceOrder()
                   borderRadius: '16px',  
                   bgcolor: 'white',
                   boxShadow: 24,
-                  maxHeight:"100rem",
-                  minWidth:"40rem",
-                  minHeight:"35rem",
-                  maxWidth:"70rem",
-                  p: 3}}>
+                  minWidth:"50rem",
+                  minHeight:"50rem",
+                  }}>
                   <h1>
                     Podsumowanie zamówienia:
                   </h1>
                   <TableContainer component={Paper} sx={{
                     fontSize: "30px",
-                    minWidth:"40rem",
+                    marginLeft:"1rem",
+                    marginRight:"1rem",
+                    minWidth:"30rem",
                     alignSelf: "center"}}>
                     <Table  aria-label="simple table">
                       <TableHead>
@@ -181,10 +181,11 @@ export default function PlaceOrder()
                       {orderDetails.map((row) => (
                         <TableRow key={row.name}>
                           <TableCell align="center">
-                            <img alt={row.product.name}sx={{width:"10rem", height : "10rem"}} />
+                          <img src={`${process.env.REACT_APP_API_URL}/images/${row.product.imageUrl}`}  alt={row.product.name} style={{ width: '200px' }}  />
+
                           </TableCell>
                           <TableCell align="center">
-                            <h1>{row.product.name}</h1>
+                            <p>{row.product.name}</p>
                           </TableCell>
                           <TableCell align='center'>
                             <h1>

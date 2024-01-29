@@ -99,8 +99,8 @@ const ProductManagement = () => {
         { field: 'price', headerName: 'Cena', width: 75, renderCell: (params) => (`${params.value} PLN`) },
         { field: 'quantity', headerName: 'Stan magazynowy',width:200,style: {alignSelf: 'center'},renderCell: (params) => (
           <div>
-            {params.value>5? <>{params.value} szt.</>:<div> Zamów nowe produkty lub zmień opcje dostępności!
-
+            {params.value>5? <>{params.value} szt.</>:<div>
+            <a style={{ color: 'red',   fontWeight: 'bold' }}>mniej niż 5 szt. !</a>
                 </div>}
           </div>
         ),width: 140,

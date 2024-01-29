@@ -51,7 +51,7 @@ function Navbar()
         <div>
             <nav className="nav">
                 <div className='navbar'>
-                    <Link to="/"><PrecisionManufacturingIcon sx={{fontSize: "32px", marginRight:"1rem"}}/></Link>
+                    <Link to="/products"><PrecisionManufacturingIcon sx={{fontSize: "32px", marginRight:"1rem"}}/></Link>
                     <Link to="/products">Products</Link>
                     {isAdmin && <Link to="/admin/orders">Admin</Link>}
                 </div>

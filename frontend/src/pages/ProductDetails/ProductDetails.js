@@ -86,6 +86,7 @@ const ProductDetails = () => {
                         ? 'Wysyłka w 7 dni'
                         : 'Niedostępny'}
                     </p>
+                    <p>{product.quantity}</p>
                     {product.quantity > 0 && product.isAvailable !== 2 ? (
                         <button className="addToCartBtn" onClick={() => addProductToCard(product)}>
                             Dodaj do koszyka

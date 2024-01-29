@@ -52,14 +52,14 @@ const OrderDetails = () => {
               {
                 label: 'Wysłane',
                 onClick: () => {
-                  selectedStatus = 1;
+                  selectedStatus = 0;
                   resolve();
                 },
               },
               {
                 label: 'W trakcie realizacji',
                 onClick: () => {
-                  selectedStatus = 0;
+                  selectedStatus = 1;
                   resolve();
                 },
               },
@@ -68,7 +68,7 @@ const OrderDetails = () => {
         });
         console.log('Selected Status:', selectedStatus);
 
-  if (selectedStatus) {
+  if (selectedStatus!=null) {
     fetch(`${process.env.REACT_APP_API_URL}/api/v1/Admin/changeOrderStatus/${order.id}`, {
       method: 'PUT',
       headers: {

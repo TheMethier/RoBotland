@@ -121,7 +121,8 @@ namespace _RoBotland.Services
 
         public AccountBalanceDto DepositToAccount(string username, float amount)
         {
-            var user = _dataContext.Users.FirstOrDefault(x => x.Username == username) ?? throw new Exception();   
+            var user = _dataContext.Users.FirstOrDefault(x => x.Username == username) ?? throw new Exception();
+            if (amount < 0) throw new Exception();
             user.AccountBalance += amount;
             UpdateAccountBalanceUser(user);
             return new AccountBalanceDto(user.AccountBalance);

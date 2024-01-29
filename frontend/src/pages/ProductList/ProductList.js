@@ -15,7 +15,9 @@ const columns = [
         ),
         width: 200, 
       },
-    { field: 'isAvailable', headerName: 'Dostępność', renderCell: renderAvailability ,width: 140 },
+    { field: 'isAvailable', headerName: 'Dostępność', renderCell:(params) => ( <div>
+          {renderAvailability(params)}
+    </div>) ,width: 140 },
 ];
 
 function renderAvailability(params) {
@@ -43,7 +45,7 @@ const ProductList = () => {
     useEffect(() => {
 
         const queryParams = new URLSearchParams(filter).toString();
-    
+        console.log(queryParams)
         fetch(`${process.env.REACT_APP_API_URL}/api/v1/Product/filtred?${queryParams}`)
           .then((response) => response.json())
           .then((data) => setProducts(data))

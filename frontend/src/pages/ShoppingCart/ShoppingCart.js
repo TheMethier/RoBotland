@@ -121,7 +121,7 @@ export default function ShoppingCart()
                       </h1>
                     </TableCell>
                     <TableCell align="center">
-                      <img alt={row.product.name} sx={{width:"10rem", height : "10rem"}} onClick={x=>handleImageClick(row.product)}/>
+                      <img src={`${process.env.REACT_APP_API_URL}/images/${row.product.imageUrl}`}  alt={row.product.name} style={{ width: '200px' }}  />
                     </TableCell>
                     <TableCell align="center">
                       <h1>{row.product.name}</h1>
