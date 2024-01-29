@@ -10,6 +10,7 @@ using _RoBotland.Migrations;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
+using System;
 
 namespace _RoBotland.Services
 {
@@ -25,7 +26,7 @@ namespace _RoBotland.Services
 
         public OrderDto ChangeOrderStatus(Guid id, OrderStatus orderStatus)
         {
-            var order=_dataContext.Orders.First(x=>x.Id==id)?? throw new Exception();
+            var order=_dataContext.Orders.First(x=>x.Id==id)?? throw new Exception("");
             _dataContext.Entry(order).Entity.OrderStatus = orderStatus;
             _dataContext.SaveChanges();
             order.OrderStatus = orderStatus;
@@ -34,10 +35,10 @@ namespace _RoBotland.Services
 
         public List<OrderDto> GetOrders()
         {
-            var orders = _dataContext.Orders.
-                Include(x=>x.UserDetails)
-                .Include(x=> x.OrderDetails).
-                ThenInclude(x=>x.Product).
+            var orders = _dataContext.Orders
+                .Include(x=>x.UserDetails)
+                .Include(x=> x.OrderDetails)
+                .ThenInclude(x=>x.Product).
                 ToList();
             List<OrderDto> orderList =new List<OrderDto>();
             orders.ForEach(x =>
@@ -59,7 +60,8 @@ namespace _RoBotland.Services
             if (username is null) throw new Exception("unlogged user");
             if (items.IsNullOrEmpty()) throw new Exception("empty cart");
             float total = 0;
-            var user = _dataContext.Users.Include(x=>x.UserDetails).FirstOrDefault(x => x.Username == username) ?? throw new Exception("User not found");
+            var user = _dataContext.Users.Include(x=>x.UserDetails)
+                .FirstOrDefault(x => x.Username == username) ?? throw new Exception("User not found");
             var order = new Order(Guid.NewGuid(), user.UserDetails.Id, user.UserDetails, total, Enums.OrderStatus.A, orderOptions.DeliveryType, orderOptions.PaymentType);
             _dataContext.Orders.Add(order);
             items.ForEach(x => {
@@ -68,6 +70,7 @@ namespace _RoBotland.Services
                 var product = _dataContext.Products.Find(x.Product.Id) ?? throw new Exception("Product not found");
                 orderDetail.OrderId = order.Id;
                 orderDetail.Product = product;
+                if (product.Quantity >x.Quantity) product.Quantity -= x.Quantity;
                 orderDetail.Order = order;
                 _dataContext.OrderDetails.Add(orderDetail);
             });
@@ -97,13 +100,15 @@ namespace _RoBotland.Services
             items.ForEach(x => {
                 total += x.Total;
                 var orderDetail = _mapper.Map<OrderDetails>(x);
-                orderDetail.OrderId = orderId;
-                orderDetail.Product = _mapper.Map<Product>(x.Product);
+                var product = _dataContext.Products.Find(x.Product.Id) ?? throw new Exception("Product not found");
+                orderDetail.OrderId = order.Id;
+                orderDetail.Product = product;
+                if (product.Quantity >x.Quantity ) product.Quantity-=x.Quantity;
                 orderDetail.Order = order;
-                orderDetail.ProductId = x.Product.Id;
                 _dataContext.OrderDetails.Add(orderDetail);
             });
             order.Total = total;
+            _dataContext.SaveChanges();
             OrderDto orderDto = new OrderDto(orderId, DateTime.Now, items, _mapper.Map<UserDetailsDto>(userD), userDetails.DeliveryType, userDetails.PaymentType, Enums.OrderStatus.A);
             return orderDto;
         }

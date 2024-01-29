@@ -30,9 +30,9 @@ namespace _RoBotland.Services
 
         public UserLoginResponseDto Login(UserLoginDto request)
         {
-            var user = _dataContext.Users.FirstOrDefault(x=>x.Username == request.Username)??throw new Exception("Not Found");
+            var user = _dataContext.Users.FirstOrDefault(x=>x.Username == request.Username)??throw new Exception("{\"errors\":{\"Password\":[\"\"],\"Username\":[\"Niepoprawny username!\"]}}\r\n");
             if (!(BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))) 
-                throw new Exception("Bad Password");
+                throw new Exception("{\"errors\":{\"Password\":[\"Podano niepoprawne hasło!\"],\"Username\":[\"\"]}}\r\n");
             var userd = _mapper.Map<UserDto>(user);
             string token = GenerateToken(userd);
             UserLoginResponseDto userLoginResponseDto = new UserLoginResponseDto(token);
@@ -86,34 +86,36 @@ namespace _RoBotland.Services
             {
                 new Claim(ClaimTypes.Name, user.Username),
                 new Claim(ClaimTypes.Role,user.Role.ToString())
-                };
+            };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value!));
             var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
-            var token = new JwtSecurityToken(
+            var token = new JwtSecurityToken
+            (
                 claims: claims,
                 expires: DateTime.Now.AddMinutes(30),
                 signingCredentials: cred
-                );
+            );
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
             return jwt;
         }
         public AccountBalanceDto GetAccountBalance(string username)
         {
-            var user = _dataContext.Users.FirstOrDefault(x => x.Username == username) ?? throw new Exception();
+            var user = _dataContext.Users.FirstOrDefault(x => x.Username == username) ?? throw new Exception("User with current id doesn't exist");
             return new AccountBalanceDto(user.AccountBalance);
         }
         private void UpdateAccountBalanceUser(Models.User user)
         {
-            var existingUser = _dataContext.Users.Find(user.Id);
-            if (existingUser != null)
-            {
-                existingUser.AccountBalance = user.AccountBalance;
-                _dataContext.SaveChanges();
-            }
+            var existingUser = _dataContext.Users.Find(user.Id)?? throw new Exception();
+            existingUser.AccountBalance = user.AccountBalance;
+            _dataContext.SaveChanges();
+            
         }
         public UserInfoDto GetUserInfo(string username)
         {
-            var user = _mapper.Map<UserInfoDto>(_dataContext.Users.Where(x=>x.Username==username).Include(x=>x.UserDetails).First());
+            var user = _mapper.Map<UserInfoDto>(_dataContext.Users
+                .Where(x=>x.Username==username)
+                .Include(x=>x.UserDetails)
+                .First());
             return user;
         }
 
@@ -135,7 +137,7 @@ namespace _RoBotland.Services
             }
             else
             {
-                throw new Exception("");
+                throw new Exception("transaction failed");
             }
             return new AccountBalanceDto(user.AccountBalance);
         }

@@ -1,5 +1,5 @@
 import { DataGrid } from '@mui/x-data-grid';
-import { Box } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import './ProductManagement.css';
 import Forms from '../ProductList/components/Forms';
 import { useEffect, useState } from 'react';
@@ -9,7 +9,7 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 
 const ProductManagement = () => {
     const [products, setProducts] = useState([]);
-    const [filter, setFilter] = useState({}); 
+    const [filter, setFilter] = useState({});
     const navigate = useNavigate();
 
     const fetchProducts= () => {
@@ -41,8 +41,12 @@ const ProductManagement = () => {
             {
               label: 'Tak',
               onClick: () => {
-                fetch(`${process.env.REACT_APP_API_URL}/api/v1/Admin/${productId}`, {
+                fetch(`${process.env.REACT_APP_API_URL}/api/v1/Admin/products/${productId}`, {
                   method: 'DELETE',
+                  headers: {
+
+                  'Authorization': `Bearer ${localStorage.getItem("token")}` 
+                  }
                 })
                   .then((response) => {
                     if (response.ok) {
@@ -74,7 +78,14 @@ const ProductManagement = () => {
       const columns = [
         { field: 'name', headerName: 'Nazwa',flex:1 ,style: { whiteSpace: 'normal', wordWrap: 'break-word' }, },
         { field: 'price', headerName: 'Cena', width: 75, renderCell: (params) => (`${params.value} PLN`) },
-        { field: 'quantity', headerName: 'Stan magazynowy'},
+        { field: 'quantity', headerName: 'Stan magazynowy',width:200,style: {alignSelf: 'center'},renderCell: (params) => (
+          <div>
+            {params.value>5? <>{params.value} szt.</>:<div> Zamów nowe produkty lub zmień opcje dostępności!
+
+                </div>}
+          </div>
+        ),width: 300,
+        },
         {
           field: 'imageUrl', headerName: 'Zdjęcie', renderCell: (params) => (
             <img src={`${process.env.REACT_APP_API_URL}/images/${params.value}`} alt={params.row.name} style={{ height: 'auto' }} />

@@ -1,7 +1,14 @@
-﻿namespace _RoBotland.Enums
+﻿using System.ComponentModel;
+
+namespace _RoBotland.Enums
 {
     public enum PaymentType
     {
-      A,B //placeholder
+        [Description("RoWallet")]
+        A,
+        [Description("Płatność przy odbiorze")]
+        B,
+        [Description("Blik")]
+        C,
     }
 }

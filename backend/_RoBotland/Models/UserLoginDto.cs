@@ -5,9 +5,9 @@ namespace _RoBotland.Models
 {
     public class UserLoginDto
     {
-        [Required, MinLength(4)]
+        [Required(ErrorMessage ="To pole jest wymagane!")]
         public string Username { get; set; }
-        [Required, MinLength(5)]
+        [Required(ErrorMessage = "To pole jest wymagane!")]
         public string Password { get; set; }
     }
 }

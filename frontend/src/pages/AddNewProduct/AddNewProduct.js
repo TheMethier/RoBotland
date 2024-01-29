@@ -42,10 +42,12 @@ const AddNewProduct = () => {
     };
 
     const handleSaveClick = () => {
-        fetch(`${process.env.REACT_APP_API_URL}/api/v1/Admin`, {
+        fetch(`${process.env.REACT_APP_API_URL}/api/v1/Admin/products/addProduct`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem("token")}` 
+
             },
             body: JSON.stringify(product),
         })
@@ -74,6 +76,8 @@ const AddNewProduct = () => {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${localStorage.getItem("token")}` 
+
                         },
                         body: JSON.stringify({ CategoryNames: selectedCategories, ProductId: productId }),
                     })

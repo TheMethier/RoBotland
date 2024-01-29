@@ -69,10 +69,12 @@ const OrderDetails = () => {
         console.log('Selected Status:', selectedStatus);
 
   if (selectedStatus) {
-    fetch(`${process.env.REACT_APP_API_URL}/finalize/${order.id}`, {
+    fetch(`${process.env.REACT_APP_API_URL}/api/v1/Admin/changeOrderStatus/${order.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem("token")}` 
+
       },
       body: JSON.stringify( selectedStatus ),
     })

@@ -22,35 +22,31 @@ namespace _RoBotland.Controllers
         [HttpPost("placeOrderByLoggedIn")]
         public IActionResult PlaceOrderByLoggedInUser([FromQuery] OrderOptionsDto orderOptions, [FromBody] List<ShoppingCartItem> shoppingCartItems )
         {
-            var session = HttpContext.Session;
             if (HttpContext.User.Identity == null)
                  return NoContent();
             var username = HttpContext.User.Identity.Name
-                != null ? HttpContext.User.Identity.Name : string.Empty; //pobieranie użytkownika z sesji
+                != null ? HttpContext.User.Identity.Name : string.Empty; 
             try
             {
                 var order = _orderService.PlaceOrderByLoggedInUser(shoppingCartItems, username,orderOptions);
-                SessionHelper.SetObjectAsJson(session, "shoppingcart", new List<ShoppingCartItem>());
                 return Ok(order);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);//dodaj ify na errory
+                return BadRequest(ex.Message);
             }
         }
         [HttpPost("placeOrderWithoutRegister")]
         public IActionResult PlaceOrderWithoutRegister([FromQuery]UserDetailsDto userDetails, [FromBody] List<ShoppingCartItem> shoppingCartItems)
         {
-            var session = HttpContext.Session;
             try
             {
                 var order = _orderService.PlaceOrderWithoutRegister(shoppingCartItems, userDetails);
-                SessionHelper.SetObjectAsJson(session, "shoppingcart", new List<ShoppingCartItem>());
                 return Ok(order);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);//dodaj ify na errory
+                return BadRequest(ex.Message);
             }
         }
     }

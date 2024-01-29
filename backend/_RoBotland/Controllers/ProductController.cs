@@ -55,43 +55,7 @@ namespace _RoBotland.Controllers
             var products = _productService.SearchProductsByName(productName);
             return Ok(products);
         }
-        [HttpPost("addProduct")]
-        public IActionResult AddNewProduct([FromBody] ProductDto dto)
-        {
-            int id = _productService.AddNewProduct(dto);
-            return Created("$/api/v1/products/{id}",id);
-        }
-
-        [HttpDelete("{id:int}")]
-        public IActionResult RemoveProductById(int id)
-        {
-            try
-            {
-               _productService.DeleteProduct(id);
-            }
-            catch 
-            {
-                      
-                return NotFound();
-            }
-            return Ok(_productService.GetProducts());
-
-        }
-
-        [HttpPut("{id:int}")]
-        public IActionResult UpgradeProduct(int id,[FromBody] ProductDto dto)
-        {
-            try
-            {
-                int productId = _productService.UpdateProduct(id, dto);
-                return Created("$/api/v1/products/{id}", productId);
-            }
-            catch 
-            {
-                return NotFound();
-            }
-
-        }
+     
 
     }
 }
