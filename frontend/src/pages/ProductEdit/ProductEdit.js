@@ -33,7 +33,7 @@ const ProductEdit = () => {
     }, [id]);
 
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_API_URL}/api/v1/Admin/categories/${id}`,{            
+        fetch(`${process.env.REACT_APP_API_URL}/api/v1/Admin/categories/getProductCategories/${id}`,{            
             'Authorization': `Bearer ${localStorage.getItem("token")}` 
     })
         .then(response => response.json())

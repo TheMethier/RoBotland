@@ -133,7 +133,6 @@ namespace _RoBotland.Controllers
                 return BadRequest(ex);
             }
         }
-        [Authorize(Roles = "ADMIN")]
         [HttpGet("categories/getProductCategories/{productId:int}")]
         public IActionResult GetProductCategories(int productId)
         {
