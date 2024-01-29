@@ -43,6 +43,7 @@ export default function ShoppingCart()
       })
       .catch(error => {
           console.log(error)
+          
           return Promise.reject(error);
       })
       .then(data => {
@@ -51,7 +52,10 @@ export default function ShoppingCart()
           setPress(!press);
       });
   }
+    const handleImageClick=(product)=>{
+      navigate(`/products/${product.id}`);
 
+    };
     const removeProductFromCart=(product)=>{
       fetch(`${process.env.REACT_APP_API_URL}/api/v1/ShoppingCart/remove/${product.id}`, {
         method: 'DELETE',
@@ -117,7 +121,7 @@ export default function ShoppingCart()
                       </h1>
                     </TableCell>
                     <TableCell align="center">
-                      <img alt={row.product.name}sx={{width:"10rem", height : "10rem"}} />
+                      <img alt={row.product.name} sx={{width:"10rem", height : "10rem"}} onClick={x=>handleImageClick(row.product)}/>
                     </TableCell>
                     <TableCell align="center">
                       <h1>{row.product.name}</h1>

@@ -19,6 +19,10 @@ namespace _RoBotland.Services
         public List<ShoppingCartItem> AddItemToShoppingCart(int productId, List<ShoppingCartItem> shoppingCart)
         {
             var product = _mapper.Map<ProductDto>(_dataContext.Products.Find(productId)) ?? throw new Exception("Product not found");
+            if (product.IsAvailable == Enums.Availability.C)
+            {
+                throw new Exception("Produkt niedostępny!");
+            }
             if (shoppingCart.IsNullOrEmpty())
             {
                 shoppingCart.Add(new ShoppingCartItem(0, product, 1, product.Price));
@@ -31,8 +35,15 @@ namespace _RoBotland.Services
             }
             else
             {
-                shoppingCart[identicalItem.Id].Quantity++;
-                shoppingCart[identicalItem.Id].Total += product.Price;
+                if (identicalItem.Quantity <product.Quantity)
+                {
+                    shoppingCart[identicalItem.Id].Quantity++;
+                    shoppingCart[identicalItem.Id].Total += product.Price;
+                }
+                else
+                {
+                    throw new Exception("You cannot add unexisting products to your shoppingcart");
+                }
             }
             return shoppingCart;
         }

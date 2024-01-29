@@ -1,7 +1,14 @@
-﻿namespace _RoBotland.Enums
+﻿using System.ComponentModel;
+
+namespace _RoBotland.Enums
 {
     public enum DeliveryType
     {
-        A, B //placeholder
+        [Description("Paczkomat")]
+        A,
+        [Description("Kurier InPost")]
+        B,
+        [Description("Odbiór własny")]
+        C
     }
 }

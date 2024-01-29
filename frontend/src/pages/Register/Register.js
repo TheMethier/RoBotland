@@ -5,18 +5,19 @@ import Grid from '@mui/material/Grid';
 import { confirmAlert } from 'react-confirm-alert';
 export default function Register()
 {
+    const [errors, setErrors]=useState([]);
     const navigate = useNavigate();
     const defaultRegister={
-         username: "string",
-         password: "string",
-         firstName: "string",
-         lastName: "string",
-         email: "user@example.com",
-         phoneNumber: "string",
-         street: "string",
-         city: "string",
-         houseNumber: "string",
-         zipCode: "string"
+         username: "",
+         password: "",
+         firstName: "",
+         lastName: "",
+         email: "",
+         phoneNumber: "",
+         street: "",
+         city: "",
+         houseNumber: "",
+         zipCode: ""
       }
     const [register, setRegister] =useState(defaultRegister);
     const handleChange=(name, value)=>{
@@ -34,17 +35,23 @@ export default function Register()
         .then(response => {
             if(!response.ok)
                 {
-                    console.log(register);
-                    console.log(response);
-                    throw Error("");
+                    response.text().then(text => {
+                        console.log(text);
+                        let p=JSON.parse(text);
+                        setErrors(p.errors);
+                        console.log(p.errors)
+                    });
                 }
-            return response.json();
+                else{
+                    return response.json();
+                }
         })
         .catch(error => {
             console.log(error)
-            return Promise.reject(error);
         })
         .then(data => {
+            if(data)
+            {
             confirmAlert({
                 title: 'Sukces',
                 message: 'Zarejestrowano!',
@@ -55,20 +62,20 @@ export default function Register()
                     }
                 ]
             });
-            
+        }            
         });
     }
     return(
 
 <Card
              sx={{
-                marginTop: "20rem",
+                marginTop: "23rem",
                 borderRadius: '16px',  
                 position: 'absolute',
                 left: '50%',
                 transform: 'translate(-50%, -50%)',
                 width: "23rem",
-                height: "35rem",
+                height: "42rem",
                 bgcolor: 'white',
                 boxShadow: 24,
                 p: 4, }}>
@@ -83,9 +90,14 @@ export default function Register()
                     size="normal"
                     sx={{
                         width: '21rem',
-                        height: '4rem'
+                        height: '4rem',
+                        marginBottom: errors?.["Username"]?
+                        "0.5rem": null
                     }}
                     onChange={(x)=>handleChange("username",x.target.value)}
+                    error={!!errors?.["Username"]}       
+                    helperText={errors?.["Username"]? errors["Username"][0]: null}
+
                 />
         </Grid>
         <Grid item xs={10}>
@@ -97,10 +109,15 @@ export default function Register()
                     size="normal"
                     sx={{
                         width: '21rem',
-                        height: '4rem'
+                        height: '4rem',
+                        marginBottom: errors?.["Password"]?
+                        "0.5rem": null
     
                     }}
                     onChange={(x)=>handleChange("password",x.target.value)}
+                    error={!!errors?.["Password"]}       
+                    helperText={errors?.["Password"]? errors["Password"][0]: null}
+
                 />
         </Grid>
         <Grid item xs={10}>
@@ -112,9 +129,14 @@ export default function Register()
                     size="normal"
                     sx={{
                         width: '21rem',
-                        height: '4rem'
+                        height: '4rem',
+                        marginBottom: errors?.["Email"]?
+                        "0.5rem": null
                     }}
                     onChange={(x)=>handleChange("email",x.target.value)}
+                    error={!!errors?.["Email"]}       
+                    helperText={errors?.["Email"]? errors["Email"][0]: null}
+
                 />  
         </Grid>
         <Grid item xs={10}>
@@ -127,9 +149,13 @@ export default function Register()
                     size="normal"
                     sx={{
                         width: '21rem',
-                        height: '4rem'
+                        height: '4rem',
+                        marginBottom: errors?.["PhoneNumber"]?
+                        "0.5rem": null
                     }}
                     onChange={(x)=>handleChange("phoneNumber",x.target.value)}
+                    error={!!errors?.["PhoneNumber"]}       
+                    helperText={errors?.["PhoneNumber"]? errors["PhoneNumber"][0]: null}
                 />  
         </Grid>
         <Grid item xs={10} md={6}>
@@ -140,9 +166,13 @@ export default function Register()
                     autoComplete='current-firstname'
                     size="normal"
                     sx={{
-                        height: '4rem'
+                        height: '4rem',
+                        marginBottom: errors?.["FirstName"]?
+                        "0.5rem": null
                     }}
                     onChange={(x)=>handleChange("firstName",x.target.value)}
+                    error={!!errors?.["FirstName"]}       
+                    helperText={errors?.["FirstName"]? errors["FirstName"][0]: null}
                 />  
         </Grid>
         <Grid item xs={10} md={6}>
@@ -153,25 +183,50 @@ export default function Register()
                     autoComplete='current-lastname'
                     size="normal"
                     sx={{
-                        height: '4rem'
+                        height: '4rem',
+                        marginBottom: errors?.["LastName"]?
+                        "0.5rem": null
                     }}
                     onChange={(x)=>handleChange("lastName",x.target.value)}
+                    error={!!errors?.["LastName"]}       
+                    helperText={errors?.["LastName"]? errors["LastName"][0]: null}
                 />  
         </Grid>
-        <Grid item xs={10}>
+        <Grid item xs={10}md={7}>
         <TextField
                     id="outlined-zipCode-input-standard-size-normal"
-                    label="zipCode + city" 
+                    label="City" 
+                    type='text'
+                    autoComplete='current-city'
+                    size="normal"
+                    sx={{
+                        height: '4rem',
+                        marginBottom: errors?.["City"]?
+                        "2rem": null
+                    }}
+                    onChange={(x)=>handleChange("City",x.target.value)}
+                    error={!!errors?.["City"]}       
+                    helperText={errors?.["City"]? errors["City"][0]: null}
+                />  
+        </Grid>       
+        <Grid item xs={10}md={5}>
+        <TextField
+                    id="outlined-zipCode-input-standard-size-normal"
+                    label="zipCode" 
                     type='text'
                     autoComplete='current-zipCode'
                     size="normal"
                     sx={{
-                        width: '21rem',
-                        height: '4rem'
+                        height: '4rem',
+                        marginBottom: errors?.["ZipCode"]?
+                        "0.5rem": null
                     }}
                     onChange={(x)=>handleChange("zipCode",x.target.value)}
+                    error={!!errors?.["ZipCode"]}       
+                    helperText={errors?.["ZipCode"]? errors["ZipCode"][0]: null}
                 />  
         </Grid>       
+
 
         <Grid item xs={10} md={7}>
           
@@ -182,9 +237,13 @@ export default function Register()
                     autoComplete='current-street'
                     size="normal"
                     sx={{
-                        height: '4rem'
+                        height: '4rem',
+                        marginBottom: errors?.["Street"]?
+                        "0.5rem": null
                     }}
                     onChange={(x)=>handleChange("street",x.target.value)}
+                    error={!!errors?.["Street"]}       
+                    helperText={errors?.["Street"]? errors["Street"][0]: null}
                 />  
 
         </Grid>
@@ -197,10 +256,14 @@ export default function Register()
                     autoComplete='current-houseNumber'
                     size="normal"
                     sx={{
-                        height: '4rem'
+                        height: '4rem',
+                        marginBottom: errors?.["HouseNumber"]?
+                        "2rem": null
                     }}
                     onChange={(x)=>handleChange("houseNumber",x.target.value)}
-                />  
+                    error={!!errors?.["HouseNumber"]}       
+                    helperText={errors?.["HouseNumber"]? errors["HouseNumber"][0]: null}
+        />  
 
         </Grid>
         

@@ -17,7 +17,7 @@
     color: #333;
     text-decoration: none;
     padding: 0.5rem;
-    border-right: 1px solid rgba(0, 0, 0, 0.15);
+ /*   border-right: 1px solid rgba(0, 0, 0, 0.15);*/
 }
 
 .navbar a:last-child {
@@ -26,7 +26,6 @@
 
 .wrapper {
     padding: 5px;
-    width: 100%;
 }
 
 .icons{

@@ -32,14 +32,11 @@ namespace _RoBotland.Controllers
             }
         }
         [HttpDelete("remove/{productId:int}")]
-        public IActionResult RemoveProductFromShoppingCard(int productId, [FromBody] List<ShoppingCartItem> shoppingCartItems=null) 
+        public IActionResult RemoveProductFromShoppingCard(int productId, [FromBody] List<ShoppingCartItem> shoppingCartItems) 
         {
-            var session = HttpContext.Session;
-
             try
             {
                 var shoppingCartContent = _shoppingCartService.RemoveItemFromShoppingCart(productId, shoppingCartItems);
-                SessionHelper.SetObjectAsJson(session, "shoppingcart", shoppingCartContent);
                 return Ok(shoppingCartContent);
             }
             catch (Exception ex)

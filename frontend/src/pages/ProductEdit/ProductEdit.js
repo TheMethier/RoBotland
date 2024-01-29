@@ -33,7 +33,9 @@ const ProductEdit = () => {
     }, [id]);
 
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_API_URL}/api/v1/Admin/categories/${id}`)
+        fetch(`${process.env.REACT_APP_API_URL}/api/v1/Admin/categories/${id}`,{            
+            'Authorization': `Bearer ${localStorage.getItem("token")}` 
+    })
         .then(response => response.json())
         .then(data => {
             setProductCategories(data);
@@ -58,10 +60,12 @@ const ProductEdit = () => {
     };
 
     const handleSaveClick = () => {
-        fetch(`${process.env.REACT_APP_API_URL}/api/v1/Admin/${id}`, {
+        fetch(`${process.env.REACT_APP_API_URL}/api/v1/Admin/products/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem("token")}` 
+
             },
             body: JSON.stringify(editedProduct),
         })
@@ -84,6 +88,8 @@ const ProductEdit = () => {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem("token")}` 
+
                     },
                     body: JSON.stringify({ CategoryNames: selectedCategories, ProductId: productId }),
                 })

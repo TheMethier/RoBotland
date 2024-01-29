@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 import {  useNavigate } from 'react-router-dom';
 import { Card, TextField, Paper, Button,  Stack, CardContent } from '@mui/material';
 import { confirmAlert } from 'react-confirm-alert';
-
+import {useForm} from 'react-hook-form'
+import { Password } from '@mui/icons-material';
 export default function Login()
 {
 
@@ -12,6 +13,7 @@ export default function Login()
         username: "",
         password: ""
       };
+    const [errors, setErrors]=useState([]);
     const [login, setLogin] =useState(defaultLogin);
     const handleLoginChange=(name, value)=>{
         setLogin({...login,
@@ -31,27 +33,52 @@ export default function Login()
         .then(response => {
             if(!response.ok)
                 {
-                    throw Error("");
+                    response.text().then(text => {
+                        if(text!="Not Found"&& text!="Bad Password"){
+                            console.log(text);
+                            let p=JSON.parse(text);
+                            setErrors(p.errors);
+                            console.log(JSON.stringify(p.errors))
+                        }
+                        else{
+                            console.log(text);
+                            if(text=="Not Found"){
+                                let error={Username:["Bad Username","",""]};
+                                setErrors(error);
+                            }
+                            else 
+                            {
+                                let error={Password:["Bad Password","",""]};
+                                setErrors(error);                     
+                            }
+                            
+
+                        }
+                    });
                 }
-            return response.json();
+                else{
+                    return response.json();
+
+                }
         })
-        .catch(error => {
-            console.log(error)
-            return Promise.reject(error);
-        })
+
         .then(data => {
-            localStorage.setItem("token",data.token);
-            confirmAlert({
-                title: 'Sukces',
-                message: 'Zalogowano!',
-                buttons: [
-                    {
-                        label: 'OK',
-                        onClick: () => window.location.replace("/")
-                    }
-                ]
-            });
-            
+            if(data!=null)
+            {
+                localStorage.setItem("token",data.token);
+                confirmAlert({
+                    title: 'Sukces',
+                    message: 'Zalogowano!',
+                    buttons: [
+                        {
+                            label: 'OK',
+                            onClick: () => window.location.replace("/")
+                        }
+                    ]
+                });
+            }
+                        
+        })        .catch(error => {
         });
     };
     return(
@@ -64,7 +91,7 @@ export default function Login()
                 left: '50%',
                 transform: 'translate(-50%, -50%)',
                 width: "23rem",
-                height: "15rem",
+                height: "16rem",
                 bgcolor: 'white',
                 boxShadow: 24,
                 p: 4, }}>
@@ -84,9 +111,14 @@ export default function Login()
                     size="normal"
                     sx={{
                         width: '20rem',
-                        height: '4rem'
+                        height: '4rem',
+                        marginBottom: errors?.["Username"]?
+                        "1rem": null,
                     }}
+                    error={!!errors?.["Username"]}       
+                    helperText={errors?.["Username"]? errors["Username"][0]: null}
                     onChange={(x)=>handleLoginChange("username",x.target.value)}
+                    
                 />
                   </div>
                   <div>
@@ -98,10 +130,13 @@ export default function Login()
                     size="normal"
                     sx={{
                         width: '20rem',
-                        height: '4rem'
-    
+                        height: '4rem',
+                        marginBottom: errors?.["Password"]?
+                        "1rem": null,    
                     }}
                     onChange={(x)=>handleLoginChange("password",x.target.value)}
+                    error={!!errors?.["Password"]}
+                    helperText={errors?.["Password"]? errors["Password"][0]: null}
                 />
                 </div>
                 <div>
@@ -113,7 +148,7 @@ export default function Login()
                         fontFamily: 'sans-serif',
                         fontWeight: "border"
                     }}
-                    onClick={()=>{handleLoginClick();}}
+                    onClick={x=>{handleLoginClick()}}
                     >
                     Zaloguj się
                 </Button>

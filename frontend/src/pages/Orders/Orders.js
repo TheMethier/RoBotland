@@ -25,7 +25,12 @@ const Orders = () => {
     const navigate = useNavigate();
     useEffect(() => {
     
-        fetch(`${process.env.REACT_APP_API_URL}/api/v1/Admin/getOrders`)
+        fetch(`${process.env.REACT_APP_API_URL}/api/v1/Admin/getOrders`,{      
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem("token")}` 
+        }})
           .then((response) => response.json())
           .then((data) => setOrders(data))
           .catch((error) => console.log(error));
@@ -42,7 +47,7 @@ const Orders = () => {
         <div><Box display="flex" >
             <div className='table'>
                 {orders.length > 0 ? (
-                    <DataGrid
+                    <DataGrid sx={{left:"10%"}}
                         onRowClick={(params) => handleRowClick(params.row)}
                         rows={orders}
                         columns={columns}

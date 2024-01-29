@@ -149,11 +149,11 @@ export default function PlaceOrder()
               <Grid item xs={4}>
                 <Card sx={{
                   height:"30rem",
+                  marginTop:"1rem",
                   alignContent: "center",
                   alignItems: 'center',
                   borderRadius: '16px',  
                   bgcolor: 'white',
-                  marginTop: "1rem",
                   boxShadow: 24,
                   maxHeight:"100rem",
                   minWidth:"40rem",
