@@ -130,7 +130,7 @@ export default function ShoppingCart()
                       <h1>{row.product.price} zł</h1>
                     </TableCell>
                     <TableCell align='center'>
-                      <Button onClick={(x)=>addProductToCart(row.product)}>
+                      <Button onClick={(x)=>addProductToCart(row.product)}disabled={row.quantity === row.product.quantity}>
                         <AddIcon />
                       </Button >
                       <h1>

@@ -41,33 +41,37 @@ const ProductManagement = () => {
             {
               label: 'Tak',
               onClick: () => {
-                fetch(`${process.env.REACT_APP_API_URL}/api/v1/Admin/products/${productId}`, {
-                  method: 'DELETE',
-                  headers: {
-
-                  'Authorization': `Bearer ${localStorage.getItem("token")}` 
-                  }
-                })
-                  .then((response) => {
-                    if (response.ok) {
-                      console.log(`Product with ID ${productId} deleted successfully`);
-                      fetchProducts();
-                    } else {
-                      console.error(`Failed to delete product with ID ${productId}`);
-                    }
-                  })
-                  .catch((error) => console.error('Error:', error));
-              },
-            },
-            {
-              label: 'Nie',
-              onClick: () => {
-                console.log('Deletion canceled');
-              },
-            },
-          ],
-        });
-      };
+               
+                  fetch(`${process.env.REACT_APP_API_URL}/api/v1/Product/${productId}`)
+                      .then(response => response.json())
+                      .then(data => {
+                        const updatedProduct = { ...data, isAvailable: 3, quantity: 0 };
+                        fetch(`${process.env.REACT_APP_API_URL}/api/v1/Admin/products/${productId}`, {
+                          method: 'PUT',
+                          headers: {
+                              'Content-Type': 'application/json',
+                              'Authorization': `Bearer ${localStorage.getItem("token")}` 
+                          },
+                          body: JSON.stringify(updatedProduct),
+                        })
+                        .then(response => response.json())
+                        .then(updatedData => {
+                          console.log('Product deleted successfully:', updatedData);
+                        })
+                        .catch(error => console.error('Error updating product:', error));
+                      })
+                      .catch(error => console.error(error));
+                    },
+                  },
+                  {
+                    label: 'Nie',
+                    onClick: () => {
+                      console.log('Deletion canceled');
+                    },
+                  },
+                ],
+              });
+            };
 
       const handleEditClick  = (event ,id) => {
         event.stopPropagation();
@@ -75,6 +79,21 @@ const ProductManagement = () => {
         navigate(`productEdit/${id}`);
       }
     
+      function renderAvailability(params) {
+        const availability = params.value;
+      
+        switch (availability) {
+          case 0:
+            return 'Wysyłka w 24h';
+          case 1:
+            return 'Wysyłka w 7 dni';
+          case 2:
+            return 'Niedostępny';
+          default:
+            return '';
+        }
+      }
+      
       const columns = [
         { field: 'name', headerName: 'Nazwa',flex:1 ,style: { whiteSpace: 'normal', wordWrap: 'break-word' }, },
         { field: 'price', headerName: 'Cena', width: 75, renderCell: (params) => (`${params.value} PLN`) },
@@ -84,7 +103,7 @@ const ProductManagement = () => {
 
                 </div>}
           </div>
-        ),width: 300,
+        ),width: 140,
         },
         {
           field: 'imageUrl', headerName: 'Zdjęcie', renderCell: (params) => (
@@ -92,7 +111,7 @@ const ProductManagement = () => {
           ),
           width: 200, 
         },         
-        { field: 'isAvailable', headerName: 'Dostępność' ,width: 86},
+        { field: 'isAvailable', headerName: 'Dostępność', renderCell: renderAvailability ,width: 140 },
         {
             field: 'actions',
             headerName: 'Akcje',

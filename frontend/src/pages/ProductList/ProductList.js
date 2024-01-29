@@ -6,18 +6,32 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const columns = [
-    { field: 'id', headerName: 'ID'},
+    { field: 'id', headerName: 'ID',width: 60},
     { field: 'name', headerName: 'Nazwa',flex: 1, },
-    { field: 'price', headerName: 'Cena'},
+    { field: 'price', headerName: 'Cena', renderCell: (params) => `${params.value} PLN`},
     {
         field: 'imageUrl', headerName: 'Zdjęcie', renderCell: (params) => (
           <img src={`${process.env.REACT_APP_API_URL}/images/${params.value}`} alt={params.row.name} style={{ height: 'auto' }} />
         ),
         width: 200, 
       },
-      
-    { field: 'isAvailable', headerName: 'Dostępność' },
+    { field: 'isAvailable', headerName: 'Dostępność', renderCell: renderAvailability ,width: 140 },
 ];
+
+function renderAvailability(params) {
+    const availability = params.value;
+  
+    switch (availability) {
+      case 0:
+        return 'Wysyłka w 24h';
+      case 1:
+        return 'Wysyłka w 7 dni';
+      case 2:
+        return 'Niedostępny';
+      default:
+        return '';
+    }
+  }
 
 const ProductList = () => {
 

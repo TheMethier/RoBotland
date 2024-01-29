@@ -2,6 +2,6 @@
 {
     public enum Availability
     {
-        A, B, C //placeholder
+        A, B, C, D //placeholder
     }
 }

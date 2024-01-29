@@ -92,6 +92,7 @@ public class ProductService : IProductService
             query = query.Where(p => p.Categories.Any(c => c.Id == filterParameters.CategoryId.Value));
         if (filterParameters.IsAvailable.HasValue)
             query = query.Where(p => p.IsAvailable == filterParameters.IsAvailable.Value);
+        query = query.Where(p => p.IsAvailable != Availability.D);
         var products = query.ToList();
         return _mapper.Map<List<ProductDto>>(products);
     }
